@@ -11,6 +11,8 @@ Launcher::Launcher() : window {
     this->window.setVisible(false);
 
     std::cout << "Launcher !" << std::endl;
+
+    //resourceLoader.load()
 }
 
 void Launcher::run() {
