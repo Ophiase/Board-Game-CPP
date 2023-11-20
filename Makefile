@@ -2,7 +2,7 @@
 # PARAMETERS
 
 CC := g++
-CFLAGS := -g -Wall -Wextra -std=c++17
+CFLAGS := -g -Wall -Wextra -std=c++17 #  necessary for std::optional
 INCLUDES := -Iinclude
 LIBS := -lsfml-graphics -lsfml-window -lsfml-system
 
@@ -10,7 +10,7 @@ TARGET_FOLDER := bin
 TARGET := $(TARGET_FOLDER)/main
 TARGET_TEST := $(TARGET_FOLDER)/test
 
-
+# Folders in which there are .cpp files
 MODULES := . 
 MODULES += utils
 MODULES += engine
