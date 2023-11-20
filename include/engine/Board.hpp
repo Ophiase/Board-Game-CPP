@@ -5,9 +5,9 @@
 #include <stdlib.h>
 #include <optional>
 
-#include <Cell.hpp>
-#include <Side.hpp>
-#include <Owning.hpp>
+#include <engine/Cell.hpp>
+#include <engine/Side.hpp>
+#include <engine/Owning.hpp>
 
 class Action;
 

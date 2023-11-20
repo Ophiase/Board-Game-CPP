@@ -1,5 +1,5 @@
 #pragma once
 
-#include "../Board.hpp"
+#include "engine/Board.hpp"
 
 class CheckersBoard : public Board {};

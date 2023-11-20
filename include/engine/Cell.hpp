@@ -7,7 +7,7 @@
 #include <SFML/System/Vector2.hpp>
 
 enum CellPieceType {Pawn, PawnBis};
-using CellVector = sf::Vector2u;
+using CellVector = sf::Vector2i;
 
 class CellPiece {
     public:

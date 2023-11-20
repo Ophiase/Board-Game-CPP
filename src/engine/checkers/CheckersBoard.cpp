@@ -1,1 +1,1 @@
-#include "CheckersBoard.hpp"
+#include "engine/checkers/CheckersBoard.hpp"
