@@ -2,9 +2,12 @@
 # PARAMETERS
 
 CC := g++
-CFLAGS := -g -Wall -Wextra -std=c++17 #  necessary for std::optional
+
+CFLAGS := -g -Wall -Wextra 
+CFLAGS += -std=c++17 #  necessary for std::optional
+
 INCLUDES := -Iinclude
-LIBS := -lsfml-graphics -lsfml-window -lsfml-system
+LIBS := -lsfml-network -lsfml-graphics -lsfml-window -lsfml-system
 
 TARGET_FOLDER := bin
 TARGET := $(TARGET_FOLDER)/main
@@ -33,22 +36,21 @@ $(TARGET_FOLDER) :
 
 $(TARGET): $(OBJDIRS) $(TARGET_FOLDER) $(OBJS)
 	rm obj/main.o
-	$(CC) $(CFLAGS) $(INCLUDES) -c src/main.cpp -o obj/main.o
-	
-	$(CC) $(CFLAGS) $(INCLUDES) $(LIBS) -o $@ $(OBJS)
+	$(CC) -c src/main.cpp -o obj/main.o $(CFLAGS) $(INCLUDES) $(LIBS) -DTEST=0
+	$(CC) $(OBJS) $(CFLAGS) $(INCLUDES) $(LIBS) -o $@
 
 $(TARGET_TEST): $(OBJDIRS) $(TARGET_FOLDER) $(OBJS)
 	rm obj/main.o
-	$(CC) $(CFLAGS) $(INCLUDES) -c src/main.cpp -o obj/main.o -DTEST
+	$(CC) -c src/main.cpp -o obj/main.o $(CFLAGS) $(INCLUDES) $(LIBS) -DTEST=1
 	
-	$(CC) $(CFLAGS) $(INCLUDES) $(LIBS) -o $@ $(OBJS)
+	$(CC) $(OBJS) $(CFLAGS) $(INCLUDES) $(LIBS) -o $@
 
 
 $(OBJDIRS):
 	mkdir -p $@
 
 obj/%.o: src/%.cpp | $(OBJDIRS)
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	$(CC) $(CFLAGS) $(INCLUDES) $(LIBS) -c $< -o $@
 
 ############################################################
 # COMMANDS
