@@ -7,6 +7,11 @@
 #include "utils/debug.hpp"
 
 int main() {
-    Launcher launcher{};
+    #ifndef TEST
+        Launcher launcher{};
+    #else
+        std::cout << "Test !" << std::endl;
+    #endif
+
     return EXIT_SUCCESS;
 }
