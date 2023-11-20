@@ -1,38 +1,32 @@
 CC = g++
-CFLAGS = -g -Wall -Wextra -std=c++17 # pour type optional
+CFLAGS = -g -Wall -Wextra -std=c++17
 INCLUDES = -Iinclude
 LIBS = -lsfml-graphics -lsfml-window -lsfml-system
 
 TARGET_FOLDER = bin
 TARGET = $(TARGET_FOLDER)/main
 
-FOLDERS = . utils engine engine/bullTricker engine/checkers engine/loot graphics graphics/bullTricker graphics/checkers graphics/bullTricker
-SOURCES = $(foreach folder, $(FOLDERS), $(wildcard $(addprefix src/, $(folder)/*.cpp)))
-
-OBJDIR = $(foreach folder, $(FOLDERS), obj/$(folder))
-OBJ = $(patsubst src/%.cpp, obj/%.o, $(SOURCES))
+MODULES = . utils engine engine/bullTricker engine/checkers engine/loot graphics graphics/bullTricker graphics/checkers graphics/loot
+SOURCES = $(foreach module, $(MODULES), $(wildcard $(addprefix src/, $(module)/*.cpp)))
+OBJDIRS = $(foreach module, $(MODULES), obj/$(module))
+OBJS = $(patsubst src/%.cpp, obj/%.o, $(SOURCES))
 
 .PHONY: all clean run
 
 all: $(TARGET)
 
-$(TARGET_FOLDER):
+$(TARGET_FOLDER) :
+	mkdir -p $(TARGET_FOLDER)
+
+$(TARGET): $(OBJDIRS) $(TARGET_FOLDER) $(OBJS)
+	$(CC) $(CFLAGS) $(INCLUDES) $(LIBS) -o $(TARGET) $(OBJS)
+	cp -r resources $(TARGET_FOLDER)
+
+$(OBJDIRS):
 	mkdir -p $@
 
-#$(OBJDIR): :
-#	mkdir -p $@
-
-#$(OBJDIR)/%.o: src/%.cpp
-#	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
-#$(TARGET): $(OBJDIR)
-#	mkdir $(TARGET_FOLDER)
-#	$(CC) $(CFLAGS) -o $(OBJDIR)/$@ $(LIBS)
-#	cp -r resources $(TARGET_FOLDER)
-
-$(TARGET): $(TARGET_FOLDER)
-	$(CC) $(CFLAGS) $(INCLUDES) $(LIBS) $(SOURCES) -o $(TARGET)
-	cp -r resources $(TARGET_FOLDER)
+obj/%.o: src/%.cpp | $(OBJDIRS)
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 run: $(TARGET)
 	./$<
