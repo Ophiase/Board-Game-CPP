@@ -16,10 +16,7 @@ class Launcher {
         const sf::Uint32 DEFAULT_STYLE = sf::Style::Default;
 
         sf::RenderWindow window;
-
         ResourcesLoader resourceLoader;
-
-        void loop();
     public:
         Launcher();
         void run();

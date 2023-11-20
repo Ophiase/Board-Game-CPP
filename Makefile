@@ -15,7 +15,7 @@ TARGET_TEST := $(TARGET_FOLDER)/test
 
 # Folders in which there are .cpp files
 MODULES := . 
-MODULES += utils
+MODULES += utils geometry
 MODULES += engine
 MODULES += engine/bullTricker engine/checkers engine/loot 
 MODULES += graphics
