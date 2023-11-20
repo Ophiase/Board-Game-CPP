@@ -3,7 +3,10 @@
 #include <iostream>
 #include <stdlib.h>
 
+#include "graphics/Launcher.hpp"
+#include "utils/debug.hpp"
+
 int main() {
-    std::cout << "Hello World" << std::endl;
+    Launcher launcher{};
     return EXIT_SUCCESS;
 }
