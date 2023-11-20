@@ -26,7 +26,18 @@
 *.a
 *.lib
 
+# other
+
+.vscode
+.vscode/*
+
+
 # Executables
 *.exe
 *.out
 *.app
+
+run
+
+bin
+bin/*
