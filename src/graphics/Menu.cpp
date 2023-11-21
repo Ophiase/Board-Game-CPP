@@ -1,5 +1,7 @@
 #include "graphics/Menu.hpp"
 
+std::string Menu::getTitle() { return "Menu"; }
+
 void Menu::draw(sf::RenderWindow& window) {
     (void)window;
 }

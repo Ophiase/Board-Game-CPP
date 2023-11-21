@@ -17,6 +17,9 @@ class Geometry {
             sf::RectangleShape & shape, sf::FloatRect const rect
             );
 
+        static sf::Vector2f spaceTransform(
+            sf::Vector2f vector, sf::FloatRect oldSpace, sf::FloatRect newSpace);
+
         /*
             Scale rect from center.
         */

@@ -2,11 +2,13 @@
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <string>
 
 class Screen {
 private:
     bool alive = true;
 public:
+    virtual std::string getTitle();
     virtual void draw(sf::RenderWindow& window) = 0;
     
     /*

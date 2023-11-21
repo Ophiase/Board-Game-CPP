@@ -24,43 +24,14 @@ Launcher::Launcher() : window {
     Cli::info("Start Launcher");
 }
 
-void Launcher::updateView(sf::RectangleShape & background, sf::RectangleShape & foreground) {
-    float backgroundScale = 1.2;
-    
-    sf::FloatRect visibleArea = Geometry::fit(
-        Geometry::toFloat(this->window.getSize()), 
-        foreground.getPosition(),
-        foreground.getSize()
-    );
-
-    auto backgroundTransform = Geometry::scaleRect(
-        Geometry::fit(background.getSize(), visibleArea),
-        backgroundScale
-    );
-
-    Geometry::applyFloatRectToRectangleShape(
-        background, backgroundTransform
-    );
-
-    this->window.setView(sf::View(visibleArea));
-}
-
 void Launcher::run() {
     this->window.setVisible(true);
+
     Menu menu{};
-    Screen *focus = &menu;
+    focus = &menu;
     
-    float backgroundRatio = Geometry::toRatio(Texture::BackgroundMainBlur);
-    sf::RectangleShape background(sf::Vector2f(1.0,backgroundRatio));
-    background.setTexture(&ResourcesLoader::getTexture(Texture::BackgroundMainBlur));
-    
-    float foregroundRatio = Geometry::toRatio(Texture::BackgroundMenu2);
-    sf::RectangleShape foreground(sf::Vector2f(1.0, 1/foregroundRatio));
-    foreground.setTexture(&ResourcesLoader::getTexture(Texture::BackgroundMenu2));
-    foreground.setPosition(0.0, (1-1/foregroundRatio)/2);
-    foreground.setFillColor(sf::Color::White);
- 
-    updateView(background, foreground);
+    this->initView();
+    this->updateView();
 
     while (this->window.isOpen()) {
         if (!focus->isAlive() && (focus != &menu)) {
@@ -74,34 +45,149 @@ void Launcher::run() {
                 this->window.close();
 
             if (event.type == sf::Event::Resized) {
-                /*
-                    This code section was meant to impose limits
-                    on window size and aspect ratio.
-
-                    A bug on linux makes it impossible : 
-                    https://github.com/SFML/SFML/issues/2124
-                    
-                    sf::Vector2u size{
-                        std::max(this->window.getSize().x, MINIMUM_WINDOW_SIZE.x),
-                        std::max(this->window.getSize().y, MINIMUM_WINDOW_SIZE.y),
-                    };
-                    this->window.setSize(size);
-                */
-
-                updateView(background, foreground);
+                this->adjustSize();
+                this->updateView();
             }
 
             Screen *sucessor = focus->handleEvent(event);
             focus = (sucessor == nullptr) ? focus : sucessor;
+            titleText.setString(focus->getTitle());
         }
 
         this->window.clear(sf::Color::Black);
-
         this->window.draw(background);
+
         this->window.draw(foreground);
-        
         focus->draw(window);
+        
+        this->window.draw(title);
+        this->window.draw(titleText);
+
+        applyLimitMask();
         
         this->window.display();
     }
+}
+
+void Launcher::initView() {
+    
+    {
+        maxRenderZone = sf::RectangleShape{sf::Vector2f{2.0f, 2.0f}};
+        maxRenderZone.setPosition(sf::Vector2f{
+            0.5f - (maxRenderZone.getSize().x/2.0f), 
+            0.5f - (maxRenderZone.getSize().y/2.0f)
+        });
+    }
+
+    {
+        float titleRatio = Geometry::toRatio(Texture::BackgroundPanelTop);
+        title = sf::RectangleShape(sf::Vector2f(1.0, 1.0/titleRatio));
+        title.setTexture(&ResourcesLoader::getTexture(Texture::BackgroundPanelTop));
+    }
+
+    {
+        sf::Vector2f center{0.5, 0.125};
+
+        title.setPosition(0, -title.getSize().y);
+        title.setPosition(0, title.getPosition().y + center.y);
+
+        auto transform = Geometry::scaleRect(
+            Geometry::rectangleShapeToFloatRect(title),
+            2.1,
+            center
+        );
+        
+        Geometry::applyFloatRectToRectangleShape(
+            title, transform
+        );
+    }
+        
+    {
+        titleText = sf::Text{
+            this->focus->getTitle(), 
+            ResourcesLoader::getFont(Font::OpenSansExtraBold), 30U
+            };
+
+        float textScale = 0.002;
+        titleText.setScale(sf::Vector2f(textScale, textScale));
+        
+        auto bound = titleText.getLocalBounds();
+        float cx = (bound.left + bound.width/2.0f)*textScale;
+        float cy = (bound.top + bound.height/2.0f)*textScale;
+        titleText.setPosition(0.5-cx, 0.04-cy);
+        
+        titleText.setFillColor(sf::Color::White);
+    }
+
+    {
+        float backgroundRatio = Geometry::toRatio(Texture::BackgroundMainBlur);
+        background = sf::RectangleShape(sf::Vector2f(1.0, 1.0/backgroundRatio));
+        background.setTexture(&ResourcesLoader::getTexture(Texture::BackgroundMainBlur));
+    }
+    
+    {
+        float foregroundRatio = Geometry::toRatio(Texture::BackgroundMenu2);
+        foreground = sf::RectangleShape(sf::Vector2f(1.0, 1/foregroundRatio));
+        foreground.setTexture(&ResourcesLoader::getTexture(Texture::BackgroundMenu2));
+        
+        float freeYSpace = 1.0f - (1.0f / foregroundRatio);    
+        foreground.setPosition(0.0, freeYSpace*0.3);
+    }
+}
+
+void Launcher::updateView() {
+
+    (void)title;
+
+    float inBiais = 0.04f;
+    float foregroundBottom = foreground.getSize().y + foreground.getPosition().y - inBiais;
+    sf::FloatRect visibleArea = Geometry::fit(
+        Geometry::toFloat(this->window.getSize()), 
+        sf::Vector2f{0.0, 0.0},
+        sf::Vector2f{1.0, foregroundBottom}
+    );
+
+    Geometry::applyFloatRectToRectangleShape(this->screen, visibleArea);
+
+    auto transform = Geometry::fit(background.getSize(), visibleArea);
+    Geometry::applyFloatRectToRectangleShape(
+        background, transform
+    );
+
+    this->window.setView(sf::View(visibleArea));
+
+}
+
+void Launcher::adjustSize() {
+    /*
+        This code section was meant to impose limits
+        on window size and aspect ratio.
+
+        A bug on linux makes it impossible : 
+        https://github.com/SFML/SFML/issues/2124
+        
+        sf::Vector2u size{
+            std::max(this->window.getSize().x, MINIMUM_WINDOW_SIZE.x),
+            std::max(this->window.getSize().y, MINIMUM_WINDOW_SIZE.y),
+        };
+        this->window.setSize(size);
+    */
+}
+
+void Launcher::applyLimitMask() {
+    sf::FloatRect screenSpace {
+        0.0f, 0.0f, (float)window.getSize().x, (float)window.getSize().y
+        };
+    sf::FloatRect viewportSpace = Geometry::rectangleShapeToFloatRect(screen);
+
+    auto origin = Geometry::spaceTransform(
+        maxRenderZone.getPosition(), viewportSpace, screenSpace);
+    auto size = Geometry::spaceTransform(
+        maxRenderZone.getSize(), viewportSpace, screenSpace);
+
+    sf::Shader *maskShader = ResourcesLoader::getShader(Shader::Mask);
+    maskShader->setUniform("origin", origin);
+    maskShader->setUniform("size", size);
+    this->window.draw(
+        this->screen, maskShader);
 }

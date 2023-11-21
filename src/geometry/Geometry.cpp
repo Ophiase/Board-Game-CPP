@@ -97,3 +97,18 @@ sf::FloatRect Geometry::scaleRect(sf::FloatRect rect, float factor, sf::Vector2f
         rect.height * factor
     };
 }
+
+sf::Vector2f Geometry::spaceTransform(
+    sf::Vector2f vector, sf::FloatRect oldSpace, sf::FloatRect newSpace
+    ) {
+    
+    vector += floatRectPosition(oldSpace);
+    vector.x *= floatRectSize(oldSpace).x;
+    vector.y *= floatRectSize(oldSpace).y;
+
+    vector.x /= floatRectSize(newSpace).x;
+    vector.y /= floatRectSize(newSpace).y;
+    vector -= floatRectPosition(newSpace);
+
+    return vector;
+}
