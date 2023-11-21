@@ -72,10 +72,10 @@ void Launcher::run() {
 void Launcher::initView() {
     
     {
-        maxRenderZone = sf::RectangleShape{sf::Vector2f{2.0f, 2.0f}};
+        maxRenderZone = sf::RectangleShape{sf::Vector2f{2.0f, 1.0f}};
         maxRenderZone.setPosition(sf::Vector2f{
-            0.5f - (maxRenderZone.getSize().x/2.0f), 
-            0.5f - (maxRenderZone.getSize().y/2.0f)
+            0.5f - (maxRenderZone.getSize().x / 2.0f), 
+            0.4f - (maxRenderZone.getSize().y / 2.0f)
         });
     }
 
@@ -105,10 +105,10 @@ void Launcher::initView() {
     {
         titleText = sf::Text{
             this->focus->getTitle(), 
-            ResourcesLoader::getFont(Font::OpenSansExtraBold), 30U
+            ResourcesLoader::getFont(Font::OpenSansExtraBold), 100U
             };
 
-        float textScale = 0.002;
+        float textScale = 0.0006;
         titleText.setScale(sf::Vector2f(textScale, textScale));
         
         auto bound = titleText.getLocalBounds();
@@ -175,15 +175,17 @@ void Launcher::adjustSize() {
 }
 
 void Launcher::applyLimitMask() {
-    sf::FloatRect screenSpace {
-        0.0f, 0.0f, (float)window.getSize().x, (float)window.getSize().y
-        };
-    sf::FloatRect viewportSpace = Geometry::rectangleShapeToFloatRect(screen);
+    float ratio = (float)window.getSize().x / screen.getSize().x;
+    auto origin = maxRenderZone.getPosition() - screen.getPosition();
+    origin.x *= ratio;
+    origin.y *= ratio;
 
-    auto origin = Geometry::spaceTransform(
-        maxRenderZone.getPosition(), viewportSpace, screenSpace);
-    auto size = Geometry::spaceTransform(
-        maxRenderZone.getSize(), viewportSpace, screenSpace);
+    // origin of frag shader is on bottom left, not top left ...
+    origin.y = (float)window.getSize().y - origin.y;
+    
+    auto size = maxRenderZone.getSize();
+    size.x *= ratio;
+    size.y *= -ratio;
 
     sf::Shader *maskShader = ResourcesLoader::getShader(Shader::Mask);
     maskShader->setUniform("origin", origin);

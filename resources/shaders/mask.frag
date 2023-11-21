@@ -7,7 +7,7 @@ void main() {
 
     if (normalized.x < 0.0 || 1.0 < normalized.x ||
         normalized.y < 0.0 || 1.0 < normalized.y)
-        gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
     else
-        gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);
+        gl_FragColor = vec4(0.0, 1.0, 0.0, 0.0);
 }

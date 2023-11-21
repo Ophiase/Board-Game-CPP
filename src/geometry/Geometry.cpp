@@ -100,7 +100,10 @@ sf::FloatRect Geometry::scaleRect(sf::FloatRect rect, float factor, sf::Vector2f
 
 sf::Vector2f Geometry::spaceTransform(
     sf::Vector2f vector, sf::FloatRect oldSpace, sf::FloatRect newSpace
-    ) {
+    ) { 
+    
+    exit(1); // not implemented yey
+    // TODO
     
     vector += floatRectPosition(oldSpace);
     vector.x *= floatRectSize(oldSpace).x;
