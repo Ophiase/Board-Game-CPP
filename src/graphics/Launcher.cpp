@@ -21,20 +21,41 @@ Launcher::Launcher() : window {
     };
 }
 
+void Launcher::updateView(sf::RectangleShape & background, sf::RectangleShape & foreground) {
+    float backgroundScale = 1.2;
+    
+    sf::FloatRect visibleArea = Geometry::fit(
+        Geometry::toFloat(this->window.getSize()), 
+        foreground.getPosition(),
+        foreground.getSize()
+    );
+
+    auto backgroundTransform = Geometry::scaleRect(
+        Geometry::fit(background.getSize(), visibleArea),
+        backgroundScale
+    );
+
+    Geometry::applyFloatRectToRectangleShape(
+        background, backgroundTransform
+    );
+
+    this->window.setView(sf::View(visibleArea));
+}
+
 void Launcher::run() {
     this->window.setVisible(true);
     
-
-    auto background_ratio = Geometry::toRatio(Texture::BackgroundMainBlur);
-    sf::RectangleShape background(sf::Vector2f(1.0,background_ratio));
+    float backgroundRatio = Geometry::toRatio(Texture::BackgroundMainBlur);
+    sf::RectangleShape background(sf::Vector2f(1.0,backgroundRatio));
     background.setTexture(&ResourcesLoader::getTexture(Texture::BackgroundMainBlur));
-    background.setPosition(0.0, (1-background_ratio)/2);
-
-    float ratio = (float)DEFAULT_WINDOW_SIZE.y/(float)DEFAULT_WINDOW_SIZE.x;
-    sf::RectangleShape foreground(sf::Vector2f(1.0, ratio));
-    foreground.setTexture(&ResourcesLoader::getTexture(Texture::BackgroundMainBlur));
-    foreground.setPosition(0.0, (1-ratio)/2);
+    
+    float foregroundRatio = Geometry::toRatio(Texture::BackgroundMenu2);
+    sf::RectangleShape foreground(sf::Vector2f(1.0, 1/foregroundRatio));
+    foreground.setTexture(&ResourcesLoader::getTexture(Texture::BackgroundMenu2));
+    foreground.setPosition(0.0, (1-1/foregroundRatio)/2);
     foreground.setFillColor(sf::Color::White);
+ 
+    updateView(background, foreground);
 
     while (this->window.isOpen()) {
         sf::Event event;
@@ -44,7 +65,11 @@ void Launcher::run() {
 
             if (event.type == sf::Event::Resized) {
                 /*
-                    bug linux : https://github.com/SFML/SFML/issues/2124
+                    This code section was meant to impose limits
+                    on window size and aspect ratio.
+
+                    A bug on linux makes it impossible : 
+                    https://github.com/SFML/SFML/issues/2124
                     
                     sf::Vector2u size{
                         std::max(this->window.getSize().x, MINIMUM_WINDOW_SIZE.x),
@@ -53,14 +78,16 @@ void Launcher::run() {
                     this->window.setSize(size);
                 */
 
-                sf::FloatRect visibleArea(0, 0, 1.0, 1.0);
-                this->window.setView(sf::View(visibleArea));
+                updateView(background, foreground);
+
             }
         }
 
         this->window.clear(sf::Color::Black);
+
         this->window.draw(background);
         this->window.draw(foreground);
+        
         this->window.display();
     }
 }

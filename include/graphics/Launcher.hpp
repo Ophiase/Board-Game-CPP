@@ -11,7 +11,7 @@
 */
 class Launcher {
     private:
-        const sf::Vector2u DEFAULT_WINDOW_SIZE{800, 600};
+        const sf::Vector2u DEFAULT_WINDOW_SIZE{1024, 800};
         const std::string DEFAULT_WINDOW_TITLE = "Board Game Launcher";
         const sf::Uint32 DEFAULT_STYLE = sf::Style::Default;
 
@@ -19,6 +19,8 @@ class Launcher {
         const sf::Vector2f RATIO_RANGE{0.5, 2.0};
 
         sf::RenderWindow window;
+
+        void updateView(sf::RectangleShape & background, sf::RectangleShape & foreground);
     public:
         Launcher();
         void run();
