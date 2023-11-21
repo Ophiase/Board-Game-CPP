@@ -1,5 +1,10 @@
 #include "graphics/ResourcesLoader.hpp"
+
+#include "utils/Cli.hpp"
+
 #include <tuple>
+#include <iostream>
+
 
 std::map<Texture::SourceTexture, std::string> ResourcesLoader::texturePathMap;
 std::map<Texture::SourceTexture, sf::Texture> ResourcesLoader::textureMap;
@@ -38,12 +43,16 @@ void ResourcesLoader::initialize() {
     }}
 
 bool ResourcesLoader::load() {
+    Cli::info("Loading Resources ...");
+
     for (const auto& pair : texturePathMap) {
         sf::Texture texture;
         if (!texture.loadFromFile(pair.second))
             return false;
         textureMap[pair.first] = texture;
     }
+
+
     return true;
 }
 

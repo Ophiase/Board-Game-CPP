@@ -1,8 +1,11 @@
 #pragma once
 
-class Game {
+#include "graphics/Screen.hpp"
+
+class Game : Screen {
     protected:
         Game();
     public:
-        virtual void run() {};
+        virtual void draw(sf::RenderWindow& window);
+        virtual Screen *handleEvent(sf::Event event);
 };

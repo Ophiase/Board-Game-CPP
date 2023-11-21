@@ -1,10 +1,12 @@
 #include "test/test.hpp"
 
+#include "utils/Cli.hpp"
+
 #include <stdlib.h>
 #include <iostream>
 
 int testMain() {
-    std::cout << "Test !" << std::endl;
+    Cli::info("Test !");
 
     return EXIT_SUCCESS;
 }

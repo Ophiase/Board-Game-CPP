@@ -3,7 +3,10 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 
+#include "utils/Cli.hpp"
 #include "geometry/Geometry.hpp"
+#include "graphics/Screen.hpp"
+#include "graphics/Menu.hpp"
 
 Launcher::Launcher() : window {
         sf::VideoMode(DEFAULT_WINDOW_SIZE.x, DEFAULT_WINDOW_SIZE.y), DEFAULT_WINDOW_TITLE, DEFAULT_STYLE,
@@ -12,13 +15,13 @@ Launcher::Launcher() : window {
     this->window.setFramerateLimit(60);
     this->window.setVisible(false);
 
-    std::cout << "Launcher !" << std::endl;
-    
     ResourcesLoader::initialize();
     if (!ResourcesLoader::load()) {
         std::cerr << "Error loading textures!" << std::endl;
         exit(1);
     };
+    
+    Cli::info("Start Launcher");
 }
 
 void Launcher::updateView(sf::RectangleShape & background, sf::RectangleShape & foreground) {
@@ -44,6 +47,8 @@ void Launcher::updateView(sf::RectangleShape & background, sf::RectangleShape & 
 
 void Launcher::run() {
     this->window.setVisible(true);
+    Menu menu{};
+    Screen *focus = &menu;
     
     float backgroundRatio = Geometry::toRatio(Texture::BackgroundMainBlur);
     sf::RectangleShape background(sf::Vector2f(1.0,backgroundRatio));
@@ -58,6 +63,11 @@ void Launcher::run() {
     updateView(background, foreground);
 
     while (this->window.isOpen()) {
+        if (!focus->isAlive() && (focus != &menu)) {
+            delete focus;
+            focus = &menu;
+        };
+
         sf::Event event;
         while (this->window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
@@ -79,14 +89,18 @@ void Launcher::run() {
                 */
 
                 updateView(background, foreground);
-
             }
+
+            Screen *sucessor = focus->handleEvent(event);
+            focus = (sucessor == nullptr) ? focus : sucessor;
         }
 
         this->window.clear(sf::Color::Black);
 
         this->window.draw(background);
         this->window.draw(foreground);
+        
+        focus->draw(window);
         
         this->window.display();
     }
