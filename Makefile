@@ -15,6 +15,7 @@ TARGET_TEST := $(TARGET_FOLDER)/test
 
 # Folders in which there are .cpp files
 MODULES := . 
+MODULES += test
 MODULES += utils geometry
 MODULES += engine
 MODULES += engine/bullTricker engine/checkers engine/loot 
@@ -32,7 +33,7 @@ OBJS = $(patsubst src/%.cpp, obj/%.o, $(SOURCES))
 
 $(TARGET_FOLDER) :
 	mkdir -p $(TARGET_FOLDER)
-	cp -r resources $(TARGET_FOLDER)
+	cp -r resources $(TARGSET_FOLDER)
 
 $(TARGET): $(OBJDIRS) $(TARGET_FOLDER) $(OBJS)
 	rm obj/main.o
