@@ -5,11 +5,12 @@
 #include <stdlib.h>
 #include <optional>
 #include <SFML/System/Vector2.hpp>
+#include "PieceInfo.hpp"
+#include "tuple"
 
-enum SidePieceType {Wall};
-using SideVector = sf::Vector2i;
-
+using SideVector = std::tuple<sf::Vector2i, bool>;
 class SidePiece {
     public:
         SidePieceType pieceType;
+        Player owner();
 };

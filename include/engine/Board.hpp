@@ -28,7 +28,7 @@ class Board {
                 delete[] cellPieces[i];
             delete[] cellPieces;
         }
-
+        
         // ---
 
         virtual void applyAction(Action action);
@@ -39,47 +39,9 @@ class Board {
 
         // ---
 
-        bool isCellEven (CellVector v) {
-            return ((v.x + v.y) & 1) == 0;
-        }
-
-        bool isCaseInBoard(CellVector v) const {
-            return (0 <= v.x) && (0 <= v.y)
-                && (v.x < dimension) && (v.y < dimension);
-        }
-        bool isCaseEmpty(CellVector v) const {
-            return !getCell(v).has_value();
-        }
-        CellPiece getCellValue(CellVector v) const {
-            return getCell(v).value();
-        }
-        std::optional<CellPiece> getCell(CellVector v) const {
-            return cellPieces[v.y][v.x];
-        }
-};
-
-class BoardSided : Board {
-    protected :
-        SidePiece** horizontalSidePieces;
-        SidePiece** verticalSidePieces;
-    public:
-        BoardSided(int dimension) : Board(dimension) {
-            horizontalSidePieces = new SidePiece*[dimension + 1];
-            for (int i = 0; i <= dimension; ++i)
-                horizontalSidePieces[i] = new SidePiece[dimension];
-
-            verticalSidePieces = new SidePiece*[dimension];
-            for (int i = 0; i < dimension; ++i)
-                verticalSidePieces[i] = new SidePiece[dimension + 1];
-        }
-        
-        ~BoardSided() {
-            for (int i = 0; i <= dimension; ++i)
-                delete[] horizontalSidePieces[i];
-            delete[] horizontalSidePieces;
-
-            for (int i = 0; i < dimension; ++i)
-                delete[] verticalSidePieces[i];
-            delete[] verticalSidePieces;
-        }
+        bool isCellEven (CellVector v);
+        bool isCaseInBoard(CellVector v) const;
+        bool isCaseEmpty(CellVector v) const;
+        CellPiece getCellValue(CellVector v) const;
+        std::optional<CellPiece> getCell(CellVector v) const;
 };

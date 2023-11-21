@@ -5,11 +5,12 @@
 #include <stdlib.h>
 #include <optional>
 #include <SFML/System/Vector2.hpp>
+#include "PieceInfo.hpp"
 
-enum CellPieceType {Pawn, PawnBis};
 using CellVector = sf::Vector2i;
 
 class CellPiece {
     public:
         CellPieceType pieceType;
+        Player owner();
 };

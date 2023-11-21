@@ -1,9 +1,12 @@
 #pragma once
 
-enum Player {Red, Blue};
+#include "PieceInfo.hpp"
+#include "Side.hpp"
+#include "Cell.hpp"
 
 class Owning {
     public:
-        virtual ~Owning() = default;
-        Player owner;
+        Owning() = delete;
+        static Player owner(CellPieceType piece);
+        static Player owner(SidePieceType piece);
 };

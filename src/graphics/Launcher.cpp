@@ -58,10 +58,11 @@ void Launcher::run() {
         this->window.draw(background);
 
         this->window.draw(foreground);
-        focus->draw(window);
         
         this->window.draw(title);
         this->window.draw(titleText);
+
+        focus->draw(window);
 
         applyLimitMask();
         
