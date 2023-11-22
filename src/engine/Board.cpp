@@ -1,22 +1,22 @@
 #include "engine/Board.hpp"
 
-bool Board::isCellEven (CellVector v) {
-            return ((v.x + v.y) & 1) == 0;
-        }
+int Board::getDimension() const {
+    return cellPieces.size();
+}
 
-bool Board::isCaseInBoard(CellVector v) const {
+bool Board::isCellEven (CellPosition v) const {
+    return ((v.x + v.y) & 1) == 0;
+}
+
+bool Board::isCaseInBoard(CellPosition v) const {
     return (0 <= v.x) && (0 <= v.y)
-        && (v.x < dimension) && (v.y < dimension);
+        && (v.x < getDimension()) && (v.y < getDimension());
 }
 
-bool Board::isCaseEmpty(CellVector v) const {
-    return !getCell(v).has_value();
+bool Board::isCaseEmpty(CellPosition v) const {
+    return !getCell(v).isNone();
 }
 
-CellPiece Board::getCellValue(CellVector v) const {
-    return getCell(v).value();
-}
-
-std::optional<CellPiece> Board::getCell(CellVector v) const {
+CellPiece Board::getCell(CellPosition v) const {
     return cellPieces[v.y][v.x];
 }

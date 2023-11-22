@@ -4,7 +4,7 @@
 CC := g++
 
 CFLAGS := -g -Wall -Wextra 
-CFLAGS += -std=c++17 #  necessary for std::optional
+CFLAGS += -std=c++11 # std=c++17 necessary for std::optional
 
 INCLUDES := -Iinclude
 LIBS := -lsfml-network -lsfml-graphics -lsfml-window -lsfml-system

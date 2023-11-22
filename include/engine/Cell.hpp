@@ -3,14 +3,18 @@
 #include <iostream>
 #include <vector>
 #include <stdlib.h>
-#include <optional>
 #include <SFML/System/Vector2.hpp>
 #include "PieceInfo.hpp"
 
-using CellVector = sf::Vector2i;
-
-class CellPiece {
+using CellPosition = sf::Vector2i;
+class CellPiece : public Piece {
     public:
         CellPieceType pieceType;
-        Player owner();
+        
+        CellPiece() : pieceType{CellPieceType::NoneCell} {};
+        CellPiece(CellPieceType pieceType) :
+            pieceType{pieceType} {};
+        
+        bool isNone() const;
+        Player owner() const;
 };

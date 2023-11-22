@@ -4,18 +4,26 @@
     Forward declaration for Cell.hpp, Side.hpp Owning.hpp
 */
 
-enum Player {
-    Black, White, 
-    None
-};
+#define BlackPlayer 1
+#define WhitePlayer 2
+#define NonePlayer 0
+using Player = uint;
 
-enum CellPieceType {
+enum class CellPieceType {
+    NoneCell,
     BlackPawn, WhitePawn, 
     BlackKing, WhiteKing, 
     YellowPawn, RedPawn
 };
 
-enum SidePieceType {
+enum class SidePieceType {
+    NoneSide,
     BlackSidePawn, WhiteSidePawn, 
     BlackSideQueen, WhiteSideQueen
+};
+
+class Piece {
+    public:
+        virtual bool isNone() const;
+        virtual Player owner() const;
 };
