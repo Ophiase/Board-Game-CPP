@@ -5,7 +5,7 @@
 
 #include "utils/Cli.hpp"
 #include "geometry/Geometry.hpp"
-#include "graphics/Screen.hpp"
+#include "graphics/screen/Screen.hpp"
 #include "graphics/Menu.hpp"
 
 Launcher::Launcher() : window {
@@ -49,8 +49,14 @@ void Launcher::run() {
                 this->updateView();
             }
 
-            Screen *sucessor = focus->handleEvent(event);
-            focus = (sucessor == nullptr) ? focus : sucessor;
+            focus->handleEvent(event);
+
+            if (focus == &menu)
+                if (menu.successor) {
+                    focus = menu.successor;
+                    menu.successor = nullptr; 
+                }
+
             titleText.setString(focus->getTitle());
         }
 

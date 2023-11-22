@@ -19,7 +19,7 @@ MODULES += test
 MODULES += utils geometry
 MODULES += engine
 MODULES += engine/bullTricker engine/checkers engine/loot 
-MODULES += graphics
+MODULES += graphics graphics/screen
 MODULES += graphics/bullTricker graphics/checkers graphics/loot
 
 .DEFAULT_GOAL := all

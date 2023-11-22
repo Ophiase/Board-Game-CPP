@@ -5,7 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <string>
-#include "Screen.hpp"
+#include "screen/Screen.hpp"
 
 /*
     This class provides a graphical interface to launch a Game.
