@@ -44,16 +44,16 @@ class Board {
 
         // ---------------------------------------------------
 
-        virtual bool isValidAction(Action action);
-        virtual Board applyAction(Action action);
-        virtual Board cancelAction();
-        virtual const std::vector<Action> & getActions();
+        virtual bool isValidAction(Action action) = 0;
+        virtual Board applyAction(Action action) = 0;
+        virtual Board cancelAction() = 0;
+        virtual const std::vector<Action> & getActions() = 0;
         
         // ---------------------------------------------------
         
         int getDimension() const ;
-        virtual bool isFinished();
-        virtual Player winner(); 
+        virtual bool isFinished() = 0;
+        virtual Player winner() = 0;
 
         // ---------------------------------------------------
 

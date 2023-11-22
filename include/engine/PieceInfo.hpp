@@ -7,7 +7,7 @@
 #define BlackPlayer 1
 #define WhitePlayer 2
 #define NonePlayer 0
-using Player = uint;
+using Player = int;
 
 enum class CellPieceType {
     NoneCell,
@@ -24,6 +24,6 @@ enum class SidePieceType {
 
 class Piece {
     public:
-        virtual bool isNone() const;
-        virtual Player owner() const;
+        virtual bool isNone() const = 0;
+        virtual Player owner() const = 0;
 };

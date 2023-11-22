@@ -6,6 +6,6 @@ class Game : Screen {
     protected:
         Game();
     public:
-        virtual void draw(sf::RenderWindow& window);
-        virtual Screen *handleEvent(sf::Event event);
+        virtual void draw(sf::RenderWindow& window) = 0;
+        virtual Screen *handleEvent(sf::Event event) = 0;
 };
