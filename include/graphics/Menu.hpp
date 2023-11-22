@@ -5,10 +5,6 @@
 
 class Menu : public Screen {
     public:
-        std::string getTitle();
-        
-        void draw(sf::RenderWindow& window);
-        void handleEvent(sf::Event event);
-
+        std::string getTitle() override;
         Screen *successor{nullptr};
 };

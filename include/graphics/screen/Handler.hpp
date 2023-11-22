@@ -6,6 +6,5 @@
 
 class Handler {
     public:
-        Handler() = delete;
         virtual void handleEvent(sf::Event event) { (void)event; };
 };
