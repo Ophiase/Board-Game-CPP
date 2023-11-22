@@ -4,6 +4,7 @@
 #include <vector>
 #include <stdlib.h>
 #include <SFML/System/Vector2.hpp>
+
 #include "PieceInfo.hpp"
 
 using CellPosition = sf::Vector2i;

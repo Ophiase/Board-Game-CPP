@@ -1,11 +1,12 @@
 #pragma once
 
+#include "PieceInfo.hpp"
+
 #include <iostream>
 #include <vector>
 #include <stdlib.h>
 #include <SFML/System/Vector2.hpp>
-#include "PieceInfo.hpp"
-#include "tuple"
+#include <tuple>
 
 using SideVector = sf::Vector2i;
 class SidePosition {

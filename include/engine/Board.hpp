@@ -3,19 +3,9 @@
 #include <iostream>
 #include <vector>
 #include <stdlib.h>
-
-// #include <utils/Optional.hpp>
-// #include <optional>
-
-#include <engine/Cell.hpp>
-#include <engine/Side.hpp>
-
-/*
-    PlaceHolder, game defined.
-*/
-class Action {
-    public:
-};
+#include "engine/Cell.hpp"
+#include "engine/Side.hpp"
+#include "engine/Action.hpp"
 
 /*
     Base class for any game board.
