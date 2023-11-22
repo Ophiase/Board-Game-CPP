@@ -4,5 +4,5 @@
 
 class Drawable {
     public:
-        virtual void draw(sf::RenderWindow& window) = 0;
+        virtual void draw(sf::RenderWindow& window) { (void)window; };
 };
