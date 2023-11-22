@@ -27,7 +27,7 @@ Launcher::Launcher() : window {
 void Launcher::run() {
     this->window.setVisible(true);
 
-    Menu menu{};
+    Menu menu{window};
     focus = &menu;
     
     this->initView();
@@ -68,7 +68,7 @@ void Launcher::run() {
         this->window.draw(title);
         this->window.draw(titleText);
 
-        focus->draw(window);
+        focus->draw();
 
         applyLimitMask();
         

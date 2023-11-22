@@ -9,7 +9,6 @@
 #include "Container.hpp"
 
 using Priority = int;
-
 class Container : Drawable, Handler {
 private:
     template <typename T>
@@ -25,17 +24,19 @@ private:
     void sortByPriorityDecrementing(
         std::vector<std::tuple<T, Priority>>& items
         ) {
-        
         std::sort(items.begin(), items.end(), compareByPriority<T>);
     }
 
     std::vector<std::tuple<Handler, Priority>> handlers;
     std::vector<std::tuple<Drawable, Priority>> drawables;
 public:
+    Container(sf::RenderWindow & window) : Drawable{window}, Handler() {};
+
     void handleEvent(sf::Event event);
-    void draw(sf::RenderWindow& window);
+    void draw();
 
-    void addHandle(Handler handle, Priority priority = 0);
+    void addHandler(Handler handle, Priority priority = 0);
     void addDrawing(Drawable drawable, Priority priority = 0);
-};
 
+    virtual sf::Vector2f getRelativeMousePosition() const;
+};

@@ -1,5 +1,6 @@
 #include "geometry/Geometry.hpp"
 #include "graphics/ResourcesLoader.hpp"
+#include "utils/NotImplemented.hpp"
 
 // ------------------------------------------
 
@@ -101,17 +102,29 @@ sf::FloatRect Geometry::scaleRect(sf::FloatRect rect, float factor, sf::Vector2f
 sf::Vector2f Geometry::spaceTransform(
     sf::Vector2f vector, sf::FloatRect oldSpace, sf::FloatRect newSpace
     ) { 
-    
-    exit(1); // not implemented yey
-    // TODO
-    
-    vector += floatRectPosition(oldSpace);
-    vector.x *= floatRectSize(oldSpace).x;
-    vector.y *= floatRectSize(oldSpace).y;
 
-    vector.x /= floatRectSize(newSpace).x;
-    vector.y /= floatRectSize(newSpace).y;
-    vector -= floatRectPosition(newSpace);
+    vector.x = ((vector.x + oldSpace.left) * oldSpace.width / newSpace.width)  - newSpace.left;
+    vector.y = ((vector.y + oldSpace.top ) * oldSpace.height/ newSpace.height) - newSpace.top;
 
     return vector;
+}
+
+sf::FloatRect Geometry::spaceTransform(
+    sf::FloatRect rect, sf::FloatRect oldSpace, sf::FloatRect newSpace
+    ) {
+    
+    float xRatio = oldSpace.width / newSpace.width;
+    float yRatio = oldSpace.width / newSpace.width;
+    
+    rect.left = ((rect.left + oldSpace.left) * xRatio) - newSpace.left;
+    rect.top  = ((rect.top  + oldSpace.top ) * yRatio) - newSpace.top;
+
+    rect.width  *= xRatio;
+    rect.height *= yRatio;
+
+    return rect;
+}
+
+bool Geometry::insideUnitBox(sf::Vector2f v) {
+    return v.x >= 0.0 && v.y >= 0.0 && v.x <= 1.0 && v.y <= 1.0;
 }

@@ -8,8 +8,10 @@
 
 class Screen : public Container {
 private:
-    bool alive = true;
+    bool alive{true};
 public:
+    Screen(sf::RenderWindow & window) : Container{window} {};
+
     virtual std::string getTitle();
     bool isAlive();
     

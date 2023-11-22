@@ -17,9 +17,6 @@ class Geometry {
             sf::RectangleShape & shape, sf::FloatRect const rect
             );
 
-        static sf::Vector2f spaceTransform(
-            sf::Vector2f vector, sf::FloatRect oldSpace, sf::FloatRect newSpace);
-
         /*
             Scale rect from center.
         */
@@ -46,4 +43,11 @@ class Geometry {
         static float toRatio(sf::Vector2i v);
         static float toRatio(sf::FloatRect rect);
         static float toRatio(Texture::SourceTexture texture);
+
+        static sf::Vector2f spaceTransform(
+            sf::Vector2f vector, sf::FloatRect oldSpace, sf::FloatRect newSpace);
+        static sf::FloatRect spaceTransform(
+            sf::FloatRect rect, sf::FloatRect oldSpace, sf::FloatRect newSpace);
+
+        static bool insideUnitBox(sf::Vector2f v);
 };

@@ -5,6 +5,8 @@
 
 class Menu : public Screen {
     public:
+        Menu(sf::RenderWindow & window);
+
         std::string getTitle() override;
         Screen *successor{nullptr};
 };
