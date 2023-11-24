@@ -2,6 +2,7 @@
 
 #include "graphics/screen/Screen.hpp"
 #include "SFML/Graphics.hpp"
+#include "utils/GarbageManager.hpp"
 
 class Menu : public Screen {
     public:

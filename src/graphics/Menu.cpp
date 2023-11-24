@@ -3,6 +3,7 @@
 #include "graphics/ResourcesLoader.hpp"
 #include "geometry/Geometry.hpp"
 
+
 std::string Menu::getTitle() { return "Menu"; }
 
 Menu::Menu(Launcher *launcher) : Screen{launcher} {
@@ -14,8 +15,10 @@ Menu::Menu(Launcher *launcher) : Screen{launcher} {
     float textScale = 0.0006;
     text.setScale(sf::Vector2f(textScale, textScale));
     
-    // todo deconstruct
     TextButton *textButton = new TextButton{this, text};
+    //this->addObjectToDelete(textButton);
+
+    
     
     this->addDrawing(textButton);
     this->addHandler(textButton);

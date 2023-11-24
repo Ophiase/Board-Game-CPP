@@ -14,6 +14,7 @@ class TextButton : public Button {
             Button{container}, text{text} { (void)filled; };
 
         void draw();
+        void fitInside(sf::FloatRect rect);
 
         sf::Vector2f getRelativeMousePosition() const;
 };
