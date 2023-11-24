@@ -3,5 +3,5 @@
 #include "graphics/screen/Screen.hpp"
 
 class Game : Screen {
-    Game(sf::RenderWindow & window) : Screen{window} {};
+    Game(Launcher *launcher) : Screen{launcher} {};
 };

@@ -26,11 +26,22 @@ class Geometry {
         /*
             Minimal shape that respects resolution ratio, and contains targetShape.
         */
-        static sf::FloatRect fit(sf::Vector2f resolution, 
+        static sf::FloatRect fitOutside(sf::Vector2f resolution, 
             sf::Vector2f targetShapePosition,
             sf::Vector2f targetShapeSize
             );
-        static sf::FloatRect fit(sf::Vector2f resolution, sf::FloatRect targetShape);
+        static sf::FloatRect fitOutside(
+            sf::Vector2f resolution, sf::FloatRect targetShape);
+
+        /*
+            Maximal shape that respects resolution ratio, and contained in targetShape
+        */
+        static sf::FloatRect fitInside(sf::Vector2f resolution,
+            sf::Vector2f targetShapePosition,
+            sf::Vector2f targetShapeSize
+            );
+        static sf::FloatRect fitInside(
+            sf::Vector2f resolution, sf::FloatRect targetShape);
 
         static sf::Vector2f toFloat(sf::Vector2u v);
         static sf::Vector2f toFloat(sf::Vector2i v);
@@ -43,6 +54,13 @@ class Geometry {
         static float toRatio(sf::Vector2i v);
         static float toRatio(sf::FloatRect rect);
         static float toRatio(Texture::SourceTexture texture);
+
+        /*
+            Calculate the maximal rectangle contained in both.
+            Throw error if it doe not exists.
+        */
+        static sf::FloatRect minRectangle(sf::FloatRect a, sf::FloatRect b);
+        static sf::FloatRect minRectangle(sf::RectangleShape a, sf::RectangleShape b);
 
         static sf::Vector2f spaceTransform(
             sf::Vector2f vector, sf::FloatRect oldSpace, sf::FloatRect newSpace);

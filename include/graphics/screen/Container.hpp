@@ -4,17 +4,17 @@
 #include <iostream>
 #include <string>
 
-#include "Handler.hpp"
-#include "Drawable.hpp"
+#include "DrawableHandler.hpp"
 #include "Container.hpp"
 
 using Priority = int;
-class Container : Drawable, Handler {
+
+class Container : DrawableHandler {
 private:
     template <typename T>
     static bool compareByPriority(
-        const std::tuple<T, Priority>& a, 
-        const std::tuple<T, Priority>& b
+        const std::tuple<T*, Priority>& a, 
+        const std::tuple<T*, Priority>& b
         ) {
             
         return std::get<1>(a) > std::get<1>(b);
@@ -22,21 +22,25 @@ private:
 
     template <typename T>
     void sortByPriorityDecrementing(
-        std::vector<std::tuple<T, Priority>>& items
+        std::vector<std::tuple<T*, Priority>>& items
         ) {
         std::sort(items.begin(), items.end(), compareByPriority<T>);
     }
 
-    std::vector<std::tuple<Handler, Priority>> handlers;
-    std::vector<std::tuple<Drawable, Priority>> drawables;
+    std::vector<std::tuple<Handler*, Priority>> handlers;
+    std::vector<std::tuple<Drawable*, Priority>> drawables;
 public:
-    Container(sf::RenderWindow & window) : Drawable{window}, Handler() {};
+    Container(Launcher *launcher) : DrawableHandler{launcher} {};
+    Container(Container *parent, bool withHandler=true);
 
     void handleEvent(sf::Event event);
     void draw();
 
-    void addHandler(Handler handle, Priority priority = 0);
-    void addDrawing(Drawable drawable, Priority priority = 0);
+    void addHandler(Handler *handle, Priority priority = 0);
+    void addDrawing(Drawable *drawable, Priority priority = 0);
+    void add(DrawableHandler *drawableHandler, Priority priority = 0);
 
     virtual sf::Vector2f getRelativeMousePosition() const;
+
+    Launcher *getLauncher() const;
 };

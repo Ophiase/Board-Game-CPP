@@ -2,16 +2,20 @@
 
 #include <SFML/Graphics.hpp>
 
+class Launcher;
+
 class Drawable {
+    protected:
+        Launcher *launcher;
     public:
-        sf::RenderWindow & window;
-        Drawable(sf::RenderWindow& window) : window{window} {};
-        Drawable(const Drawable & drawable) : Drawable{drawable.window} {};
-        Drawable& operator=(const Drawable& other) {
-            // should i copy the other.window ?
-            (void) other;
-            return *this; 
-        };
+        Drawable(Launcher *launcher) : launcher{launcher} {};
+        Drawable(const Drawable & drawable) : Drawable{drawable.launcher} {};
+        Drawable& operator=(const Drawable& other);
 
         virtual void draw() {};
+
+        sf::FloatRect getRenderZone();
+        sf::RenderWindow & getRenderWindow();
+        sf::RenderWindow const & getConstRenderWindow() const;
+        Launcher *getLauncher();
 };

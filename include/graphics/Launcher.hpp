@@ -6,12 +6,16 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <string>
 #include "screen/Screen.hpp"
+#include "mutex"
 
 /*
     This class provides a graphical interface to launch a Game.
 */
 class Launcher {
     private:
+        bool isRunning{false};
+        std::mutex isRunningMutex;
+
         const sf::Vector2u DEFAULT_WINDOW_SIZE{1024, 800};
         const std::string DEFAULT_WINDOW_TITLE = "Board Game";
         const sf::Uint32 DEFAULT_STYLE = sf::Style::Default;
@@ -19,8 +23,8 @@ class Launcher {
         const sf::Vector2u MINIMUM_WINDOW_SIZE{640, 360};
         const sf::Vector2f RATIO_RANGE{0.5, 2.0};
 
-        sf::RenderWindow window;
         Screen *focus;
+        sf::RenderWindow window;
 
         sf::RectangleShape screen, maxRenderZone;
         sf::RectangleShape title, background, foreground;
@@ -32,5 +36,9 @@ class Launcher {
         void applyLimitMask();
     public:
         Launcher();
-        void run();
+        bool run();
+
+        sf::FloatRect getRenderZone();
+        sf::RenderWindow & getRenderWindow();
+        sf::RenderWindow const & getConstRenderWindow();
 };

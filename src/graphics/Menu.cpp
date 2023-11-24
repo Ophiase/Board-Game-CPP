@@ -1,10 +1,11 @@
 #include "graphics/Menu.hpp"
 #include "graphics/screen/TextButton.hpp"
 #include "graphics/ResourcesLoader.hpp"
+#include "geometry/Geometry.hpp"
 
 std::string Menu::getTitle() { return "Menu"; }
 
-Menu::Menu(sf::RenderWindow & window) : Screen{window} {
+Menu::Menu(Launcher *launcher) : Screen{launcher} {
     auto text = sf::Text{
         "Hello world!", 
         ResourcesLoader::getFont(Font::OpenSansExtraBold), 100U
@@ -12,8 +13,9 @@ Menu::Menu(sf::RenderWindow & window) : Screen{window} {
 
     float textScale = 0.0006;
     text.setScale(sf::Vector2f(textScale, textScale));
-        
-    TextButton textButton{(window), text};
+    
+    // todo deconstruct
+    TextButton *textButton = new TextButton{this, text};
     
     this->addDrawing(textButton);
     this->addHandler(textButton);

@@ -8,6 +8,9 @@
 #include "graphics/screen/Screen.hpp"
 #include "graphics/Menu.hpp"
 
+// --------------------------------------------------------
+// PUBLIC
+
 Launcher::Launcher() : window {
         sf::VideoMode(DEFAULT_WINDOW_SIZE.x, DEFAULT_WINDOW_SIZE.y), DEFAULT_WINDOW_TITLE, DEFAULT_STYLE,
 } {
@@ -24,10 +27,32 @@ Launcher::Launcher() : window {
     Cli::info("Start Launcher");
 }
 
-void Launcher::run() {
+sf::FloatRect Launcher::getRenderZone() {
+    return Geometry::minRectangle(this->maxRenderZone, this->screen);
+}
+sf::RenderWindow & Launcher::getRenderWindow() {
+    return this->window;
+}
+
+sf::RenderWindow const & Launcher::getConstRenderWindow() {
+    return this->window;
+}
+
+bool Launcher::run() {
+    {
+        /* critical section*/
+        isRunningMutex.lock();
+
+        if (isRunning) 
+            return false;
+        isRunning = true;
+        
+        isRunningMutex.unlock();
+    }
+
     this->window.setVisible(true);
 
-    Menu menu{window};
+    Menu menu{this};
     focus = &menu;
     
     this->initView();
@@ -74,7 +99,12 @@ void Launcher::run() {
         
         this->window.display();
     }
+
+    return true;
 }
+
+// --------------------------------------------------------
+// PRIVATE
 
 void Launcher::initView() {
     
@@ -148,7 +178,7 @@ void Launcher::updateView() {
 
     float inBiais = 0.04f;
     float foregroundBottom = foreground.getSize().y + foreground.getPosition().y - inBiais;
-    sf::FloatRect visibleArea = Geometry::fit(
+    sf::FloatRect visibleArea = Geometry::fitOutside(
         Geometry::toFloat(this->window.getSize()), 
         sf::Vector2f{0.0, 0.0},
         sf::Vector2f{1.0, foregroundBottom}
@@ -156,7 +186,7 @@ void Launcher::updateView() {
 
     Geometry::applyFloatRectToRectangleShape(this->screen, visibleArea);
 
-    auto transform = Geometry::fit(background.getSize(), visibleArea);
+    auto transform = Geometry::fitOutside(background.getSize(), visibleArea);
     Geometry::applyFloatRectToRectangleShape(
         background, transform
     );

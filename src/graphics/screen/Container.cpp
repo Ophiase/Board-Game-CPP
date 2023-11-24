@@ -2,26 +2,41 @@
 #include "geometry/Geometry.hpp"
 #include "algorithm"
 
+Container::Container(Container *parent, bool withHandler) : DrawableHandler{parent->launcher} {
+    parent->addDrawing(this);
+    if (withHandler)
+        parent->addHandler(this);
+}
+
 void Container::handleEvent(sf::Event event) {
     for (auto handler : this->handlers)
-        std::get<0>(handler).handleEvent(event);
+        std::get<0>(handler)->handleEvent(event);
 }
 
 void Container::draw() {
     for (auto drawable : this->drawables)
-        std::get<0>(drawable).draw();
+        std::get<0>(drawable)->draw();
 }
 
-void Container::addHandler(Handler handle, Priority priority) {
-    this->handlers.push_back(std::make_tuple(handle, priority));
+void Container::addHandler(Handler *handler, Priority priority) {
+    this->handlers.push_back(std::make_tuple(handler, priority));
     sortByPriorityDecrementing<Handler>(handlers);
 }
 
-void Container::addDrawing(Drawable drawable, Priority priority) {
+void Container::addDrawing(Drawable *drawable, Priority priority) {
     this->drawables.push_back(std::make_tuple(drawable, priority));
     sortByPriorityDecrementing<Drawable>(drawables);
 }
 
+void Container::add(DrawableHandler *drawableHandler, Priority priority) {
+    addDrawing(drawableHandler, priority);
+    addHandler(drawableHandler, priority);
+}
+
 sf::Vector2f Container::getRelativeMousePosition() const {
-    return Geometry::toFloat(sf::Mouse::getPosition(this->window));
+    return Geometry::toFloat(sf::Mouse::getPosition(this->getConstRenderWindow()));
+}
+
+Launcher *Container::getLauncher() const {
+    return this->launcher;
 }

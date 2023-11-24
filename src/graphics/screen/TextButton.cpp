@@ -4,20 +4,17 @@
 #include "graphics/screen/TextButton.hpp"
 
 void TextButton::draw() {
-    auto a = sf::RectangleShape{sf::Vector2f{1.0, 1.0}};
-    a.setFillColor(sf::Color::Red);
-    
-    std::cout << "called" << std::endl;
-    window.draw(a);
-    window.draw(this->text);
+    this->getRenderWindow().draw(this->text);
 }
 
 sf::Vector2f TextButton::getRelativeMousePosition() const {
+    const sf::RenderWindow *window = &this->getConstRenderWindow();;
+
     auto mousePosition = Geometry::toFloat(sf::Mouse::getPosition());
     auto screenSpace = sf::FloatRect{
         0.0, 0.0, 
-        (float)this->window.getSize().x, 
-        (float)this->window.getSize().y
+        (float)window->getSize().x, 
+        (float)window->getSize().y
         };
     
 

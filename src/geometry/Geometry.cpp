@@ -1,6 +1,7 @@
 #include "geometry/Geometry.hpp"
 #include "graphics/ResourcesLoader.hpp"
 #include "utils/NotImplemented.hpp"
+#include "stdexcept"
 
 // ------------------------------------------
 
@@ -20,7 +21,7 @@ sf::Vector2f Geometry::toFloat (sf::Vector2i v) {
 
 // ------------------------------------------
 
-sf::FloatRect Geometry::fit(sf::Vector2f resolution, 
+sf::FloatRect Geometry::fitOutside(sf::Vector2f resolution, 
         sf::Vector2f targetShapePosition,
         sf::Vector2f targetShapeSize
     ) {
@@ -41,8 +42,37 @@ sf::FloatRect Geometry::fit(sf::Vector2f resolution,
     return shape;
 }
 
-sf::FloatRect Geometry::fit(sf::Vector2f resolution, sf::FloatRect targetShape) {
-    return fit(
+sf::FloatRect Geometry::fitOutside(sf::Vector2f resolution, sf::FloatRect targetShape) {
+    return fitOutside(
+        resolution,
+        sf::Vector2f(targetShape.left, targetShape.top),
+        sf::Vector2f(targetShape.width, targetShape.height)
+        );
+}
+
+sf::FloatRect Geometry::fitInside(sf::Vector2f resolution, 
+        sf::Vector2f targetShapePosition,
+        sf::Vector2f targetShapeSize
+    ) {
+    
+    float targetRatio = toRatio(targetShapeSize);
+    float resolutionRatio = toRatio(resolution);
+
+    sf::FloatRect shape {targetShapePosition, targetShapeSize};
+
+    if (resolutionRatio > targetRatio) {
+        shape.height = targetShapeSize.y * (resolutionRatio/targetRatio);
+        shape.top += (targetShapeSize.y - shape.height) / 2.0;
+    } else {
+        shape.width = targetShapeSize.x * (targetRatio/resolutionRatio);
+        shape.left += (targetShapeSize.x - shape.width) / 2.0;
+    }
+
+    return shape;
+}
+
+sf::FloatRect Geometry::fitInside(sf::Vector2f resolution, sf::FloatRect targetShape) {
+    return fitOutside(
         resolution,
         sf::Vector2f(targetShape.left, targetShape.top),
         sf::Vector2f(targetShape.width, targetShape.height)
@@ -127,4 +157,33 @@ sf::FloatRect Geometry::spaceTransform(
 
 bool Geometry::insideUnitBox(sf::Vector2f v) {
     return v.x >= 0.0 && v.y >= 0.0 && v.x <= 1.0 && v.y <= 1.0;
+}
+
+sf::FloatRect Geometry::minRectangle(sf::FloatRect a, sf::FloatRect b) {
+    if (b.top > a.top)
+        std::swap(a, b);
+
+    sf::FloatRect result;
+    if (a.left < b.left)
+        result = sf::FloatRect{
+            b.left, b.top,
+            a.left + a.width - b.left, a.top + a.height - b.top
+        };
+    else
+        result = sf::FloatRect{
+            a.left, b.top,
+            b.left + b.width - a.left, a.top + a.height - b.top
+        };
+
+    if (result.width < 0 || result.height < 0)
+        throw std::invalid_argument("Non crossing rectangles");
+
+    return result;
+}
+
+sf::FloatRect Geometry::minRectangle(
+    sf::RectangleShape  a, sf::RectangleShape b
+    ) {
+    
+    return minRectangle(rectangleShapeToFloatRect(a), rectangleShapeToFloatRect(b));
 }
