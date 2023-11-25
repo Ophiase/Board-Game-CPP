@@ -49,7 +49,3 @@ void Container::add(DrawableHandler *drawableHandler, Priority priority) {
 sf::Vector2f Container::getRelativeMousePosition() const {
     return Geometry::toFloat(sf::Mouse::getPosition(this->getConstRenderWindow()));
 }
-
-Launcher *Container::getLauncher() const {
-    return this->launcher;
-}

@@ -9,7 +9,7 @@
 
 using Priority = int;
 
-class Container : DrawableHandler {
+class Container : public DrawableHandler {
 private:
     template <typename T>
     static bool compareByPriority(
@@ -41,6 +41,4 @@ public:
     void add(DrawableHandler *drawableHandler, Priority priority = 0);
 
     virtual sf::Vector2f getRelativeMousePosition() const;
-
-    Launcher *getLauncher() const;
 };

@@ -35,7 +35,6 @@ void TextButton::update() { // TODO (hard)
     this->textObject.setPosition(result.left, result.top - result.height*FONT_Y_CORRECTION); 
     this->textObject.setScale(sf::Vector2f{
         result.height * FONT_SCALE_CORRECTION, result.height * FONT_SCALE_CORRECTION});
-
 }
 
 std::string TextButton::getTextContent(void) {
@@ -49,6 +48,12 @@ void TextButton::setTextContent(std::string textContent) {
 
 
 void TextButton::draw() {
+    sf::RectangleShape rect{};
+    rect.setPosition(targetBbox.left, targetBbox.top);
+    rect.setSize(sf::Vector2f(targetBbox.width, targetBbox.height));
+    rect.setFillColor(sf::Color::Cyan);
+    this->getRenderWindow().draw(rect);
+
     this->getRenderWindow().draw(this->textObject);
 }
 

@@ -6,4 +6,5 @@
 class DrawableHandler : public Drawable, public Handler {
     public:
         DrawableHandler(Launcher *launcher) : Drawable{launcher}, Handler() {};
+
 };

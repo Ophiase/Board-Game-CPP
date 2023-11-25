@@ -10,4 +10,6 @@ class Menu : public Screen {
 
         std::string getTitle() override;
         Screen *successor{nullptr};
+
+        void draw();
 };
