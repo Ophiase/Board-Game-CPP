@@ -7,19 +7,11 @@
 std::string Menu::getTitle() { return "Menu"; }
 
 Menu::Menu(Launcher *launcher) : Screen{launcher} {
-    auto text = sf::Text{
-        "Hello world!", 
-        ResourcesLoader::getFont(Font::OpenSansExtraBold), 100U
+    TextButton *textButton = new TextButton{
+        this, "Hello world!", 
+        sf::FloatRect{0.0, 0.0, 1.0, 1.0},
+        ResourcesLoader::getFont(Font::OpenSansBold)
     };
-
-    float textScale = 0.0006;
-    text.setScale(sf::Vector2f(textScale, textScale));
     
-    TextButton *textButton = new TextButton{this, text};
-    //this->addObjectToDelete(textButton);
-
-    
-    
-    this->addDrawing(textButton);
-    this->addHandler(textButton);
+    //this->addObjectToDelete(textButton);  
 };

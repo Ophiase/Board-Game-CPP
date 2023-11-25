@@ -68,4 +68,6 @@ class Geometry {
             sf::FloatRect rect, sf::FloatRect oldSpace, sf::FloatRect newSpace);
 
         static bool insideUnitBox(sf::Vector2f v);
+
+        static sf::FloatRect worldSpaceForShader(sf::RenderWindow *window);
 };

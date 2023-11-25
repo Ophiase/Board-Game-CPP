@@ -44,7 +44,9 @@ namespace Shader {
         Linked to resources into ResourcesLoader::initialize.
     */
     enum SourceShader {
-        Mask
+        Test,
+        Mask,
+        Coord,
     };
 }
 

@@ -76,7 +76,9 @@ void ResourcesLoader::initializeShaders() {
     using namespace std;
 
     std::tuple<SourceShader, std::string> associations[] = {
-        make_tuple(Mask, "mask")
+        make_tuple(Test, "test"),
+        make_tuple(Mask, "mask"),
+        make_tuple(Coord, "coord")
     };
 
     for (const auto& association : associations) {
