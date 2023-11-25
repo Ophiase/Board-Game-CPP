@@ -1,12 +1,13 @@
 #include "graphics/screen/Button.hpp"
 #include "geometry/Geometry.hpp"
+#include "utils/Cli.hpp"
 
 Button::Button(
     Container *container, sf::Vector2f position, sf::Vector2f size) : 
     DrawableHandler{container->getLauncher()}, 
     position{position}, 
     size{size} {
-
+    
     container->add(this);
 }
 

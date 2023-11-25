@@ -7,6 +7,8 @@
 std::string Menu::getTitle() { return "Menu"; }
 
 Menu::Menu(Launcher *launcher) : Screen{launcher} {
+    //std::cout << std::endl;
+
     TextButton *textButton = new TextButton{
         this, "Hello world!", 
         sf::FloatRect{0.0, 0.0, 1.0, 1.0},

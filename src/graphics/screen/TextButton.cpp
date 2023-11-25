@@ -9,14 +9,17 @@ TextButton::TextButton(
     Container *container, 
     std::string text, 
     sf::FloatRect targetBbox,
-    sf::Font font
+    sf::Font *font
     ) : Button{container}, targetBbox{targetBbox} {
     
-    textObject = sf::Text{text, font, 100U};
+    this->textObject = sf::Text{text, *font, 100U};
     update();
+
+    container->add(this);
 }
 
 void TextButton::update() {
+    return;
     auto bbox = this->textObject.getLocalBounds();
     auto result = Geometry::fitInside(
         sf::Vector2f(bbox.width, bbox.height), targetBbox
@@ -37,8 +40,11 @@ void TextButton::setTextContent(std::string textContent) {
 
 
 void TextButton::draw() {
-    Cli::debug("draw it");
-    this->getRenderWindow().draw(this->textObject);
+    textObject.setPosition(0.0, 0.0);
+    //this->textObject = sf::Text{"hi", ResourcesLoader::getFont(Font::OpenSansBold), 30U};
+
+    sf::RenderWindow *a = &this->getRenderWindow();
+    a->draw(this->textObject);
 }
 
 void TextButton::fit(sf::FloatRect targetBbox) {

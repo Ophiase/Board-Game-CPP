@@ -53,26 +53,29 @@ namespace Shader {
 
 class ResourcesLoader {
 private:
+    static bool _loaded;
+
     static std::map<Texture::SourceTexture, std::string> texturePathMap;
-    static std::map<Texture::SourceTexture, sf::Texture> textureMap;
+    static std::map<Texture::SourceTexture, sf::Texture*> textureMap;
     static void initializeTextures();
     static bool loadTextures();
 
     static std::map<Font::SourceFont, std::string> fontPathMap;
-    static std::map<Font::SourceFont, sf::Font> fontMap;
+    static std::map<Font::SourceFont, sf::Font*> fontMap;
     static void initializeFonts();
     static bool loadFonts();
 
     static std::map<Shader::SourceShader, std::string> shaderPathMap;
-    static std::map<Shader::SourceShader, sf::Shader> shaderMap;
+    static std::map<Shader::SourceShader, sf::Shader*> shaderMap;
     static void initializeShaders();
     static bool loadShaders();
 
 public:
     static void initialize();
     static bool load();
+    static bool loaded();
 
-    static const sf::Texture& getTexture(Texture::SourceTexture texture);
-    static const sf::Font& getFont(Font::SourceFont font);
+    static const sf::Texture *getTexture(Texture::SourceTexture texture);
+    static sf::Font *getFont(Font::SourceFont font);
     static sf::Shader *getShader(Shader::SourceShader shader);
 };

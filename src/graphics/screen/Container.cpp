@@ -1,6 +1,19 @@
 #include "graphics/screen/Container.hpp"
 #include "geometry/Geometry.hpp"
 #include "algorithm"
+#include "utils/Cli.hpp"
+
+#include <sstream>
+#include <iostream>
+template <typename T>
+std::string pointerToString(T* ptr) {
+    // Utiliser un flux de chaîne pour convertir le pointeur en une chaîne
+    std::stringstream stream;
+    stream << ptr;
+
+    // Retourner la chaîne résultante
+    return stream.str();
+}
 
 Container::Container(Container *parent, bool withHandler) : DrawableHandler{parent->launcher} {
     parent->addDrawing(this);

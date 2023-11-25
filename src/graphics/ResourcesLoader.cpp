@@ -5,15 +5,16 @@
 #include <tuple>
 #include <iostream>
 
+bool ResourcesLoader::_loaded{false};
 
 std::map<Texture::SourceTexture, std::string> ResourcesLoader::texturePathMap;
-std::map<Texture::SourceTexture, sf::Texture> ResourcesLoader::textureMap;
+std::map<Texture::SourceTexture, sf::Texture*> ResourcesLoader::textureMap;
 
 std::map<Font::SourceFont, std::string> ResourcesLoader::fontPathMap;
-std::map<Font::SourceFont, sf::Font> ResourcesLoader::fontMap;
+std::map<Font::SourceFont, sf::Font*> ResourcesLoader::fontMap;
 
 std::map<Shader::SourceShader, std::string> ResourcesLoader::shaderPathMap;
-std::map<Shader::SourceShader, sf::Shader> ResourcesLoader::shaderMap;
+std::map<Shader::SourceShader, sf::Shader*> ResourcesLoader::shaderMap;
 
 void ResourcesLoader::initializeTextures() {
     using namespace Texture;
@@ -93,45 +94,61 @@ void ResourcesLoader::initializeShaders() {
 }
 
 void ResourcesLoader::initialize() {
+    if (_loaded) exit(1);
     initializeTextures();
     initializeFonts();
     initializeShaders();
 }
 
 bool ResourcesLoader::loadTextures() {
-    for (const auto& pair : texturePathMap)
-        if (!textureMap[pair.first].loadFromFile(pair.second))
+    for (const auto& pair : texturePathMap) {
+        auto texture = new sf::Texture{};
+        if (!texture->loadFromFile(pair.second))
             return false;
+        textureMap[pair.first] = texture;
+    }
     return true;    
 }
 
 bool ResourcesLoader::loadFonts() {
-    for (const auto& pair : fontPathMap)
-        if (!fontMap[pair.first].loadFromFile(pair.second))
+    for (const auto& pair : fontPathMap) {
+        auto font = new sf::Font{};
+        if (!font->loadFromFile(pair.second))
             return false;
+        fontMap[pair.first] = font;
+    }
     return true;    
 }
 
 bool ResourcesLoader::loadShaders() {
-    for (const auto& pair : shaderPathMap)
-        if (!shaderMap[pair.first].loadFromFile(pair.second, sf::Shader::Fragment))
+    for (const auto& pair : shaderPathMap) {
+        auto shader = new sf::Shader{};
+        if (!shader->loadFromFile(pair.second, sf::Shader::Fragment))
             return false;
+        shaderMap[pair.first] = shader;
+    }
     return true;    
 }
 
 bool ResourcesLoader::load() {
+    if (_loaded) exit(1);
     Cli::info("Loading Resources ...");
-    return loadTextures() && loadFonts() && loadShaders();
+    _loaded = loadTextures() && loadFonts() && loadShaders(); 
+    return ResourcesLoader::_loaded;
 }
 
-const sf::Texture& ResourcesLoader::getTexture(Texture::SourceTexture texture) {
+bool ResourcesLoader::loaded() { 
+    return _loaded; 
+    }
+
+const sf::Texture *ResourcesLoader::getTexture(Texture::SourceTexture texture) {
     return textureMap.at(texture);
 }
 
-const sf::Font& ResourcesLoader::getFont(Font::SourceFont font) {
+sf::Font *ResourcesLoader::getFont(Font::SourceFont font) {
     return fontMap.at(font);
 }
 
 sf::Shader *ResourcesLoader::getShader(Shader::SourceShader shader) {
-    return &shaderMap.at(shader);
+    return shaderMap.at(shader);
 }

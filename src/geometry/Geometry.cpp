@@ -86,7 +86,7 @@ float Geometry::toRatio(sf::Vector2i v) { return toRatio(toFloat(v)); }
 float Geometry::toRatio(sf::Vector2u v) { return toRatio(toFloat(v)); }
 
 float Geometry::toRatio(Texture::SourceTexture texture) {
-    return toRatio(ResourcesLoader::getTexture(texture).getSize());
+    return toRatio(ResourcesLoader::getTexture(texture)->getSize());
 }
 
 // ------------------------------------------

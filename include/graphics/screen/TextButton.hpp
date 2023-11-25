@@ -17,7 +17,7 @@ class TextButton : public Button {
             Container *container, 
             std::string text, 
             sf::FloatRect targetBbox,
-            sf::Font font
+            sf::Font *font
             );
 
         void draw();

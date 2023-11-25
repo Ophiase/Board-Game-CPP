@@ -119,7 +119,7 @@ void Launcher::initView() {
     {
         float titleRatio = Geometry::toRatio(Texture::BackgroundPanelTop);
         title = sf::RectangleShape(sf::Vector2f(1.0, 1.0/titleRatio));
-        title.setTexture(&ResourcesLoader::getTexture(Texture::BackgroundPanelTop));
+        title.setTexture(ResourcesLoader::getTexture(Texture::BackgroundPanelTop));
     }
 
     {
@@ -142,7 +142,7 @@ void Launcher::initView() {
     {
         titleText = sf::Text{
             this->focus->getTitle(), 
-            ResourcesLoader::getFont(Font::OpenSansExtraBold), 100U
+            *ResourcesLoader::getFont(Font::OpenSansExtraBold), 100U
             };
 
         float textScale = 0.0006;
@@ -159,13 +159,13 @@ void Launcher::initView() {
     {
         float backgroundRatio = Geometry::toRatio(Texture::BackgroundMainBlur);
         background = sf::RectangleShape(sf::Vector2f(1.0, 1.0/backgroundRatio));
-        background.setTexture(&ResourcesLoader::getTexture(Texture::BackgroundMainBlur));
+        background.setTexture(ResourcesLoader::getTexture(Texture::BackgroundMainBlur));
     }
     
     {
         float foregroundRatio = Geometry::toRatio(Texture::BackgroundMenu2);
         foreground = sf::RectangleShape(sf::Vector2f(1.0, 1/foregroundRatio));
-        foreground.setTexture(&ResourcesLoader::getTexture(Texture::BackgroundMenu2));
+        foreground.setTexture(ResourcesLoader::getTexture(Texture::BackgroundMenu2));
         
         float freeYSpace = 1.0f - (1.0f / foregroundRatio);    
         foreground.setPosition(0.0, freeYSpace*0.3);
