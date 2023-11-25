@@ -11,22 +11,33 @@ TextButton::TextButton(
     sf::FloatRect targetBbox,
     sf::Font *font
     ) : Button{container}, targetBbox{targetBbox} {
-    
+
     this->textObject = sf::Text{text, *font, 100U};
+    this->textObject.setScale(0.01, 0.01);
+
     update();
 
     container->add(this);
 }
 
-void TextButton::update() {
-    return;
+void TextButton::update() { // TODO (hard)
+    /*
+        returns a result relative to 100U
+    */
     auto bbox = this->textObject.getLocalBounds();
     auto result = Geometry::fitInside(
         sf::Vector2f(bbox.width, bbox.height), targetBbox
         );
+
+    std::cout << result.top << " " << result.left << std::endl;
+    std::cout << targetBbox.width << " " << targetBbox.height << std::endl;
+    std::cout << bbox.width << " " << bbox.height << std::endl;
+    std::cout << result.width << " " << result.height << std::endl;
+    
     
     this->textObject.setPosition(result.left, result.top); 
-    this->textObject.setScale(sf::Vector2f{result.width, result.height});
+    this->textObject.setScale(sf::Vector2f{
+        result.height/100.0, result.height/100.0});
 }
 
 std::string TextButton::getTextContent(void) {
@@ -40,11 +51,18 @@ void TextButton::setTextContent(std::string textContent) {
 
 
 void TextButton::draw() {
-    textObject.setPosition(0.0, 0.0);
-    //this->textObject = sf::Text{"hi", ResourcesLoader::getFont(Font::OpenSansBold), 30U};
+    auto bbox = this->textObject.getLocalBounds();
+    auto result = Geometry::fitInside(
+        sf::Vector2f(bbox.width, bbox.height), targetBbox
+        );
 
-    sf::RenderWindow *a = &this->getRenderWindow();
-    a->draw(this->textObject);
+    sf::RectangleShape rect;
+    Geometry::applyFloatRectToRectangleShape(rect, result);
+    rect.setFillColor(sf::Color::Red);
+
+    this->getRenderWindow().draw(rect);
+    
+    this->getRenderWindow().draw(this->textObject);
 }
 
 void TextButton::fit(sf::FloatRect targetBbox) {

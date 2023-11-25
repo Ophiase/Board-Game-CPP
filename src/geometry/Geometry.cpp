@@ -2,6 +2,7 @@
 #include "graphics/ResourcesLoader.hpp"
 #include "utils/NotImplemented.hpp"
 #include "stdexcept"
+#include "iostream"
 
 // ------------------------------------------
 
@@ -61,7 +62,7 @@ sf::FloatRect Geometry::fitInside(sf::Vector2f resolution,
     sf::FloatRect shape {targetShapePosition, targetShapeSize};
 
     if (resolutionRatio > targetRatio) {
-        shape.height = targetShapeSize.y * (resolutionRatio/targetRatio);
+        shape.height = targetShapeSize.y * (targetRatio/resolutionRatio);
         shape.top += (targetShapeSize.y - shape.height) / 2.0;
     } else {
         shape.width = targetShapeSize.x * (targetRatio/resolutionRatio);
@@ -72,7 +73,7 @@ sf::FloatRect Geometry::fitInside(sf::Vector2f resolution,
 }
 
 sf::FloatRect Geometry::fitInside(sf::Vector2f resolution, sf::FloatRect targetShape) {
-    return fitOutside(
+    return fitInside(
         resolution,
         sf::Vector2f(targetShape.left, targetShape.top),
         sf::Vector2f(targetShape.width, targetShape.height)
