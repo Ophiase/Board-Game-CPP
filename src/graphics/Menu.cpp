@@ -10,8 +10,8 @@ Menu::Menu(Launcher *launcher) : Screen{launcher} {
     //std::cout << std::endl;
 
     TextButton *textButton = new TextButton{
-        this, "Hello world!", 
-        sf::FloatRect{0.0, 0.0, 1.0, 1.0},
+        this, "Hello!", 
+        sf::FloatRect{0.3, 0.2, 0.4, 0.6},
         ResourcesLoader::getFont(Font::OpenSansBold)
     };
     

@@ -213,25 +213,28 @@ void Launcher::adjustSize() {
 
 void Launcher::applyLimitMask() {
     float ratio = (float)window.getSize().x / screen.getSize().x;
-    auto origin = /*maxRenderZone.getPosition()*/ - screen.getPosition();
+    auto origin = maxRenderZone.getPosition() - screen.getPosition();
     origin.x *= ratio;
     origin.y *= ratio;
 
     // origin of frag shader is on bottom left, not top left ...
     origin.y = (float)window.getSize().y - origin.y;
     
-    auto size = sf::Vector2f{1.0, 1.0};//  maxRenderZone.getSize();
+    auto size = maxRenderZone.getSize();
     size.x *= ratio;
     size.y *= -ratio;
 
-    sf::Shader *maskShader = ResourcesLoader::getShader(Shader::Coord);
-    //maskShader->setUniform("origin", origin);
-    //maskShader->setUniform("size", size);
+    sf::Shader *maskShader = ResourcesLoader::getShader(Shader::Mask);
+    maskShader->setUniform("origin", origin);
+    maskShader->setUniform("size", size);
+    
+    /*
     maskShader->setUniform("worldSpace", sf::Glsl::Vec4(
         origin.x, origin.y,
         size.x, size.y
         ));
-
+    */
+    
     this->window.draw(
         this->screen, maskShader);
 }
