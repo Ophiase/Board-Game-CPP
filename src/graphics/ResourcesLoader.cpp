@@ -59,15 +59,21 @@ void ResourcesLoader::initializeCharTextures() {
 
     // digits
     for (char c = '0'; c <= '9'; c++)
-        associations.push_back(make_tuple(c, "d" + c));
+        associations.push_back(make_tuple(
+            c, "d" + std::string(1, c)
+            ));
 
     // uppercase
     for (char c = 'A'; c < 'Z'; c++)
-        associations.push_back(make_tuple(c, "u_" + std::tolower(c)));
+        associations.push_back(make_tuple(
+            c, "u_" + std::string(1, std::tolower(c))
+            ));
 
     // lowercase
     for (char c = 'a'; c < 'z'; c++)
-        associations.push_back(make_tuple(c, "l_" + c));
+        associations.push_back(make_tuple(
+            c, "l_" + std::string(1, c)
+        ));
 
     // special
     {
@@ -84,7 +90,7 @@ void ResourcesLoader::initializeCharTextures() {
 
         for (vector<int> whichInterval : intervals) {
             if (whichInterval.size() == 1)
-            whichInterval.push_back(whichInterval[0]);
+                whichInterval.push_back(whichInterval[0]);
 
             for (int c = whichInterval[0]; c <= whichInterval[1]; c++)
                 associations.push_back(make_tuple((char)c, "s_" + Cli::formatInt(c, 3)));
@@ -99,6 +105,7 @@ void ResourcesLoader::initializeCharTextures() {
 
         std::string fullPath = 
             "resources/images/char/" + std::string(texturePath) + ".png";
+            
         charTexturePathMap[c] = fullPath;
     }
 }
@@ -157,6 +164,7 @@ void ResourcesLoader::initialize() {
 }
 
 bool ResourcesLoader::loadTextures() {
+    Cli::debug("- Load Texture");
     for (const auto& pair : texturePathMap) {
         auto texture = new sf::Texture{};
         if (!texture->loadFromFile(pair.second))
@@ -167,6 +175,7 @@ bool ResourcesLoader::loadTextures() {
 }
 
 bool ResourcesLoader::loadCharTextures() {
+    Cli::debug("- Load CharTexture");
     for (const auto& pair : charTexturePathMap) {
         auto charTexture = new sf::Texture{};
         if (!charTexture->loadFromFile(pair.second))
@@ -177,6 +186,7 @@ bool ResourcesLoader::loadCharTextures() {
 }
 
 bool ResourcesLoader::loadFonts() {
+    Cli::debug("- Load Fonts");
     for (const auto& pair : fontPathMap) {
         auto font = new sf::Font{};
         if (!font->loadFromFile(pair.second))
@@ -187,6 +197,7 @@ bool ResourcesLoader::loadFonts() {
 }
 
 bool ResourcesLoader::loadShaders() {
+    Cli::debug("- Load Shaders");
     for (const auto& pair : shaderPathMap) {
         auto shader = new sf::Shader{};
         if (!shader->loadFromFile(pair.second, sf::Shader::Fragment))
