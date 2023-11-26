@@ -30,11 +30,14 @@ void TextButton::update() { // TODO (hard)
     auto result = Geometry::fitInside(
         sf::Vector2f(bbox.width, bbox.height), targetBbox
         );
+    result = Geometry::scaleRect(result, 0.6);
     
-    this->targetBbox = result;
+    float scaleFactor = result.height;
+
+    //this->targetBbox = result;
     this->textObject.setPosition(result.left, result.top - result.height*FONT_Y_CORRECTION); 
     this->textObject.setScale(sf::Vector2f{
-        result.height * FONT_SCALE_CORRECTION, result.height * FONT_SCALE_CORRECTION});
+        scaleFactor * FONT_SCALE_CORRECTION, scaleFactor * FONT_SCALE_CORRECTION});
 }
 
 std::string TextButton::getTextContent(void) {
@@ -48,11 +51,13 @@ void TextButton::setTextContent(std::string textContent) {
 
 
 void TextButton::draw() {
-    sf::RectangleShape rect{};
-    rect.setPosition(targetBbox.left, targetBbox.top);
-    rect.setSize(sf::Vector2f(targetBbox.width, targetBbox.height));
-    rect.setFillColor(sf::Color::Cyan);
-    this->getRenderWindow().draw(rect);
+    if (false) {
+        sf::RectangleShape rect{};
+        rect.setPosition(targetBbox.left, targetBbox.top);
+        rect.setSize(sf::Vector2f(targetBbox.width, targetBbox.height));
+        rect.setFillColor(sf::Color::Cyan);
+        this->getRenderWindow().draw(rect);
+    }
 
     this->getRenderWindow().draw(this->textObject);
 }

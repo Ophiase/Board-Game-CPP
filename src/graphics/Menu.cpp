@@ -11,10 +11,10 @@ std::string Menu::getTitle() { return "Menu"; }
 
 Menu::Menu(Launcher *launcher) : Screen{launcher} {
     std::vector<std::string> buttons = {
-        "a string", "another", "jdia", "YES!"
+        "", "Option 1", "Option 2", "Option 3", ""
         };
 
-    for (int i = 0; i < buttons.size(); i++) {
+    for (uint i = 0; i < buttons.size(); i++) {
         float sy = areaSize.y / (float)buttons.size();
         float py = areaPosition.y + sy * (float)i;
 
@@ -33,31 +33,5 @@ Menu::Menu(Launcher *launcher) : Screen{launcher} {
 };
 
 void Menu::draw() {
-    /*
-    sf::RectangleShape rect;
-    rect.setPosition(areaPosition);
-    rect.setSize(areaSize);
-    rect.setFillColor(sf::Color::Blue);
-
-    getRenderWindow().draw(rect);
-    */
-
-    std::vector<sf::Color> colors = {
-        sf::Color::Blue, sf::Color::Red, 
-        sf::Color::Green, sf::Color::Black
-    };
-
-    for (int i = 0; i < colors.size(); i++) {
-        float sy = areaSize.y / (float)colors.size();
-        float py = areaPosition.y + sy * (float)i;
-
-        sf::RectangleShape rect;
-        rect.setPosition(areaPosition.x, py);
-        rect.setSize(sf::Vector2f{areaSize.x, sy});
-        rect.setFillColor(colors[i]);
-
-        getRenderWindow().draw(rect);    
-    }
-
     Screen::draw();
 };

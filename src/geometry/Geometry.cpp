@@ -65,7 +65,7 @@ sf::FloatRect Geometry::fitInside(sf::Vector2f resolution,
         shape.height = targetShapeSize.y * (targetRatio/resolutionRatio);
         shape.top += (targetShapeSize.y - shape.height) / 2.0;
     } else {
-        shape.width = targetShapeSize.x * (targetRatio/resolutionRatio);
+        shape.width = targetShapeSize.x * (resolutionRatio/targetRatio);
         shape.left += (targetShapeSize.x - shape.width) / 2.0;
     }
 
