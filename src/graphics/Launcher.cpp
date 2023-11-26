@@ -134,7 +134,7 @@ void Launcher::initView() {
             center
         );
         
-        Geometry::applyFloatRectToRectangleShape(
+        Geometry::applyFloatRect(
             title, transform
         );
     }
@@ -184,10 +184,10 @@ void Launcher::updateView() {
         sf::Vector2f{1.0, foregroundBottom}
     );
 
-    Geometry::applyFloatRectToRectangleShape(this->screen, visibleArea);
+    Geometry::applyFloatRect(this->screen, visibleArea);
 
     auto transform = Geometry::fitOutside(background.getSize(), visibleArea);
-    Geometry::applyFloatRectToRectangleShape(
+    Geometry::applyFloatRect(
         background, transform
     );
 

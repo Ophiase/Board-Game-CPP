@@ -104,12 +104,23 @@ sf::FloatRect Geometry::rectangleShapeToFloatRect(sf::RectangleShape shape) {
     return sf::FloatRect{shape.getPosition(), shape.getSize()};
 }
 
-void Geometry::applyFloatRectToRectangleShape(
+void Geometry::applyFloatRect(
     sf::RectangleShape & shape, sf::FloatRect const rect
     ) {
         
     shape.setPosition(floatRectPosition(rect));
     shape.setSize(floatRectSize(rect));
+}
+
+void Geometry::applyFloatRect(
+    sf::Vector2f & position, sf::Vector2f & size,
+    sf::FloatRect const rect
+) {
+    position.x = rect.left;
+    position.y = rect.top;
+
+    size.x = rect.width;
+    size.y = rect.height;
 }
 
 sf::FloatRect Geometry::scaleRect(sf::FloatRect rect, float factor) {

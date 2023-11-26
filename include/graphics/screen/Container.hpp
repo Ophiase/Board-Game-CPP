@@ -9,6 +9,9 @@
 
 using Priority = int;
 
+/*
+    Can contains sub component
+*/
 class Container : public DrawableHandler {
 private:
     template <typename T>

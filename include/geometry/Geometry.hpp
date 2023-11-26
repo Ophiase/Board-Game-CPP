@@ -13,9 +13,14 @@ class Geometry {
         static sf::Vector2f floatRectPosition(sf::FloatRect rect);
         static sf::Vector2f floatRectSize(sf::FloatRect rect);
         static sf::FloatRect rectangleShapeToFloatRect(sf::RectangleShape shape);
-        static void applyFloatRectToRectangleShape(
+        static void applyFloatRect(
             sf::RectangleShape & shape, sf::FloatRect const rect
             );
+
+        static void applyFloatRect(
+            sf::Vector2f & position, sf::Vector2f & size,
+            sf::FloatRect const rect
+        );
 
         /*
             Scale rect from center.
