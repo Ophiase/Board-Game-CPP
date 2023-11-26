@@ -10,6 +10,9 @@ bool ResourcesLoader::_loaded{false};
 std::map<Texture::SourceTexture, std::string> ResourcesLoader::texturePathMap;
 std::map<Texture::SourceTexture, sf::Texture*> ResourcesLoader::textureMap;
 
+std::map<char, std::string> ResourcesLoader::charTexturePathMap;
+std::map<char, sf::Texture*> ResourcesLoader::charTextureMap;
+
 std::map<Font::SourceFont, std::string> ResourcesLoader::fontPathMap;
 std::map<Font::SourceFont, sf::Font*> ResourcesLoader::fontMap;
 
@@ -46,6 +49,57 @@ void ResourcesLoader::initializeTextures() {
         std::string fullPath = 
             "resources/images/" + std::string(texturePath) + ".png";
         texturePathMap[texture] = fullPath;
+    }
+}
+
+void ResourcesLoader::initializeCharTextures() {
+    using namespace std;
+    
+    std::vector<std::tuple<char, std::string>> associations;
+
+    // digits
+    for (char c = '0'; c <= '9'; c++)
+        associations.push_back(make_tuple(c, "d" + c));
+
+    // uppercase
+    for (char c = 'A'; c < 'Z'; c++)
+        associations.push_back(make_tuple(c, "u_" + std::tolower(c)));
+
+    // lowercase
+    for (char c = 'a'; c < 'z'; c++)
+        associations.push_back(make_tuple(c, "l_" + c));
+
+    // special
+    {
+        vector<vector<int>> intervals{
+            {32, 36},
+            {40, 41},
+            {43},
+            {45, 46},
+            {58},
+            {60, 63},
+            {91}, {93}, {95},
+            {124}, {126}
+        };
+
+        for (vector<int> whichInterval : intervals) {
+            if (whichInterval.size() == 1)
+            whichInterval.push_back(whichInterval[0]);
+
+            for (int c = whichInterval[0]; c <= whichInterval[1]; c++)
+                associations.push_back(make_tuple((char)c, "s_" + Cli::formatInt(c, 3)));
+        }
+
+    }
+
+    for (const auto& association : associations) {
+        char c;
+        std::string texturePath;
+        std::tie(c, texturePath) = association;
+
+        std::string fullPath = 
+            "resources/images/char/" + std::string(texturePath) + ".png";
+        charTexturePathMap[c] = fullPath;
     }
 }
 
@@ -95,9 +149,11 @@ void ResourcesLoader::initializeShaders() {
 
 void ResourcesLoader::initialize() {
     if (_loaded) exit(1);
+    
     initializeTextures();
     initializeFonts();
     initializeShaders();
+    initializeCharTextures();
 }
 
 bool ResourcesLoader::loadTextures() {
@@ -106,6 +162,16 @@ bool ResourcesLoader::loadTextures() {
         if (!texture->loadFromFile(pair.second))
             return false;
         textureMap[pair.first] = texture;
+    }
+    return true;    
+}
+
+bool ResourcesLoader::loadCharTextures() {
+    for (const auto& pair : charTexturePathMap) {
+        auto charTexture = new sf::Texture{};
+        if (!charTexture->loadFromFile(pair.second))
+            return false;
+        charTextureMap[pair.first] = charTexture;
     }
     return true;    
 }
@@ -133,7 +199,7 @@ bool ResourcesLoader::loadShaders() {
 bool ResourcesLoader::load() {
     if (_loaded) exit(1);
     Cli::info("Loading Resources ...");
-    _loaded = loadTextures() && loadFonts() && loadShaders(); 
+    _loaded = loadTextures() && loadFonts() && loadShaders() && loadCharTextures();
     return ResourcesLoader::_loaded;
 }
 
@@ -141,8 +207,12 @@ bool ResourcesLoader::loaded() {
     return _loaded; 
     }
 
-const sf::Texture *ResourcesLoader::getTexture(Texture::SourceTexture texture) {
+sf::Texture *ResourcesLoader::getTexture(Texture::SourceTexture texture) {
     return textureMap.at(texture);
+}
+
+sf::Texture *ResourcesLoader::getCharTexture(char c) {
+    return charTextureMap.at(c);
 }
 
 sf::Font *ResourcesLoader::getFont(Font::SourceFont font) {

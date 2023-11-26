@@ -60,6 +60,11 @@ private:
     static void initializeTextures();
     static bool loadTextures();
 
+    static std::map<char, std::string> charTexturePathMap;
+    static std::map<char, sf::Texture*> charTextureMap;
+    static void initializeCharTextures();
+    static bool loadCharTextures();
+
     static std::map<Font::SourceFont, std::string> fontPathMap;
     static std::map<Font::SourceFont, sf::Font*> fontMap;
     static void initializeFonts();
@@ -75,7 +80,9 @@ public:
     static bool load();
     static bool loaded();
 
-    static const sf::Texture *getTexture(Texture::SourceTexture texture);
+    static sf::Texture *getTexture(Texture::SourceTexture texture);
+    static sf::Texture *getCharTexture(char c);
+
     static sf::Font *getFont(Font::SourceFont font);
     static sf::Shader *getShader(Shader::SourceShader shader);
 };

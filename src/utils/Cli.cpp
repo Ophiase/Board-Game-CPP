@@ -18,3 +18,9 @@ void Cli::debug(std::string message) {
         (void)message;
     #endif
 }
+
+std::string Cli::formatInt(int number, size_t k) {
+    std::string numberStr = std::to_string(number);
+    size_t zerosToAdd = (k > numberStr.length()) ? k - numberStr.length() : 0;
+    return std::string(zerosToAdd, '0') + numberStr;
+}

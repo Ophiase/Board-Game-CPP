@@ -2,7 +2,7 @@
 
 #include "Canvas.hpp"
 
-class Button : public Canvas {
+class Button : virtual public Canvas {
     protected:
     public:
         void handleEvent(sf::Event event);
