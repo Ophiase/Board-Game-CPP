@@ -50,3 +50,19 @@ void Canvas::fit(sf::FloatRect targetBbox) {
         )
     );
 }
+
+sf::Vector2f Canvas::getRelativeMousePosition() const {
+    auto mousePosition = Geometry::toFloat(sf::Mouse::getPosition());
+    auto screenSpace = sf::FloatRect{
+        0.0, 0.0, 
+        (float)this->getConstRenderWindow().getSize().x, 
+        (float)this->getConstRenderWindow().getSize().y
+        };
+    auto buttonSpace = sf::FloatRect{
+        this->getPosition(), this->getSize()
+    };
+    
+    return Geometry::spaceTransform(
+        mousePosition, screenSpace, buttonSpace
+        );
+}

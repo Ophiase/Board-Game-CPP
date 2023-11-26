@@ -10,6 +10,7 @@ sf::Vector2f areaSize{0.8, 0.6};
 std::string Menu::getTitle() { return "Menu"; }
 
 Menu::Menu(Launcher *launcher) : Screen{launcher} {
+    /*
     std::vector<std::string> buttons = {
         "", "Option 1", "Option 2", "Option 3", ""
         };
@@ -29,6 +30,7 @@ Menu::Menu(Launcher *launcher) : Screen{launcher} {
         
         //this->addObjectToDelete(textButton);  
     }
+    */
 
 };
 

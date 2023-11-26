@@ -29,4 +29,6 @@ class Canvas : public Container {
         sf::FloatRect getFloatRect() const;
 
         void fit(sf::FloatRect targetBbox);
+
+        sf::Vector2f getRelativeMousePosition() const;
 };
