@@ -18,6 +18,22 @@ sf::Vector2f Canvas::getSize() const {
     return this->size;
 }
 
+void Canvas::setSizeX(float sx) {
+    auto oldSize = this->getSize();
+    this->setSize(sf::Vector2f{
+        sx,
+        oldSize.y * sx/oldSize.x
+    });
+}
+
+void Canvas::setSizeY(float sy) {
+    auto oldSize = this->getSize();
+    this->setSize(sf::Vector2f{
+        oldSize.x * sy/oldSize.y,
+        sy
+    });
+}
+
 void Canvas::setPosition(sf::Vector2f position) {
     this->position = position;
 }
@@ -51,11 +67,15 @@ void Canvas::center(sf::Vector2f position, sf::Vector2f relAnchor) {
 
 
 sf::FloatRect Canvas::getFloatRect() const {
-    return sf::FloatRect{this->position, this->size};
+    return sf::FloatRect{
+        this->getPosition(),
+        this->getSize()
+    };
 }
 
 void Canvas::setFloatRect(sf::FloatRect rect) {
-    Geometry::applyFloatRect(this->position, this->size, rect);
+    this->setPosition(sf::Vector2f(rect.left, rect.top));
+    this->setSize(sf::Vector2f(rect.width, rect.height));
 }
 
 
@@ -74,11 +94,11 @@ sf::Vector2f Canvas::getRelativeMousePosition() const {
         (float)this->getConstRenderWindow().getSize().x, 
         (float)this->getConstRenderWindow().getSize().y
         };
-    auto buttonSpace = sf::FloatRect{
+    auto canvasSpace = sf::FloatRect{
         this->getPosition(), this->getSize()
     };
     
     return Geometry::spaceTransform(
-        mousePosition, screenSpace, buttonSpace
+        mousePosition, screenSpace, canvasSpace
         );
 }

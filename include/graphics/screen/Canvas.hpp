@@ -10,20 +10,28 @@ class Canvas : public Container {
         sf::Vector2f position;
         sf::Vector2f size;
     public:
-        Canvas(Launcher *launcher, 
-            sf::Vector2f position, sf::Vector2f size
-            ) = delete;
+        Canvas(Launcher *launcher) = delete;
         
         Canvas(Container *parent,
-            sf::Vector2f position, sf::Vector2f size,
+            sf::Vector2f position, sf::Vector2f size = sf::Vector2f{1.0, 1.0},
             bool withHandler = true
             );
 
-        void setSize(sf::Vector2f size);
         sf::Vector2f getSize() const;
+        void setSize(sf::Vector2f size);
         
-        void setPosition(sf::Vector2f position);
+        /*
+            Set x size and keep x/y ratio.
+        */
+        void setSizeX(float sx);
+
+        /*
+            Set y size and keep x/y ratio.
+        */
+        void setSizeY(float sy);
+        
         sf::Vector2f getPosition() const;
+        void setPosition(sf::Vector2f position);
 
         /*
             size / 2.0

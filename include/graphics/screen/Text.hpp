@@ -12,4 +12,10 @@ class Text : virtual public Canvas {
             sf::Vector2f position, float ySize,
             bool withHandler = false
             );
+
+        void setText(std::string text);
+        std::string getText() const;
+
+        void adjustXSize();
+        void draw();
 };

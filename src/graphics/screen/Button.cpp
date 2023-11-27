@@ -8,7 +8,7 @@ void Button::handleEvent(sf::Event event) {
     if (!Geometry::insideUnitBox(mousePosition)) 
         return;
     
-    this->onHoover(event);
+    this->onHoverFunction(event);
     if (event.type == sf::Event::MouseButtonPressed) 
-        this->onClick(event);
+        this->onClickFunction(event);
 }
