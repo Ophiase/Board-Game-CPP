@@ -1,14 +1,6 @@
 #include "graphics/screen/Canvas.hpp"
 #include "geometry/Geometry.hpp"
 
-Canvas::Canvas(Launcher *launcher, 
-    sf::Vector2f position, sf::Vector2f size
-    ) : Container{launcher} {
-
-    this->setPosition(position);
-    this->setSize(size);
-}
-
 Canvas::Canvas(Container *parent,
     sf::Vector2f position, sf::Vector2f size,
     bool withHandler
@@ -33,6 +25,30 @@ void Canvas::setPosition(sf::Vector2f position) {
 sf::Vector2f Canvas::getPosition() const {
     return this->position;
 }
+
+sf::Vector2f Canvas::getRelMid() const {
+    return {
+        this->getSize().x * 0.5f,
+        this->getSize().y * 0.5f
+    };
+}
+
+sf::Vector2f Canvas::getMid() const {
+    return this->getPosition() + this->getRelMid();
+}
+
+sf::Vector2f Canvas::getEndCorner() const {
+    return this->getPosition() + this->getSize();
+}
+
+void Canvas::center(sf::Vector2f position) {
+    this->setPosition(position - this->getRelMid());
+}
+
+void Canvas::center(sf::Vector2f position, sf::Vector2f relAnchor) {
+    this->position = position - relAnchor;
+}
+
 
 sf::FloatRect Canvas::getFloatRect() const {
     return sf::FloatRect{this->position, this->size};

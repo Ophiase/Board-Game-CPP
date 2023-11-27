@@ -1,4 +1,5 @@
 #include "graphics/Menu.hpp"
+#include "graphics/screen/Text.hpp"
 #include "graphics/screen/TextButton.hpp"
 #include "graphics/ResourcesLoader.hpp"
 #include "geometry/Geometry.hpp"
@@ -32,6 +33,7 @@ Menu::Menu(Launcher *launcher) : Screen{launcher} {
     }
     */
 
+   //Text text{this, "Hello world!", sf::Vector2f{0, 0}, 0.2};
 };
 
 void Menu::draw() {
