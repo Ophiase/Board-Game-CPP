@@ -5,7 +5,12 @@ Drawable& Drawable::operator=(const Drawable& other) {
             this->launcher = other.launcher; return *this; 
         };
 
-sf::FloatRect Drawable::getRenderZone() {
+
+sf::FloatRect Drawable::getScreen() const {
+    return launcher->getScreen();
+};
+        
+sf::FloatRect Drawable::getRenderZone() const {
     return launcher->getRenderZone();
 }
 

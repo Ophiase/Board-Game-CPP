@@ -28,14 +28,19 @@ Launcher::Launcher() : window {
     Cli::info("Start Launcher");
 }
 
-sf::FloatRect Launcher::getRenderZone() {
+sf::FloatRect Launcher::getScreen() const {
+    return Geometry::rectangleShapeToFloatRect(this->screen);
+}
+
+
+sf::FloatRect Launcher::getRenderZone() const {
     return Geometry::minRectangle(this->maxRenderZone, this->screen);
 }
 sf::RenderWindow & Launcher::getRenderWindow() {
     return this->window;
 }
 
-sf::RenderWindow const & Launcher::getConstRenderWindow() {
+sf::RenderWindow const & Launcher::getConstRenderWindow() const {
     return this->window;
 }
 

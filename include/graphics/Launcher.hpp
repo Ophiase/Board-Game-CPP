@@ -38,7 +38,8 @@ class Launcher {
         Launcher();
         bool run();
 
-        sf::FloatRect getRenderZone();
+        sf::FloatRect getScreen() const;
+        sf::FloatRect getRenderZone() const;
         sf::RenderWindow & getRenderWindow();
-        sf::RenderWindow const & getConstRenderWindow();
+        sf::RenderWindow const & getConstRenderWindow() const;
 };

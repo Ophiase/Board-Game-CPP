@@ -19,7 +19,8 @@ class Text : virtual public Canvas {
     public:
         Text(Container *parent, 
             std::string text,
-            sf::Vector2f position, float ySize,
+            sf::Vector2f position = sf::Vector2f{0.0, 0.0}, 
+            float ySize = 0.1,
             bool withHandler = false
             );
 

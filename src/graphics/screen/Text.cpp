@@ -45,6 +45,14 @@ void Text::draw() {
         this->getSize().y / defaultChar->getSize().x, 
         this->getSize().y / defaultChar->getSize().y
         ));
+
+    /*
+        sf::RectangleShape rect;
+        rect.setFillColor(sf::Color::Red);
+        rect.setPosition(this->getPosition());
+        rect.setSize(this->getSize());
+        this->getRenderWindow().draw(rect);
+    */
     
     for (uint i = 0; i < this->text.size(); i++) {
         char c = this->text.at(i);

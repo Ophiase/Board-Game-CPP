@@ -74,5 +74,10 @@ class Geometry {
 
         static bool insideUnitBox(sf::Vector2f v);
 
+        static sf::Vector2f screenPositionToWorldSpace(sf::Vector2i vector, 
+            sf::Vector2u screenSize,
+            sf::FloatRect renderZone
+            );
+
         static sf::FloatRect worldSpaceForShader(sf::RenderWindow *window);
 };

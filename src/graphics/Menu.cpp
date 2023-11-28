@@ -12,31 +12,20 @@ sf::Vector2f areaSize{0.8, 0.6};
 std::string Menu::getTitle() { return "Menu"; }
 
 Menu::Menu(Launcher *launcher) : Screen{launcher} {
-    /*
-    std::vector<std::string> buttons = {
-        "", "Option 1", "Option 2", "Option 3", ""
-        };
-
-    for (uint i = 0; i < buttons.size(); i++) {
-        float sy = areaSize.y / (float)buttons.size();
-        float py = areaPosition.y + sy * (float)i;
-
-        TextButton *textButton = new TextButton{
-            this, buttons[i], 
-            sf::FloatRect{
-                areaPosition.x, py, 
-                areaSize.x, sy
-                },
-            ResourcesLoader::getFont(Font::OpenSansBold)
-        };
-        
-        //this->addObjectToDelete(textButton);  
-    }
-    */
-
     Text *text = new Text{
         this, "Hello world!", sf::Vector2f{0, 0}, 0.1};
     text->center(sf::Vector2f{0.5, 0.5});
+
+    TextButton *button = new TextButton{
+        this, "Button",
+        [](sf::Event e) -> void {
+            (void)e;
+            Cli::debug("Click !");
+        }, [](sf::Event e) -> void {
+            (void)e;
+            Cli::debug("Hover !");
+        }};
+    button->center(sf::Vector2f{0.5, 0.3});
 };
 
 void Menu::draw() {

@@ -14,7 +14,8 @@ class Drawable {
 
         virtual void draw() {};
 
-        sf::FloatRect getRenderZone();
+        sf::FloatRect getScreen() const;
+        sf::FloatRect getRenderZone() const;
         sf::RenderWindow & getRenderWindow();
         sf::RenderWindow const & getConstRenderWindow() const;
         Launcher *getLauncher();

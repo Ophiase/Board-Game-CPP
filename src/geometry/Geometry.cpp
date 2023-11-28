@@ -3,6 +3,7 @@
 #include "utils/NotImplemented.hpp"
 #include "stdexcept"
 #include "iostream"
+#include "utils/Cli.hpp"
 
 // ------------------------------------------
 
@@ -198,4 +199,16 @@ sf::FloatRect Geometry::minRectangle(
     ) {
     
     return minRectangle(rectangleShapeToFloatRect(a), rectangleShapeToFloatRect(b));
+}
+
+sf::Vector2f Geometry::screenPositionToWorldSpace(sf::Vector2i vector, 
+    sf::Vector2u screenSize, sf::FloatRect renderZone
+) {
+    float sx = (float)screenSize.x;
+    float sy = (float)screenSize.y;
+
+    return sf::Vector2f{
+        ((float)vector.x * renderZone.width / sx) + renderZone.left,
+        ((float)vector.y * renderZone.height / sy) + renderZone.top
+    };
 }

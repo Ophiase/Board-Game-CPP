@@ -1,5 +1,7 @@
 #include "graphics/screen/Canvas.hpp"
 #include "geometry/Geometry.hpp"
+#include "utils/Cli.hpp"
+#include "graphics/Launcher.hpp"
 
 Canvas::Canvas(Container *parent,
     sf::Vector2f position, sf::Vector2f size,
@@ -88,17 +90,14 @@ void Canvas::fit(sf::FloatRect targetBbox) {
 }
 
 sf::Vector2f Canvas::getRelativeMousePosition() const {
-    auto mousePosition = Geometry::toFloat(sf::Mouse::getPosition());
-    auto screenSpace = sf::FloatRect{
-        0.0, 0.0, 
-        (float)this->getConstRenderWindow().getSize().x, 
-        (float)this->getConstRenderWindow().getSize().y
-        };
-    auto canvasSpace = sf::FloatRect{
-        this->getPosition(), this->getSize()
-    };
-    
-    return Geometry::spaceTransform(
-        mousePosition, screenSpace, canvasSpace
+    auto worldPosition = Geometry::screenPositionToWorldSpace(
+        sf::Mouse::getPosition(this->getConstRenderWindow()),
+        this->getConstRenderWindow().getSize(),
+        this->getScreen()
         );
+
+    return sf::Vector2f{
+        (worldPosition.x - this->getPosition().x) / this->getSize().x,
+        (worldPosition.y - this->getPosition().y) / this->getSize().y
+    };
 }
