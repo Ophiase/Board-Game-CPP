@@ -14,27 +14,13 @@ class Board {
         const std::vector<std::vector<CellPiece>> cellPieces;
         const Player player{0};
     
-    protected:
-        // Sub class const init
+    public:
         Board(std::vector<std::vector<CellPiece>> cellPieces, Player player) : 
             cellPieces{cellPieces}, player{player} {};
-    public:
         Board(const Board &board) : 
             Board{board.cellPieces, board.player} {};
 
-        /* 
-            Should be overridden.
-            Require for all n :
-            - Board(n) respect game init board structure
-            - implementeation constructed with Board(cellPieces), 
-                ie.
-                - assert(Board(n).getDimension() == n)
-                - assert(Board(n).step == 0)
-                - assert(Board(n).lastBoard == std::nulopt)
-                - assert(Board(n).lastAction == std::nulopt)
-        */
-        Board(int dimension);
-        ~Board();
+        ~Board() {};
 
         // ---------------------------------------------------
         

@@ -1,1 +1,0 @@
-#include "engine/checkers/CheckersBoard.hpp"

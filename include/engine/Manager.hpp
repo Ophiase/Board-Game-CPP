@@ -1,9 +1,9 @@
 #pragma once
 
-
 #include "Board.hpp"
 #include "engine/Action.hpp"
 
+#include <utils/NotImplemented.hpp>
 #include <vector>
 #include <type_traits>
 
@@ -15,17 +15,39 @@ class Manager {
     protected:
         std::vector<Board> configurations;
         std::vector<ActionType> actions;
+        virtual Board initialBoard() = 0;
+        Manager(int nPlayers) : nPlayers{nPlayers} {};
     public:
-        Manager<ActionType>(Board initialBoard) : 
-        configurations{std::vector<Board>{initialBoard}} {};
+        const int nPlayers;
 
         Board getConfiguration() const;
         ActionType getLastAction() const;
 
-        virtual std::vector<ActionType> getActions();
-        virtual bool canPlay(ActionType action);
-        virtual void playAction(ActionType action);
+        virtual std::vector<ActionType> getActions() = 0;
+        virtual bool canPlay(ActionType action) = 0;
+        virtual void playAction(ActionType action) = 0;
 
         void cancel();
         int step();
+};
+
+template <class ActionType>
+Board Manager<ActionType>::getConfiguration() const {
+    return configurations.at(configurations.size()-1);
+};
+
+template <class ActionType>
+ActionType Manager<ActionType>::getLastAction() const {
+    return actions.at(actions.size() -1);
+};
+
+template <class ActionType>
+void Manager<ActionType>::cancel() {
+    this->configurations.pop_back();
+    this->actions.pop_back();
+};
+
+template <class ActionType>
+int Manager<ActionType>::step() {
+    return this->actions.size();
 };
