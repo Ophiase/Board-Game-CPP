@@ -6,6 +6,16 @@
 class Text : virtual public Canvas {
     protected:
         std::string text;
+
+        /*
+            Calulcate width, according to height and text length.
+        */
+        float getWidth() const;
+        
+        /*
+            Percent of overlap between two characters.
+        */
+        const float overlap{0.5};
     public:
         Text(Container *parent, 
             std::string text,
@@ -16,6 +26,7 @@ class Text : virtual public Canvas {
         void setText(std::string text);
         std::string getText() const;
 
-        void adjustXSize();
-        void draw();
+        void setSize(sf::Vector2f v);
+        
+        void draw() override;
 };

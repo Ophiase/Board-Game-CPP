@@ -4,6 +4,7 @@
 #include "graphics/ResourcesLoader.hpp"
 #include "geometry/Geometry.hpp"
 #include "graphics/Launcher.hpp"
+#include "utils/Cli.hpp"
 
 sf::Vector2f areaPosition{0.1, 0.15};
 sf::Vector2f areaSize{0.8, 0.6};
@@ -33,7 +34,9 @@ Menu::Menu(Launcher *launcher) : Screen{launcher} {
     }
     */
 
-   //Text text{this, "Hello world!", sf::Vector2f{0, 0}, 0.2};
+    Text *text = new Text{
+        this, "Hello world!", sf::Vector2f{0, 0}, 0.1};
+    text->center(sf::Vector2f{0.5, 0.5});
 };
 
 void Menu::draw() {
