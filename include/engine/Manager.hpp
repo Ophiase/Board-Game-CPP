@@ -16,12 +16,15 @@ class Manager {
         std::vector<Board> configurations;
         std::vector<ActionType> actions;
         virtual Board initialBoard() = 0;
-        Manager(int nPlayers) : nPlayers{nPlayers} {};
+        Manager(
+            std::vector<std::tuple<Player, std::string>> players) : 
+            players{players} {};
     public:
-        const int nPlayers;
+        const std::vector<std::tuple<Player, std::string>> players;
 
         Board getConfiguration() const;
         ActionType getLastAction() const;
+        Player getCurrentPlayer() const;
 
         virtual std::vector<ActionType> getActions() = 0;
         virtual bool canPlay(ActionType action) = 0;
@@ -50,4 +53,9 @@ void Manager<ActionType>::cancel() {
 template <class ActionType>
 int Manager<ActionType>::step() {
     return this->actions.size();
+};
+
+template <class ActionType>
+Player Manager<ActionType>::getCurrentPlayer() const {
+    return this->getConfiguration().player;
 };

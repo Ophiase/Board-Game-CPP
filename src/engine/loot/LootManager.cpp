@@ -1,7 +1,23 @@
 #include "engine/loot/LootManager.hpp"
 #include "utils/NotImplemented.hpp"
 
-LootManager::LootManager(int nPlayers) : Manager<LootAction>{nPlayers} {
+std::vector<
+    std::tuple<Player, std::string>
+    > LootManager::makePlayers(int n) {
+    
+    std::vector<std::tuple<Player, std::string>> output;
+
+    for (int i = 0; i < n; i++)
+        output.push_back(std::make_tuple(
+            i,
+            "Player_" + std::to_string(i)
+        ));
+
+    return output;
+}
+
+LootManager::LootManager(int nPlayers) : 
+    Manager<LootAction>{makePlayers(nPlayers)} {
     configurations.push_back(initialBoard());
 };
 
