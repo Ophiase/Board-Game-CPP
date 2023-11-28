@@ -5,14 +5,12 @@
 #include <stdlib.h>
 #include "engine/Cell.hpp"
 #include "engine/Side.hpp"
-#include "engine/Action.hpp"
 
 /*
     Base class for any game board.
     Should be immutable.
 */
 class Board {
-    public:
         const std::vector<std::vector<CellPiece>> cellPieces;
         const Player player{0};
     
@@ -21,11 +19,8 @@ class Board {
         Board(std::vector<std::vector<CellPiece>> cellPieces, Player player) : 
             cellPieces{cellPieces}, player{player} {};
     public:
-        /*
-            The board copy is for simulation purpose.
-            It creates a new initial Board in same configuration as the board passed in argument.
-        */
-        Board(const Board &);
+        Board(const Board &board) : 
+            Board{board.cellPieces, board.player} {};
 
         /* 
             Should be overridden.
@@ -41,19 +36,9 @@ class Board {
         Board(int dimension);
         ~Board();
 
-
-        // ---------------------------------------------------
-
-        virtual bool isValidAction(Action action) = 0;
-        virtual Board applyAction(Action action) = 0;
-        virtual Board cancelAction() = 0;
-        virtual const std::vector<Action> & getActions() = 0;
-        
         // ---------------------------------------------------
         
         int getDimension() const ;
-        virtual bool isFinished() = 0;
-        virtual Player winner() = 0;
 
         // ---------------------------------------------------
 

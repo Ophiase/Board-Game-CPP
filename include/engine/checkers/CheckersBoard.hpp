@@ -2,4 +2,8 @@
 
 #include "engine/Board.hpp"
 
-class CheckersBoard : public Board {};
+// TODO
+class CheckersBoard : public Board {
+    private:
+    public:
+};

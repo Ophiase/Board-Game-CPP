@@ -1,5 +1,6 @@
 #include "engine/Board.hpp"
 
+
 int Board::getDimension() const {
     return cellPieces.size();
 }
