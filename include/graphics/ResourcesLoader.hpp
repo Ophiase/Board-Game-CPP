@@ -23,7 +23,11 @@ namespace Texture {
         TileRock,
         TileSheep,
         TileWheat,
-        TileWood
+        TileWood,
+
+        CheckerBoard0,
+        CheckerBoard1,
+        CheckerBoard2
     };
 }
 namespace Font {
