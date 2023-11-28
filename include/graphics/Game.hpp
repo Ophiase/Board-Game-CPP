@@ -2,6 +2,7 @@
 
 #include "graphics/screen/Screen.hpp"
 
-class Game : Screen {
-    Game(Launcher *launcher) : Screen{launcher} {};
+class Game : public Screen {
+    public:
+        Game(Launcher *launcher, std::string title="Game") : Screen{launcher, title} {};
 };

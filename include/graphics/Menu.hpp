@@ -7,8 +7,6 @@
 class Menu : public Screen {
     public:
         Menu(Launcher *launcher);
-
-        std::string getTitle() override;
         Screen *successor{nullptr};
 
         void draw();

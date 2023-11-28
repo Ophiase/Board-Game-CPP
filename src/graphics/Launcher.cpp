@@ -87,8 +87,6 @@ bool Launcher::run() {
                     focus = menu.successor;
                     menu.successor = nullptr; 
                 }
-
-            titleText.setString(focus->getTitle());
         }
 
         this->window.clear(sf::Color::Black);
@@ -97,7 +95,6 @@ bool Launcher::run() {
         this->window.draw(foreground);
         
         this->window.draw(title);
-        this->window.draw(titleText);
         
         focus->draw();
 
@@ -142,23 +139,6 @@ void Launcher::initView() {
         Geometry::applyFloatRect(
             title, transform
         );
-    }
-        
-    {
-        titleText = sf::Text{
-            this->focus->getTitle(), 
-            *ResourcesLoader::getFont(Font::OpenSansExtraBold), 100U
-            };
-
-        float textScale = 0.0006;
-        titleText.setScale(sf::Vector2f(textScale, textScale));
-        
-        auto bound = titleText.getLocalBounds();
-        float cx = (bound.left + bound.width/2.0f)*textScale;
-        float cy = (bound.top + bound.height/2.0f)*textScale;
-        titleText.setPosition(0.5-cx, 0.04-cy);
-        
-        titleText.setFillColor(sf::Color::White);
     }
 
     {

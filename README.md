@@ -4,7 +4,7 @@ Simple Interface Project to play board game.\
 Game supported :
 - Loot [(french tutorial for "Butin")](http://jeuxstrategieter.free.fr/Butin_complet.php)
 - Checkers [(french tutorial for "Dames")](https://infolib.re/storage/files/documents/jeux_de_societe/Les%20dames%20-%20R%C3%A8gle%20du%20jeu.pdf)
-- Bulltricker [(french tutorial for "BullTricker")](http://www.bulltricker.com/fr/regle_simplifiee.html)
+- BullTricker [(french tutorial for "BullTricker")](http://www.bulltricker.com/fr/regle_simplifiee.html)
 
 # Installation
 

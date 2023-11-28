@@ -15,7 +15,7 @@ class Text : virtual public Canvas {
         /*
             Percent of overlap between two characters.
         */
-        const float overlap{0.5};
+        const float overlap{0.6f};
     public:
         Text(Container *parent, 
             std::string text,

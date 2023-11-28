@@ -8,8 +8,8 @@ class TextButton : public Button, public Text {
     public:
         TextButton(Container *parent,
             std::string text,
-            std::function<void(sf::Event)> onClickAction,
-            std::function<void(sf::Event)> onHoverAction, 
+            std::function<void(sf::Event)> onClickAction = [](sf::Event) {},
+            std::function<void(sf::Event)> onHoverAction = [](sf::Event) {}, 
             sf::Vector2f position = sf::Vector2f{0.0, 0.0}, 
             float ySize = 0.1,
             bool withHandler = true

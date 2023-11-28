@@ -1,7 +1,10 @@
 #include "graphics/screen/Screen.hpp"
+#include "graphics/screen/Text.hpp"
 
-std::string Screen::getTitle() { 
-    return "Unknown"; 
+Screen::Screen(Launcher *launcher, std::string title) : 
+Container{launcher}, title{title} {
+    Text *textTitle = new Text(this, title);
+    textTitle->center(sf::Vector2f{0.5, 0.05});
 }
 
 bool Screen::isAlive() { 

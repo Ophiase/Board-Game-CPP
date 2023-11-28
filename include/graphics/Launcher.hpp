@@ -28,7 +28,6 @@ class Launcher {
 
         sf::RectangleShape screen, maxRenderZone;
         sf::RectangleShape title, background, foreground;
-        sf::Text titleText;
 
         void initView();
         void updateView();

@@ -9,10 +9,9 @@
 class Screen : public Container {
 private:
     bool alive{true};
+    std::string title;
 public:
-    Screen(Launcher *launcher) : Container{launcher} {};
-    virtual std::string getTitle();
+    Screen(Launcher *launcher, std::string title="Unknown");
     bool isAlive();
-    
     virtual ~Screen() = default;
 };
