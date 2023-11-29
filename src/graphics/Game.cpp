@@ -45,6 +45,8 @@ void Game::updateBoard() {
         Geometry::toFloat(checkBoardTexture.getSize())};
     background.setTexture(ResourcesLoader::getTexture(Texture::CheckerBoard3));
     this->checkBoardTexture.draw(background);
+
+    this->checkBoardTexture.display();
 };
 
 void Game::updateBoardContent(Board board) {
@@ -70,9 +72,12 @@ void Game::updateBoardContent(Board board) {
             checkBoardTexture.draw(piece);
         }
     }
+
+    this->checkBoardTexture.display();
 };
 
 void Game::updateBoardSidedContent(BoardSided boardSided) {
     this->updateBoardContent(boardSided);
     throw NotImplemented();
+    this->checkBoardTexture.display();
 };

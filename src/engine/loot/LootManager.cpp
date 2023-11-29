@@ -31,7 +31,7 @@ CellPiece LootManager::randomCellPiece(int & ry, int & rd, int & rb) {
         return CellPiece(CellPieceType::YellowPawn);
     }
 
-    if (r < rd) {
+    if (r < ry+rd) {
         rd--;
         return CellPiece(CellPieceType::RedPawn);
     }
@@ -51,9 +51,8 @@ Board LootManager::initialBoard() {
 
     for (int i = 0; i < 8; i++)
         for (int j = 0; j < 8; j++)
-            {
-                cellPieces[i][j] = randomCellPiece(remaningYellow, remaningRed, remaningBlack);
-            }
+            cellPieces[i][j] = 
+            randomCellPiece(remaningYellow, remaningRed, remaningBlack);
 
     return Board(cellPieces, 0);
 };
