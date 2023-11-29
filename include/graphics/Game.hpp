@@ -12,9 +12,12 @@ class Game : public Screen {
         sf::RectangleShape checkerBoardImage;
 
         Text currentPlayer;
+        Text score;
         TextButton exitButton;
     protected:
         void setCurrentPlayer(std::string currentPlayer);
+        void setScores(std::vector<float> scores);
+        void setScores(std::vector<int> scores);
     public:
         sf::Vector2f const BOARD_POSITION{0.1, 0.205};
         sf::Vector2f const BOARD_SIZE{0.5, 0.5};

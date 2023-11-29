@@ -8,6 +8,7 @@
 Game::Game(Launcher *launcher, std::string title) : 
     Screen{launcher, title}, 
     currentPlayer{this, "Turn: ?"},
+    score{this, ""},
     exitButton{this, "Exit",
         [this](sf::Event) -> void{
             this->alive = false;
@@ -27,11 +28,35 @@ Game::Game(Launcher *launcher, std::string title) :
 
     this->exitButton.setSizeY(0.04);
     this->exitButton.center(sf::Vector2f{0.10, 0.05});
+
+    {   
+        auto scoreText = new Text{this, "Scores", 
+            sf::Vector2f{0.70, 0.20}, 0.05
+        };
+        (void)scoreText; // TODO DESTROY
+        score.setSizeY(0.05);
+        score.center(scoreText->getMid() + sf::Vector2f{0.0, 0.05});
+    }
 };
 
 void Game::setCurrentPlayer(std::string currentPlayer) {
     this->currentPlayer.setText("Turn: " + currentPlayer);
 };
+
+void Game::setScores(std::vector<float> scores) {
+    (void)scores;
+    throw NotImplemented(); // need to crop digit
+}
+
+void Game::setScores(std::vector<int> scores) {
+    std::string scoreText = "";
+
+    for (uint i = 0; i < scores.size() - 1; i++)
+        scoreText += (std::to_string(scores[i]) + " | ");
+    scoreText += std::to_string(scores[scores.size()-1]);
+
+    this->score.setText(scoreText, true);
+}
 
 void Game::draw() {
     Screen::draw();  
@@ -43,7 +68,7 @@ void Game::updateBoard() {
 
     sf::RectangleShape background{
         Geometry::toFloat(checkBoardTexture.getSize())};
-    background.setTexture(ResourcesLoader::getTexture(Texture::CheckerBoard3));
+    background.setTexture(ResourcesLoader::getTexture(Texture::CheckerBoard0));
     this->checkBoardTexture.draw(background);
 
     this->checkBoardTexture.display();
@@ -78,6 +103,5 @@ void Game::updateBoardContent(Board board) {
 
 void Game::updateBoardSidedContent(BoardSided boardSided) {
     this->updateBoardContent(boardSided);
-    throw NotImplemented();
-    this->checkBoardTexture.display();
+    throw NotImplemented();  
 };

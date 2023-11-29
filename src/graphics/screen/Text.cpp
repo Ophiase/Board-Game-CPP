@@ -22,7 +22,14 @@ float Text::getWidth() const {
         (overlap + (this->text.size()*(1.0-overlap)));
 }
 
-void Text::setText(std::string text) {
+void Text::setText(std::string text, bool center) {
+    if (center) {
+        auto m = this->getMid();
+        this->setText(text);
+        this->center(m);
+        return;
+    }
+
     this->text = text;
     this->size.x = this->getWidth();
 };
@@ -45,6 +52,10 @@ void Text::draw() {
         this->getSize().y / defaultChar->getSize().x, 
         this->getSize().y / defaultChar->getSize().y
         ));
+
+    sprite.setColor(sf::Color{
+        255, 240, 210, 255
+    });
 
     /*
         sf::RectangleShape rect;

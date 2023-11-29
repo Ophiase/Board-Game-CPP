@@ -24,7 +24,7 @@ class Text : virtual public Canvas {
             bool withHandler = false
             );
 
-        void setText(std::string text);
+        void setText(std::string text, bool center=false);
         std::string getText() const;
 
         void setSize(sf::Vector2f v);
