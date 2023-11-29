@@ -5,8 +5,16 @@
 #include "utils/NotImplemented.hpp"
 #include "utils/Cli.hpp"
 
-/*
-#define FONT_RESOLUTION 100U
-#define FONT_SCALE_CORRECTION 0.0122f
-#define FONT_Y_CORRECTION 0.25f
-*/
+void TextButton::handleEvent(sf::Event event) {
+    auto mousePosition = this->getRelativeMousePosition();
+
+    if (!Geometry::insideUnitBox(mousePosition)) {
+        this->color = DEFAULT_COLOR;
+        return;
+    }
+
+    this->color = DEFAULT_HOVER_COLOR;    
+    this->onHoverFunction(event);
+    if (event.type == sf::Event::MouseButtonPressed) 
+        this->onClickFunction(event);
+}

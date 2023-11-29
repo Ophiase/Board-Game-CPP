@@ -52,10 +52,8 @@ void Text::draw() {
         this->getSize().y / defaultChar->getSize().x, 
         this->getSize().y / defaultChar->getSize().y
         ));
-
-    sprite.setColor(sf::Color{
-        255, 240, 210, 255
-    });
+        
+    sprite.setColor(color);
 
     /*
         sf::RectangleShape rect;

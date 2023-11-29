@@ -2,8 +2,11 @@
 
 #include <string>
 #include "Canvas.hpp"
+#include <SFML/Graphics.hpp>
 
 class Text : virtual public Canvas {
+    public:
+        const sf::Color DEFAULT_COLOR{255, 240, 210, 255};
     protected:
         std::string text;
 
@@ -16,6 +19,7 @@ class Text : virtual public Canvas {
             Percent of overlap between two characters.
         */
         const float overlap{0.6f};
+        sf::Color color{DEFAULT_COLOR};
     public:
         Text(Container *parent, 
             std::string text,
