@@ -27,7 +27,16 @@ namespace Texture {
 
         CheckerBoard0,
         CheckerBoard1,
-        CheckerBoard2
+        CheckerBoard2,
+
+        PawnBlack,
+        PawnBlackBis,
+        PawnWhite,
+        PawnWhiteBis,
+        PawnRed,
+        PawnGreen,
+        PawnYellow,
+        PawnBlue
     };
 }
 namespace Font {

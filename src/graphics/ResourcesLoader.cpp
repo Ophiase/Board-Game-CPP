@@ -42,7 +42,16 @@ void ResourcesLoader::initializeTextures() {
 
         make_tuple(CheckerBoard0, "checkerboard/checkerboard_0"),
         make_tuple(CheckerBoard1, "checkerboard/checkerboard_1"),
-        make_tuple(CheckerBoard2, "checkerboard/checkerboard_2")
+        make_tuple(CheckerBoard2, "checkerboard/checkerboard_2"),
+        
+        make_tuple(PawnBlack, "entity/pawn_black"),
+        make_tuple(PawnBlackBis, "entity/pawn_black_bis"),
+        make_tuple(PawnWhite, "entity/pawn_white"),
+        make_tuple(PawnWhiteBis, "entity/pawn_white_bis"),
+        make_tuple(PawnRed, "entity/pawn_red"),
+        make_tuple(PawnGreen, "entity/pawn_green"),
+        make_tuple(PawnYellow, "entity/pawn_yellow"),
+        make_tuple(PawnBlue, "entity/pawn_blue")
     };
 
     for (const auto& association : associations) {
