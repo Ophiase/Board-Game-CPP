@@ -42,3 +42,11 @@ void LootManager::playAction(LootAction action) {
     (void)action;
     throw NotImplemented();
 };
+
+bool LootManager::actionEquivalence(
+    LootAction actionA, LootAction actionB) {
+    
+    (void)actionA;
+    (void)actionB;
+    throw NotImplemented();
+}

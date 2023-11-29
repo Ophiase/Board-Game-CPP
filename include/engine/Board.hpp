@@ -11,10 +11,10 @@
     Should be immutable.
 */
 class Board {
+    public:
         const std::vector<std::vector<CellPiece>> cellPieces;
         const Player player{0};
-    
-    public:
+        
         Board(std::vector<std::vector<CellPiece>> cellPieces, Player player) : 
             cellPieces{cellPieces}, player{player} {};
         Board(const Board &board) : 

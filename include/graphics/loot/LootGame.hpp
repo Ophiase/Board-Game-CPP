@@ -8,6 +8,5 @@ class LootGame : public Game {
     protected:
         LootManager manager;
     public:
-        LootGame(Launcher *launcher) : 
-        Game{launcher, "Loot"}, manager{} {};
+        LootGame(Launcher *launcher);
 };

@@ -6,6 +6,8 @@
 #include <utils/NotImplemented.hpp>
 #include <vector>
 #include <type_traits>
+#include <stdexcept>
+#include "utils/Cli.hpp"
 
 template <class ActionType>
 class Manager {
@@ -25,10 +27,16 @@ class Manager {
         Board getConfiguration() const;
         ActionType getLastAction() const;
         Player getCurrentPlayer() const;
+        std::string getCurrentPlayerName() const;
 
+        /*
+            All possibles action from current configuration (up to isomorphism).
+        */
         virtual std::vector<ActionType> getActions() = 0;
         virtual bool canPlay(ActionType action) = 0;
         virtual void playAction(ActionType action) = 0;
+        virtual bool actionEquivalence(
+            ActionType actionA, ActionType actionB) = 0;
 
         void cancel();
         int step();
@@ -58,4 +66,15 @@ int Manager<ActionType>::step() {
 template <class ActionType>
 Player Manager<ActionType>::getCurrentPlayer() const {
     return this->getConfiguration().player;
+};
+
+template <class ActionType>
+std::string Manager<ActionType>::getCurrentPlayerName() const {
+    Player player = this->getConfiguration().player;
+    for (auto candidate : players)
+        if (std::get<0>(candidate) == player)
+            return std::get<1>(candidate);
+
+    Cli::warning("CurrentPlayerName should be defined.");
+    exit(1);
 };

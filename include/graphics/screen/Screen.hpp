@@ -7,7 +7,7 @@
 #include "Container.hpp"
 
 class Screen : public Container {
-private:
+protected:
     bool alive{true};
     std::string title;
 public:

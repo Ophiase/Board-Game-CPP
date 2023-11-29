@@ -14,7 +14,9 @@ class LootManager : public Manager<LootAction> {
         std::vector<LootAction> getActions() override;
         bool canPlay(LootAction action) override;
         void playAction(LootAction action) override;
-        
+        bool actionEquivalence(
+            LootAction actionA, LootAction actionB) override;
+
         static std::vector<
             std::tuple<Player, std::string>
             > makePlayers(int n);
