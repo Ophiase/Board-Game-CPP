@@ -3,7 +3,6 @@
 
 LootGame::LootGame(Launcher *launcher) :
 Game{launcher, "Loot"}, manager{} {
-
     this->setCurrentPlayer(this->manager.getCurrentPlayerName());
 
     auto nPlayers = new Text{this,
@@ -13,4 +12,10 @@ Game{launcher, "Loot"}, manager{} {
 
     nPlayers->setSizeY(0.04);
     nPlayers->center(sf::Vector2f{0.27, 0.05});
+
+    this->updateBoardContent(manager.getConfiguration());
+};
+
+void LootGame::draw() {
+    Game::draw();
 };

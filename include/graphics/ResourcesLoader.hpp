@@ -3,6 +3,8 @@
 #include <SFML/Graphics.hpp>
 #include <map>
 #include <string>
+#include "engine/Cell.hpp"
+#include "engine/Side.hpp"
 
 namespace Texture {
     /*
@@ -28,6 +30,7 @@ namespace Texture {
         CheckerBoard0,
         CheckerBoard1,
         CheckerBoard2,
+        CheckerBoard3,
 
         PawnBlack,
         PawnBlackBis,
@@ -88,13 +91,19 @@ private:
     static void initializeShaders();
     static bool loadShaders();
 
+    static Texture::SourceTexture toSourceTexture(CellPiece piece);
+    static Texture::SourceTexture toSourceTexture(SidePiece piece);
+
 public:
     static void initialize();
     static bool load();
     static bool loaded();
+    //static bool unload(); // TODO, dealocate
 
     static sf::Texture *getTexture(Texture::SourceTexture texture);
     static sf::Texture *getCharTexture(char c);
+    static sf::Texture *getTexture(CellPiece piece);
+    static sf::Texture *getTexture(SidePiece piece);
 
     static sf::Font *getFont(Font::SourceFont font);
     static sf::Shader *getShader(Shader::SourceShader shader);

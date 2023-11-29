@@ -1,6 +1,8 @@
 #include "engine/loot/LootManager.hpp"
 #include "utils/NotImplemented.hpp"
 
+#include <random>
+
 std::vector<
     std::tuple<Player, std::string>
     > LootManager::makePlayers(int n) {
@@ -21,12 +23,41 @@ LootManager::LootManager(int nPlayers) :
     configurations.push_back(initialBoard());
 };
 
-Board LootManager::initialBoard() {
-        std::vector<std::vector<CellPiece>> cellPieces{
-            8, std::vector<CellPiece>(8)
-        };
-        return Board(cellPieces, 0);
+CellPiece LootManager::randomCellPiece(int & ry, int & rd, int & rb) {
+    int r = rand() % (ry+rd+rb);
+
+    if (r < ry) {
+        ry--;
+        return CellPiece(CellPieceType::YellowPawn);
+    }
+
+    if (r < rd) {
+        rd--;
+        return CellPiece(CellPieceType::RedPawn);
+    }
+
+    rb--;
+    return CellPiece(CellPieceType::BlackPawn);
 };
+
+Board LootManager::initialBoard() {
+    std::vector<std::vector<CellPiece>> cellPieces{
+        8, std::vector<CellPiece>(8)
+    };
+
+    int remaningYellow = TOTAL_YELLOW_PAWN;
+    int remaningRed = TOTAL_RED_PAWN;
+    int remaningBlack = TOTAL_BLACK_PAWN;
+
+    for (int i = 0; i < 8; i++)
+        for (int j = 0; j < 8; j++)
+            {
+                cellPieces[i][j] = randomCellPiece(remaningYellow, remaningRed, remaningBlack);
+            }
+
+    return Board(cellPieces, 0);
+};
+
 
 
 std::vector<LootAction> LootManager::getActions() {

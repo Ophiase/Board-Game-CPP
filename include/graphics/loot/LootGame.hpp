@@ -9,4 +9,5 @@ class LootGame : public Game {
         LootManager manager;
     public:
         LootGame(Launcher *launcher);
+        void draw() override;
 };

@@ -1,6 +1,8 @@
 #include "graphics/ResourcesLoader.hpp"
 
 #include "utils/Cli.hpp"
+#include "utils/NotImplemented.hpp"
+#include "stdexcept"
 
 #include <tuple>
 #include <iostream>
@@ -43,6 +45,7 @@ void ResourcesLoader::initializeTextures() {
         make_tuple(CheckerBoard0, "checkerboard/checkerboard_0"),
         make_tuple(CheckerBoard1, "checkerboard/checkerboard_1"),
         make_tuple(CheckerBoard2, "checkerboard/checkerboard_2"),
+        make_tuple(CheckerBoard3, "checkerboard/checkerboard_3"),
         
         make_tuple(PawnBlack, "entity/pawn_black"),
         make_tuple(PawnBlackBis, "entity/pawn_black_bis"),
@@ -231,8 +234,43 @@ bool ResourcesLoader::loaded() {
     return _loaded; 
     }
 
+
+Texture::SourceTexture ResourcesLoader::toSourceTexture(CellPiece piece) {
+    switch(piece.pieceType) {
+        case CellPieceType::BlackPawn : return Texture::PawnBlack; 
+        case CellPieceType::WhitePawn : return Texture::PawnWhite; 
+        case CellPieceType::BlackKing : throw NotImplemented(); 
+        case CellPieceType::WhiteKing : throw NotImplemented();
+        case CellPieceType::YellowPawn : return Texture::PawnYellow;
+        case CellPieceType::RedPawn : return Texture::PawnRed;
+
+        default:
+            throw std::invalid_argument("Invalid piece type.");
+    }
+}
+
+Texture::SourceTexture ResourcesLoader::toSourceTexture(SidePiece piece) {
+    switch(piece.pieceType) {
+        case SidePieceType::BlackSidePawn : throw NotImplemented();
+        case SidePieceType::WhiteSidePawn : throw NotImplemented();
+        case SidePieceType::BlackSideQueen : throw NotImplemented();
+        case SidePieceType::WhiteSideQueen : throw NotImplemented();
+
+        default:
+            throw std::invalid_argument("Invalid piece type.");
+    }
+}
+
 sf::Texture *ResourcesLoader::getTexture(Texture::SourceTexture texture) {
     return textureMap.at(texture);
+}
+
+sf::Texture *ResourcesLoader::getTexture(CellPiece piece) {
+    return getTexture(toSourceTexture(piece));
+}
+
+sf::Texture *ResourcesLoader::getTexture(SidePiece piece) {
+    return getTexture(toSourceTexture(piece));
 }
 
 sf::Texture *ResourcesLoader::getCharTexture(char c) {
