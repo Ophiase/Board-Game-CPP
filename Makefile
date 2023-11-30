@@ -13,7 +13,6 @@ LIBS =
 ifdef MAC
 LIBS += -I/opt/homebrew/Cellar/sfml/2.6.1/include
 LIBS += -L/opt/homebrew/Cellar/sfml/2.6.1/lib 
-LIBS += -lsfml-graphics -lsfml-window -lsfml-system
 endif
 LIBS += -lsfml-network -lsfml-graphics -lsfml-window -lsfml-system
 
