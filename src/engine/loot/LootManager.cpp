@@ -98,10 +98,20 @@ bool LootManager::canPlay(LootAction action) const {
 
 Board LootManager::evaluateAction(
     LootAction action, Board board) const {
-    (void)action;
-    (void)board;
 
-    auto a = board.cellPieces;
+    auto cells = board.cellPieces;
 
-    throw NotImplemented();
+    for (uint i = 1; i < action.jumps.size(); i++) {
+        CellPosition lastPosition = action.jumps[i-1];
+        CellPosition currentPosition = action.jumps[i];
+
+        CellPosition between = (lastPosition+currentPosition) / 2;
+        cells[between.y][between.x] = CellPiece(CellPieceType::NoneCell);
+    }
+
+    int nPlayers = players.size();
+    Player nextPlayer = std::get<0>(
+        players[getCurrentPlayerIndex() % nPlayers]);
+    
+    return Board{cells, nextPlayer};
 }

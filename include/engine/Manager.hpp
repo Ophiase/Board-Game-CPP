@@ -24,6 +24,7 @@ class Manager {
             std::vector<std::tuple<Player, std::string>> players) : 
             players{players} {};
 
+        int getCurrentPlayerIndex() const;
     public:
         const std::vector<std::tuple<Player, std::string>> players;
 
@@ -83,14 +84,19 @@ Player Manager<ActionType, BoardType>::getCurrentPlayer() const {
 };
 
 template <class ActionType, class BoardType>
-std::string Manager<ActionType, BoardType>::getCurrentPlayerName() const {
+int Manager<ActionType, BoardType>::getCurrentPlayerIndex() const {
     Player player = this->getConfiguration().player;
-    for (auto candidate : players)
-        if (std::get<0>(candidate) == player)
-            return std::get<1>(candidate);
+    for (uint i = 0; i < players.size(); i++)
+        if (std::get<0>(players[i]) == player)
+            return i;
 
-    Cli::warning("CurrentPlayerName should be defined.");
+    Cli::warning("Current player index should be defined.");
     exit(1);
+}
+
+template <class ActionType, class BoardType>
+std::string Manager<ActionType, BoardType>::getCurrentPlayerName() const {
+    return std::get<1>(players[getCurrentPlayerIndex()]);
 };
 
 template <class ActionType, class BoardType>
