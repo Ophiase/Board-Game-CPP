@@ -16,3 +16,19 @@ Player SidePiece::owner() const {
             return NonePlayer;
     }
 }
+
+bool SidePiece::operator==(SidePiece other) {
+    return this->pieceType == other.pieceType;
+}
+
+bool SidePiece::operator==(SidePieceType other) {
+    return this->pieceType == other;
+}
+
+bool SidePiece::operator!=(SidePiece other) {
+    return this->pieceType != other.pieceType;
+}
+
+bool SidePiece::operator!=(SidePieceType other) {
+    return this->pieceType != other;
+}

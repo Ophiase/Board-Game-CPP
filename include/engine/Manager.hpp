@@ -32,14 +32,14 @@ class Manager {
         /*
             All possibles action from current configuration (up to isomorphism).
         */
-        virtual std::vector<ActionType> getActions() = 0;
-        virtual bool canPlay(ActionType action) = 0;
+        virtual std::vector<ActionType> getActions() const = 0;
+        virtual bool canPlay(ActionType action) const = 0;
         virtual void playAction(ActionType action) = 0;
         virtual bool actionEquivalence(
-            ActionType actionA, ActionType actionB) = 0;
+            ActionType actionA, ActionType actionB) const = 0;
 
         void cancel();
-        int step();
+        int step() const;
 };
 
 template <class ActionType>
@@ -59,7 +59,7 @@ void Manager<ActionType>::cancel() {
 };
 
 template <class ActionType>
-int Manager<ActionType>::step() {
+int Manager<ActionType>::step() const {
     return this->actions.size();
 };
 

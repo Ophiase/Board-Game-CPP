@@ -21,9 +21,9 @@ class LootManager : public Manager<LootAction> {
             > makePlayers(int n);
         LootManager(int nPlayers = 2);
 
-        std::vector<LootAction> getActions() override;
-        bool canPlay(LootAction action) override;
+        std::vector<LootAction> getActions() const override;
+        bool canPlay(LootAction action) const override;
         void playAction(LootAction action) override;
         bool actionEquivalence(
-            LootAction actionA, LootAction actionB) override;
+            LootAction actionA, LootAction actionB) const override;
 };

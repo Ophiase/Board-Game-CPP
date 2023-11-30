@@ -59,13 +59,41 @@ Board LootManager::initialBoard() {
 
 
 
-std::vector<LootAction> LootManager::getActions() {
+std::vector<LootAction> LootManager::getActions() const {
     throw NotImplemented();
 };
 
-bool LootManager::canPlay(LootAction action) {
-    (void)action;
-    throw NotImplemented();
+bool LootManager::canPlay(LootAction action) const {
+    if (action.jumps.size() == 0)
+        return false;
+    
+    auto configuration = getConfiguration();
+    if (!configuration.isCaseInBoard(action.jumps[0]))
+        return false;
+    if (configuration.getCell(action.jumps[0]) != CellPieceType::YellowPawn)
+        return false;
+
+    for (uint i = 1; i < action.jumps.size(); i++) {
+        CellPosition lastPosition = action.jumps[i-1];
+        CellPosition currentPosition = action.jumps[i];
+
+        CellPosition diff = lastPosition-currentPosition;
+
+        if (!(
+            (diff == CellPosition(2, 0)) || (diff == CellPosition(-2, 0)) ||
+            (diff == CellPosition(0, 2)) || (diff == CellPosition(0, -2))
+        ))
+            return false;
+
+        if (!configuration.isCaseInBoard(currentPosition))
+            return false;
+
+        CellPiece current = configuration.getCell(currentPosition);
+        if (current != CellPieceType::NoneCell)
+            return false;
+    }
+        
+    return true;
 };
 
 void LootManager::playAction(LootAction action) {
@@ -74,7 +102,7 @@ void LootManager::playAction(LootAction action) {
 };
 
 bool LootManager::actionEquivalence(
-    LootAction actionA, LootAction actionB) {
+    LootAction actionA, LootAction actionB) const {
     
     (void)actionA;
     (void)actionB;
