@@ -4,9 +4,9 @@
     Forward declaration for Cell.hpp, Side.hpp Owning.hpp
 */
 
+#define NonePlayer 0
 #define BlackPlayer 1
 #define WhitePlayer 2
-#define NonePlayer 0
 using Player = int;
 
 enum class CellPieceType {
