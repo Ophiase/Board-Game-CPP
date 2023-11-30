@@ -20,7 +20,8 @@ class Board {
         Board(const Board &board) : 
             Board{board.cellPieces, board.player} {};
 
-        ~Board() {};
+        virtual bool operator==(Board) const;
+        virtual bool operator!=(Board) const;
 
         // ---------------------------------------------------
         

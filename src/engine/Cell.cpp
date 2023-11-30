@@ -19,18 +19,18 @@ Player CellPiece::owner() const {
     }
 }
 
-bool CellPiece::operator==(CellPiece other) {
+bool CellPiece::operator==(CellPiece other) const {
     return this->pieceType == other.pieceType;
 }
 
-bool CellPiece::operator==(CellPieceType other) {
+bool CellPiece::operator==(CellPieceType other) const {
     return this->pieceType == other;
 }
 
-bool CellPiece::operator!=(CellPiece other) {
+bool CellPiece::operator!=(CellPiece other) const {
     return this->pieceType != other.pieceType;
 }
 
-bool CellPiece::operator!=(CellPieceType other) {
+bool CellPiece::operator!=(CellPieceType other) const {
     return this->pieceType != other;
 }

@@ -32,8 +32,8 @@ class SidePiece : public Piece {
         bool isNone() const;
         Player owner() const;
 
-        bool operator==(SidePiece other);
-        bool operator==(SidePieceType other);
-        bool operator!=(SidePiece other);
-        bool operator!=(SidePieceType other);
+        bool operator==(SidePiece other) const;
+        bool operator==(SidePieceType other) const;
+        bool operator!=(SidePiece other) const;
+        bool operator!=(SidePieceType other) const;
 };

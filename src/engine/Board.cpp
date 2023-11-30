@@ -21,3 +21,12 @@ bool Board::isCaseEmpty(CellPosition v) const {
 CellPiece Board::getCell(CellPosition v) const {
     return cellPieces[v.y][v.x];
 }
+
+bool Board::operator==(Board other) const {
+    return (this->player == other.player) && 
+        (this->cellPieces == other.cellPieces);
+};
+
+bool Board::operator!=(Board other) const {
+    return (*this) != other;
+};

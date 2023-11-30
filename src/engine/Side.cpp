@@ -17,18 +17,18 @@ Player SidePiece::owner() const {
     }
 }
 
-bool SidePiece::operator==(SidePiece other) {
+bool SidePiece::operator==(SidePiece other) const {
     return this->pieceType == other.pieceType;
 }
 
-bool SidePiece::operator==(SidePieceType other) {
+bool SidePiece::operator==(SidePieceType other) const {
     return this->pieceType == other;
 }
 
-bool SidePiece::operator!=(SidePiece other) {
+bool SidePiece::operator!=(SidePiece other) const {
     return this->pieceType != other.pieceType;
 }
 
-bool SidePiece::operator!=(SidePieceType other) {
+bool SidePiece::operator!=(SidePieceType other) const {
     return this->pieceType != other;
 }

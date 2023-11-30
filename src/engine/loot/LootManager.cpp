@@ -19,7 +19,7 @@ std::vector<
 }
 
 LootManager::LootManager(int nPlayers) : 
-    Manager<LootAction>{makePlayers(nPlayers)} {
+    Manager<LootAction, Board>{makePlayers(nPlayers)} {
     configurations.push_back(initialBoard());
 };
 
@@ -96,15 +96,12 @@ bool LootManager::canPlay(LootAction action) const {
     return true;
 };
 
-void LootManager::playAction(LootAction action) {
+Board LootManager::evaluateAction(
+    LootAction action, Board board) const {
     (void)action;
-    throw NotImplemented();
-};
+    (void)board;
 
-bool LootManager::actionEquivalence(
-    LootAction actionA, LootAction actionB) const {
-    
-    (void)actionA;
-    (void)actionB;
+    auto a = board.cellPieces;
+
     throw NotImplemented();
 }

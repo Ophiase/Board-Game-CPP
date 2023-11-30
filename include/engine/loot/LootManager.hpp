@@ -7,9 +7,10 @@
 /*
     Proportion of each type of pawn could be a paramater.
 */
-class LootManager : public Manager<LootAction> {
+class LootManager : public Manager<LootAction, Board> {
     private:
-        CellPiece randomCellPiece(int & remaningYellow, int & remaningRed, int & remaningBlack);
+        CellPiece randomCellPiece(int & remaningYellow, 
+            int & remaningRed, int & remaningBlack);
         Board initialBoard() override;
     public:
         const int TOTAL_YELLOW_PAWN = 34;
@@ -23,7 +24,7 @@ class LootManager : public Manager<LootAction> {
 
         std::vector<LootAction> getActions() const override;
         bool canPlay(LootAction action) const override;
-        void playAction(LootAction action) override;
-        bool actionEquivalence(
-            LootAction actionA, LootAction actionB) const override;
+        Board evaluateAction(
+            LootAction action, Board board) const override;
+        
 };

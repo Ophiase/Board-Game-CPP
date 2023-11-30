@@ -9,22 +9,25 @@
 #include <stdexcept>
 #include "utils/Cli.hpp"
 
-template <class ActionType>
+template <class ActionType, class BoardType>
 class Manager {
     static_assert(std::is_base_of<Action, ActionType>::value,
         "ActionType must inherit from Action");
-    
+    static_assert(std::is_base_of<Board, BoardType>::value,
+        "BordType must inherit from Board");
+
     protected:
-        std::vector<Board> configurations;
+        std::vector<BoardType> configurations;
         std::vector<ActionType> actions;
-        virtual Board initialBoard() = 0;
+        virtual BoardType initialBoard() = 0;
         Manager(
             std::vector<std::tuple<Player, std::string>> players) : 
             players{players} {};
+
     public:
         const std::vector<std::tuple<Player, std::string>> players;
 
-        Board getConfiguration() const;
+        BoardType getConfiguration() const;
         ActionType getLastAction() const;
         Player getCurrentPlayer() const;
         std::string getCurrentPlayerName() const;
@@ -33,43 +36,54 @@ class Manager {
             All possibles action from current configuration (up to isomorphism).
         */
         virtual std::vector<ActionType> getActions() const = 0;
+        
+        /*
+            Is action authorized/correct.
+        */
         virtual bool canPlay(ActionType action) const = 0;
-        virtual void playAction(ActionType action) = 0;
-        virtual bool actionEquivalence(
-            ActionType actionA, ActionType actionB) const = 0;
-
+        
+        /*
+            See the effect of the action
+        */
+        virtual BoardType evaluateAction(
+            ActionType action, BoardType board) const = 0;
+        
+        BoardType evaluateAction(ActionType action) const;
+        void applyAction(ActionType action);
+        bool actionEquivalence(
+            ActionType actionA, ActionType actionB) const;
         void cancel();
         int step() const;
 };
 
-template <class ActionType>
-Board Manager<ActionType>::getConfiguration() const {
+template <class ActionType, class BoardType>
+BoardType Manager<ActionType, BoardType>::getConfiguration() const {
     return configurations.at(configurations.size()-1);
 };
 
-template <class ActionType>
-ActionType Manager<ActionType>::getLastAction() const {
+template <class ActionType, class BoardType>
+ActionType Manager<ActionType, BoardType>::getLastAction() const {
     return actions.at(actions.size() -1);
 };
 
-template <class ActionType>
-void Manager<ActionType>::cancel() {
+template <class ActionType, class BoardType>
+void Manager<ActionType, BoardType>::cancel() {
     this->configurations.pop_back();
     this->actions.pop_back();
 };
 
-template <class ActionType>
-int Manager<ActionType>::step() const {
+template <class ActionType, class BoardType>
+int Manager<ActionType, BoardType>::step() const {
     return this->actions.size();
 };
 
-template <class ActionType>
-Player Manager<ActionType>::getCurrentPlayer() const {
+template <class ActionType, class BoardType>
+Player Manager<ActionType, BoardType>::getCurrentPlayer() const {
     return this->getConfiguration().player;
 };
 
-template <class ActionType>
-std::string Manager<ActionType>::getCurrentPlayerName() const {
+template <class ActionType, class BoardType>
+std::string Manager<ActionType, BoardType>::getCurrentPlayerName() const {
     Player player = this->getConfiguration().player;
     for (auto candidate : players)
         if (std::get<0>(candidate) == player)
@@ -78,3 +92,23 @@ std::string Manager<ActionType>::getCurrentPlayerName() const {
     Cli::warning("CurrentPlayerName should be defined.");
     exit(1);
 };
+
+template <class ActionType, class BoardType>
+BoardType Manager<ActionType, BoardType>::evaluateAction(ActionType action) const {
+    return this->evaluateAction(action, this->getConfiguration());
+}
+
+template <class ActionType, class BoardType>
+void Manager<ActionType, BoardType>::applyAction(ActionType action) {
+    this->configurations.push_back(evaluateAction(action));
+    this->actions.push_back(action);
+}
+
+template <class ActionType, class BoardType>
+bool Manager<ActionType, BoardType>::actionEquivalence(
+    ActionType actionA, ActionType actionB) const {
+
+    return 
+        (this->evaluateAction(actionA)) == 
+        (this->evaluateAction(actionB));
+}
