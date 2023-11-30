@@ -8,7 +8,14 @@ CFLAGS += -std=c++11 # std=c++17 necessary for std::optional
 CFLAGS += -DDEBUG
 
 INCLUDES := -Iinclude
-LIBS := -lsfml-network -lsfml-graphics -lsfml-window -lsfml-system
+
+LIBS =
+ifdef MAC
+LIBS += -I/opt/homebrew/Cellar/sfml/2.6.1/include
+LIBS += -L/opt/homebrew/Cellar/sfml/2.6.1/lib 
+LIBS += -lsfml-graphics -lsfml-window -lsfml-system
+endif
+LIBS += -lsfml-network -lsfml-graphics -lsfml-window -lsfml-system
 
 TARGET_FOLDER := bin
 TARGET := $(TARGET_FOLDER)/main
