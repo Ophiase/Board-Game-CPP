@@ -73,6 +73,7 @@ class Geometry {
             sf::FloatRect rect, sf::FloatRect oldSpace, sf::FloatRect newSpace);
 
         static bool insideUnitBox(sf::Vector2f v);
+        static bool insideBox(sf::Vector2f v, sf::FloatRect rect);
 
         static sf::Vector2f screenPositionToWorldSpace(sf::Vector2i vector, 
             sf::Vector2u screenSize,

@@ -105,3 +105,27 @@ void Game::updateBoardSidedContent(BoardSided boardSided) {
     this->updateBoardContent(boardSided);
     throw NotImplemented();  
 };
+
+bool Game::mouseInsideCheckerBoard() {
+    sf::Vector2f mousePosition = 
+        this->getRelativeMousePosition();
+    
+    return Geometry::insideBox(mousePosition, 
+        sf::FloatRect{BOARD_POSITION, BOARD_SIZE});
+};
+
+bool Game::mouseOnCase() {
+    throw NotImplemented();
+};
+
+bool Game::mouseOnSide() {
+    throw NotImplemented();
+};
+
+CellPosition Game::getCellPosition() {
+    throw NotImplemented();
+};
+
+SidePosition Game::getSidePosition() {
+    throw NotImplemented();
+};

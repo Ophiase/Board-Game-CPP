@@ -172,6 +172,12 @@ bool Geometry::insideUnitBox(sf::Vector2f v) {
     return v.x >= 0.0 && v.y >= 0.0 && v.x <= 1.0 && v.y <= 1.0;
 }
 
+bool Geometry::insideBox(sf::Vector2f v, sf::FloatRect rect) {
+    return (v.x >= rect.left) && (v.y >= rect.top) &&
+        (v.x <= (rect.left + rect.width)) &&
+        (v.y <= (rect.top + rect.height));
+}
+
 sf::FloatRect Geometry::minRectangle(sf::FloatRect a, sf::FloatRect b) {
     if (b.top > a.top)
         std::swap(a, b);
