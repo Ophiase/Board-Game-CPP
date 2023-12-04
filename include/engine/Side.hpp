@@ -19,6 +19,8 @@ class SidePosition {
         SidePosition(const SidePosition & sidePostion) : 
             sideVector{sidePostion.sideVector}, 
             horizontal{sidePostion.horizontal} {};
+
+        std::string toString() const;
 };
 
 class SidePiece : public Piece {

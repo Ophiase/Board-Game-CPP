@@ -18,6 +18,12 @@ class Game : public Screen {
         void setCurrentPlayer(std::string currentPlayer);
         void setScores(std::vector<float> scores);
         void setScores(std::vector<int> scores);
+
+        /*
+            Position Inside The cell (centered toward the origin).
+            Returns values between (-0.5, -0.5) and (0.5, 0.5)
+        */
+        sf::Vector2f insideCellPosition() const;
     public:
         sf::Vector2f const BOARD_POSITION{0.1, 0.205};
         sf::Vector2f const BOARD_SIZE{0.5, 0.5};
@@ -30,10 +36,14 @@ class Game : public Screen {
 
         void draw() override;
 
-        bool mouseInsideCheckerBoard();
-        bool mouseOnCase();
-        bool mouseOnSide();
+        sf::Vector2f mouseBoardPosition() const;
+        bool mouseInsideCheckerBoard() const;
 
-        CellPosition getCellPosition();
-        SidePosition getSidePosition();
+        /* if extended it will not check that the case is inside the board */
+        bool mouseOnCase(bool extended=false) const;
+        /* if extended it will not check that the case is inside the board */
+        bool mouseOnSide(bool extended=false) const;
+
+        CellPosition getCellPosition() const;
+        SidePosition getSidePosition() const;
 };

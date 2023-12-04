@@ -46,6 +46,14 @@ void Container::add(DrawableHandler *drawableHandler, Priority priority) {
     addHandler(drawableHandler, priority);
 }
 
+sf::Vector2f Container::mouseWorldSpace() const {
+    return Geometry::screenPositionToWorldSpace(
+        sf::Mouse::getPosition(this->getConstRenderWindow()),
+        this->getConstRenderWindow().getSize(),
+        this->getScreen()
+        );
+};
+
 sf::Vector2f Container::getRelativeMousePosition() const {
     return Geometry::toFloat(sf::Mouse::getPosition(this->getConstRenderWindow()));
 }

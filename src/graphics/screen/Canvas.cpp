@@ -90,12 +90,7 @@ void Canvas::fit(sf::FloatRect targetBbox) {
 }
 
 sf::Vector2f Canvas::getRelativeMousePosition() const {
-    auto worldPosition = Geometry::screenPositionToWorldSpace(
-        sf::Mouse::getPosition(this->getConstRenderWindow()),
-        this->getConstRenderWindow().getSize(),
-        this->getScreen()
-        );
-
+    auto worldPosition = this->mouseWorldSpace();
     return sf::Vector2f{
         (worldPosition.x - this->getPosition().x) / this->getSize().x,
         (worldPosition.y - this->getPosition().y) / this->getSize().y

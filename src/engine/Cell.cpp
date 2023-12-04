@@ -1,4 +1,5 @@
 #include "engine/Cell.hpp"
+#include "utils/Cli.hpp"
 
 bool CellPiece::isNone () const {
     return this->pieceType == CellPieceType::NoneCell;

@@ -13,4 +13,5 @@ class Cli {
         
         static std::string to_string(sf::FloatRect rect);
         static std::string to_string(sf::Vector2f vect);
+        static std::string to_string(sf::Vector2i vect);
 };

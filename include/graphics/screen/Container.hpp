@@ -43,6 +43,6 @@ public:
     void addDrawing(Drawable *drawable, Priority priority = 0);
     void add(DrawableHandler *drawableHandler, Priority priority = 0);
 
-    sf::Vector2f mouseWorldSpace() const; // TODO
+    sf::Vector2f mouseWorldSpace() const;
     virtual sf::Vector2f getRelativeMousePosition() const;
 };

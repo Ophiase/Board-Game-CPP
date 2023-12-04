@@ -24,6 +24,25 @@ Game{launcher, "Loot"}, manager{} {
     }
 };
 
+void LootGame::handleEvent(sf::Event e) {
+    if (e.type != sf::Event::MouseButtonPressed)
+        return;
+
+    Cli::debug("---");
+
+    if (!mouseInsideCheckerBoard()) {
+        Cli::debug("outside");
+    }
+
+    if (mouseOnCase()) {
+        Cli::debug(Cli::to_string(getCellPosition()));
+    }
+
+    if (mouseOnSide()) {
+        Cli::debug(getSidePosition().toString());
+    }
+};
+
 void LootGame::draw() {
     Game::draw();
 };

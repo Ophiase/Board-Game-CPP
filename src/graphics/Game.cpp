@@ -4,6 +4,7 @@
 #include "graphics/screen/Text.hpp"
 #include "geometry/Geometry.hpp"
 #include "utils/NotImplemented.hpp"
+#include <cmath>
 
 Game::Game(Launcher *launcher, std::string title) : 
     Screen{launcher, title}, 
@@ -106,26 +107,74 @@ void Game::updateBoardSidedContent(BoardSided boardSided) {
     throw NotImplemented();  
 };
 
-bool Game::mouseInsideCheckerBoard() {
-    sf::Vector2f mousePosition = 
-        this->getRelativeMousePosition();
-    
-    return Geometry::insideBox(mousePosition, 
+// ---------------------------------------------
+
+sf::Vector2f Game::insideCellPosition() const {
+    sf::Vector2f mousePosition = this->mouseBoardPosition();
+    return sf::Vector2f{
+        fmodf(mousePosition.x * 8, 1.0) - 0.5f,
+        fmodf(mousePosition.y * 8, 1.0) - 0.5f
+    };
+}
+
+sf::Vector2f Game::mouseBoardPosition() const {
+    auto mouse = this->mouseWorldSpace();
+    return sf::Vector2f {
+        (mouse.x - BOARD_POSITION.x)/BOARD_SIZE.x,
+        (mouse.y - BOARD_POSITION.y)/BOARD_SIZE.y
+    };
+};
+
+bool Game::mouseInsideCheckerBoard() const {
+    return Geometry::insideBox(this->mouseWorldSpace(), 
         sf::FloatRect{BOARD_POSITION, BOARD_SIZE});
 };
 
-bool Game::mouseOnCase() {
-    throw NotImplemented();
+bool Game::mouseOnCase(bool extended) const {
+    const float cellTreshold = 0.7;
+    
+    if (!extended && !mouseInsideCheckerBoard())
+        return false;
+
+    sf::Vector2f positionInsideCell = this->insideCellPosition();
+    
+    return 
+        (abs(positionInsideCell.x) < (cellTreshold / 2.0)) &&
+        (abs(positionInsideCell.y) < (cellTreshold / 2.0));
 };
 
-bool Game::mouseOnSide() {
-    throw NotImplemented();
+bool Game::mouseOnSide(bool extended) const {
+    if (!extended && !mouseInsideCheckerBoard())
+        return false;
+    
+    return !mouseOnCase(true);
 };
 
-CellPosition Game::getCellPosition() {
-    throw NotImplemented();
+CellPosition Game::getCellPosition() const {
+    sf::Vector2f mousePosition = this->mouseBoardPosition();
+    return CellPosition{
+        (int)(std::floor(mousePosition.x * 8)),
+        (int)(std::floor(mousePosition.y * 8))
+    };
 };
 
-SidePosition Game::getSidePosition() {
-    throw NotImplemented();
+SidePosition Game::getSidePosition() const {
+    auto cellPosition = getCellPosition();
+    sf::Vector2f positionInsideCell = this->insideCellPosition();
+
+    bool horizontal = 
+        std::abs(positionInsideCell.x) < std::abs(positionInsideCell.y);
+
+    if (horizontal)
+        return SidePosition(
+            SideVector {
+                cellPosition.x,
+                cellPosition.y + (int)(positionInsideCell.y > 0)
+            }, true);
+        
+    return SidePosition(
+            SideVector {
+                cellPosition.x + (int)(positionInsideCell.x > 0),
+                cellPosition.y
+            }, false);
 };

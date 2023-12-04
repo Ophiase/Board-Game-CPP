@@ -38,3 +38,11 @@ std::string Cli::to_string(sf::Vector2f vect) {
         std::to_string(vect.x) + ", " +
         std::to_string(vect.y) + ")";
 }
+
+std::string Cli::to_string(sf::Vector2i vect) {
+    return "(" +
+        std::to_string(vect.x) + ", " +
+        std::to_string(vect.y) + ")";
+}
+
+

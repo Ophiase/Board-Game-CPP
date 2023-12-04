@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 /*
     Forward declaration for Cell.hpp, Side.hpp Owning.hpp
 */

@@ -1,4 +1,5 @@
 #include "engine/Side.hpp"
+#include "utils/Cli.hpp"
 
 bool SidePiece::isNone() const {
     return this->pieceType == SidePieceType::NoneSide;
@@ -16,6 +17,11 @@ Player SidePiece::owner() const {
             return NonePlayer;
     }
 }
+
+std::string SidePosition::toString() const {
+    return (this->horizontal ? "horizontal" : "vertical") + 
+        Cli::to_string(this->sideVector);
+};
 
 bool SidePiece::operator==(SidePiece other) const {
     return this->pieceType == other.pieceType;

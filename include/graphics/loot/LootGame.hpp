@@ -10,4 +10,5 @@ class LootGame : public Game {
     public:
         LootGame(Launcher *launcher);
         void draw() override;
+        void handleEvent(sf::Event) override;
 };
