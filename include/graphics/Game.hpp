@@ -14,6 +14,7 @@ class Game : public Screen {
         Text currentPlayer;
         Text score;
         TextButton exitButton;
+        Text message;
     protected:
         void setCurrentPlayer(std::string currentPlayer);
         void setScores(std::vector<float> scores);
@@ -27,8 +28,14 @@ class Game : public Screen {
     public:
         sf::Vector2f const BOARD_POSITION{0.1, 0.205};
         sf::Vector2f const BOARD_SIZE{0.5, 0.5};
+        
+        /*
+            Percentage of a cell that is considered as cell (instead of side).
+        */
+        float const CELL_TRESHOLD;
 
-        Game(Launcher *launcher, std::string title="Game");
+        Game(Launcher *launcher, std::string title="Game", 
+            float CELL_TRESHOLD=0.7);
 
         void updateBoard();
         void updateBoardContent(Board board);
@@ -46,4 +53,6 @@ class Game : public Screen {
 
         CellPosition getCellPosition() const;
         SidePosition getSidePosition() const;
+
+        void setMessage(std::string);
 };

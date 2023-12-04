@@ -6,17 +6,20 @@
 #include "utils/NotImplemented.hpp"
 #include <cmath>
 
-Game::Game(Launcher *launcher, std::string title) : 
-    Screen{launcher, title}, 
+Game::Game(Launcher *launcher, std::string title, float CELL_TRESHOLD) : 
+    Screen{launcher, title},
     currentPlayer{this, "Turn: ?"},
     score{this, ""},
     exitButton{this, "Exit",
         [this](sf::Event) -> void{
             this->alive = false;
-        },
-    } {
+        }, }, 
+    message{this, "", sf::Vector2f{0.5,0.15}, 0.05},
+    CELL_TRESHOLD{CELL_TRESHOLD} {
 
     Cli::info("Choose : " + title);
+
+    setMessage("You can play!");
 
     auto boardRes = ResourcesLoader::getTexture(Texture::CheckerBoard0)->getSize();
     this->checkBoardTexture.create(boardRes.x, boardRes.y);
@@ -59,6 +62,12 @@ void Game::setScores(std::vector<int> scores) {
     this->score.setText(scoreText, true);
 }
 
+void Game::setMessage(std::string msg) {
+    auto mid = this->message.getMid();
+    this->message.setText(msg);
+    this->message.center(mid);
+};
+
 void Game::draw() {
     Screen::draw();  
     this->getRenderWindow().draw(this->checkerBoardImage);
@@ -79,7 +88,7 @@ void Game::updateBoardContent(Board board) {
     this->updateBoard();
 
     float cellSpace = (float)(this->checkBoardTexture.getSize().x / 8); 
-    float pieceScale = 0.8;
+    float pieceScale = 0.7;
     float pieceSize = cellSpace*pieceScale;
 
     sf::RectangleShape piece{sf::Vector2f{
@@ -131,16 +140,14 @@ bool Game::mouseInsideCheckerBoard() const {
 };
 
 bool Game::mouseOnCase(bool extended) const {
-    const float cellTreshold = 0.7;
-    
     if (!extended && !mouseInsideCheckerBoard())
         return false;
 
     sf::Vector2f positionInsideCell = this->insideCellPosition();
     
     return 
-        (abs(positionInsideCell.x) < (cellTreshold / 2.0)) &&
-        (abs(positionInsideCell.y) < (cellTreshold / 2.0));
+        (abs(positionInsideCell.x) < (CELL_TRESHOLD / 2.0)) &&
+        (abs(positionInsideCell.y) < (CELL_TRESHOLD / 2.0));
 };
 
 bool Game::mouseOnSide(bool extended) const {

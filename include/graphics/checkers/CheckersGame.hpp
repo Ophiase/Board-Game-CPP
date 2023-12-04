@@ -5,5 +5,5 @@
 class CheckersGame : public Game {
     public:
         CheckersGame(Launcher *launcher) : 
-        Game{launcher, "Checkers"} {};
+        Game{launcher, "Checkers", 1.0f} {};
 };

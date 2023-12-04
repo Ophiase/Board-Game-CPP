@@ -3,6 +3,14 @@
 
 #include <random>
 
+// ------------------------------------------------------------
+// INITIALISATION
+
+LootManager::LootManager(int nPlayers) : 
+    Manager<LootAction, Board>{makePlayers(nPlayers)} {
+    configurations.push_back(initialBoard());
+};
+
 std::vector<
     std::tuple<Player, std::string>
     > LootManager::makePlayers(int n) {
@@ -17,11 +25,6 @@ std::vector<
 
     return output;
 }
-
-LootManager::LootManager(int nPlayers) : 
-    Manager<LootAction, Board>{makePlayers(nPlayers)} {
-    configurations.push_back(initialBoard());
-};
 
 CellPiece LootManager::randomCellPiece(int & ry, int & rd, int & rb) {
     int r = rand() % (ry+rd+rb);
@@ -57,6 +60,7 @@ Board LootManager::initialBoard() {
     return Board(cellPieces, 0);
 };
 
+// ------------------------------------------------------------
 
 
 std::vector<LootAction> LootManager::getActions() const {

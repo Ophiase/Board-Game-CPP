@@ -2,11 +2,10 @@
 #include "graphics/Launcher.hpp"
 
 LootGame::LootGame(Launcher *launcher) :
-Game{launcher, "Loot"}, manager{} {
+Game{launcher, "Loot", 1.0f}, manager{} {
     
-    {
-        this->setCurrentPlayer(this->manager.getCurrentPlayerName());
-    }
+    this->setMessage("Select a yellow pawn.");
+    this->setCurrentPlayer(this->manager.getCurrentPlayerName());
 
     {
         auto nPlayers = new Text{this,
@@ -22,25 +21,29 @@ Game{launcher, "Loot"}, manager{} {
     {
         this->updateBoardContent(manager.getConfiguration());
     }
+
+    {
+        // add a validation action button
+    }
+};
+
+
+void handleMouse(sf::Event e) {
+    (void)e;
+};
+
+void handleKeyboard(sf::Event e) {
+    (void)e;
 };
 
 void LootGame::handleEvent(sf::Event e) {
-    if (e.type != sf::Event::MouseButtonPressed)
-        return;
+    Game::handleEvent(e);
 
-    Cli::debug("---");
-
-    if (!mouseInsideCheckerBoard()) {
-        Cli::debug("outside");
-    }
-
-    if (mouseOnCase()) {
-        Cli::debug(Cli::to_string(getCellPosition()));
-    }
-
-    if (mouseOnSide()) {
-        Cli::debug(getSidePosition().toString());
-    }
+    if (e.type == sf::Event::MouseButtonPressed)
+        handleMouse(e);
+    
+    if (e.type == sf::Event::KeyPressed)
+        handleKeyboard(e);
 };
 
 void LootGame::draw() {

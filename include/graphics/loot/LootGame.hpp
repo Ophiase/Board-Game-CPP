@@ -7,8 +7,10 @@
 class LootGame : public Game {
     protected:
         LootManager manager;
+        std::vector<CellPosition> cacheAction;
     public:
         LootGame(Launcher *launcher);
         void draw() override;
         void handleEvent(sf::Event) override;
+        void playAction();
 };
