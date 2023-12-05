@@ -96,7 +96,7 @@ void LootGame::updateBoardContent (Board board) {
     }};
     
     arrow.setTexture(ResourcesLoader::getTexture(Texture::Arrow));
-    for (int i = 1; i < cacheAction.size(); i++) {
+    for (uint i = 1; i < cacheAction.size(); i++) {
         CellPosition position = (cacheAction[i] + cacheAction[i-1]) / 2;
 
         float px = (arrowSpace * (position.x + 0.5)) - offset;
@@ -142,7 +142,8 @@ void LootGame::handleMouse(sf::Event e) {
 };
 
 void LootGame::handleKeyboard(sf::Event e) {
-    (void)e;
+    if (e.key.code == sf::Keyboard::Return)
+        playAction();
 };
 
 void LootGame::handleEvent(sf::Event e) {
