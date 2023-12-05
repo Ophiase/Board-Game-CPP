@@ -64,6 +64,8 @@ void LootGame::updateBoardContent (Board board) {
     Game::updateBoardContent(board);
     if (cacheAction.empty()) return;
 
+    // SELECTION
+
     float circleSpace = (float)(this->checkBoardTexture.getSize().x / 8); 
     float circleScale = 1.0;
     float circleSize = circleSpace*circleScale;
@@ -81,6 +83,27 @@ void LootGame::updateBoardContent (Board board) {
 
         circle.setPosition(px, py);
         checkBoardTexture.draw(circle);
+    }
+
+    // ARROWS
+
+    float arrowSpace = (float)(this->checkBoardTexture.getSize().x / 8); 
+    float arrowScale = 1.0;
+    float arrowSize = arrowSpace*arrowScale;
+
+    sf::RectangleShape arrow{sf::Vector2f{
+        arrowSize, arrowSize
+    }};
+    
+    arrow.setTexture(ResourcesLoader::getTexture(Texture::Arrow));
+    for (int i = 1; i < cacheAction.size(); i++) {
+        CellPosition position = (cacheAction[i] + cacheAction[i-1]) / 2;
+
+        float px = (arrowSpace * (position.x + 0.5)) - offset;
+        float py = (arrowSpace * (position.y + 0.5)) - offset;
+
+        arrow.setPosition(px, py);
+        checkBoardTexture.draw(arrow);
     }
 }
 
