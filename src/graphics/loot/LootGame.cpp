@@ -23,18 +23,43 @@ Game{launcher, "Loot", 1.0f}, manager{} {
     }
 
     {
-        // add a validation action button
+        auto validationButton = new TextButton{
+            this, "Play", [this](sf::Event) -> void {
+                this->playAction();
+            }
+        }; 
+        
+        validationButton->setSizeY(0.05);
+        validationButton->center(0.7, 0.7);
+
+        // TODO GARBAGE
     }
+
+    interactive = ! manager.getCurrentPlayer().isAI;
+    if (!interactive)
+        AIturn();
 };
 
+// --------------------------------------------------
 
+void LootGame::playAction() {
+    if (interactive)
 
+    Cli::debug("I'm playing");
+    throw NotImplemented();
+}
 
-void handleMouse(sf::Event e) {
+void LootGame::AIturn() {
+    throw NotImplemented();
+}
+
+// --------------------------------------------------
+
+void LootGame::handleMouse(sf::Event e) {
     (void)e;
 };
 
-void handleKeyboard(sf::Event e) {
+void LootGame::handleKeyboard(sf::Event e) {
     (void)e;
 };
 

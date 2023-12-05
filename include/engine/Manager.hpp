@@ -85,7 +85,7 @@ Player Manager<ActionType, BoardType>::getCurrentPlayer() const {
         if (players[i] == player)
             return players[i];
 
-    Cli::warning("Current player should be defined.");
+    Cli::error("Current player should be defined.");
     exit(1);
 }
 
@@ -96,7 +96,7 @@ int Manager<ActionType, BoardType>::getCurrentPlayerIndex() const {
         if (players[i] == player)
             return i;
 
-    Cli::warning("Current player index should be defined.");
+    Cli::error("Current player index should be defined.");
     exit(1);
 }
 

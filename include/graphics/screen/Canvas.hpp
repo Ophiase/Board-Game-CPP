@@ -52,6 +52,7 @@ class Canvas : public Container {
             canvas.position <- position - canvas.mid
         */
         void center(sf::Vector2f position);
+        void center(float x, float y);
 
         /*
             canvas.position <- position - relAnchor

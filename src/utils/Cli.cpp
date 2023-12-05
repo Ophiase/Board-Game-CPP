@@ -1,14 +1,20 @@
 #include "utils/Cli.hpp"
 #include <iostream>
 
-#define UNREFERENCED_PARAMETER(P)          (P)
+bool Cli::muted = false;
 
 void Cli::info(std::string message) {
+    if (muted) return;
     std::cout << "[Info] " << message << std::endl;
 }
 
 void Cli::warning(std::string message) {
-    std::cerr << "<Warning> " << message << std::endl;
+    if (muted) return;
+    std::cout << "<Warning> " << message << std::endl;
+}
+
+void Cli::error(std::string message) {
+    std::cerr << "<Error> " << message << std::endl;
 }
 
 void Cli::debug(std::string message) {
@@ -25,7 +31,7 @@ std::string Cli::formatInt(int number, size_t k) {
     return std::string(zerosToAdd, '0') + numberStr;
 }
 
-std::string Cli::to_string(sf::FloatRect rect) {
+std::string Cli::toString(sf::FloatRect rect) {
     return "[" +
         std::to_string(rect.left) + ", " +
         std::to_string(rect.top) + " : " +
@@ -33,13 +39,13 @@ std::string Cli::to_string(sf::FloatRect rect) {
         std::to_string(rect.height) + "]";
 }
 
-std::string Cli::to_string(sf::Vector2f vect) {
+std::string Cli::toString(sf::Vector2f vect) {
     return "(" +
         std::to_string(vect.x) + ", " +
         std::to_string(vect.y) + ")";
 }
 
-std::string Cli::to_string(sf::Vector2i vect) {
+std::string Cli::toString(sf::Vector2i vect) {
     return "(" +
         std::to_string(vect.x) + ", " +
         std::to_string(vect.y) + ")";

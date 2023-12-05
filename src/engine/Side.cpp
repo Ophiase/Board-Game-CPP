@@ -20,7 +20,7 @@ PlayerId SidePiece::owner() const {
 
 std::string SidePosition::toString() const {
     return (this->horizontal ? "horizontal" : "vertical") + 
-        Cli::to_string(this->sideVector);
+        Cli::toString(this->sideVector);
 };
 
 bool SidePiece::operator==(SidePiece other) const {

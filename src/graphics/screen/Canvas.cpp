@@ -63,6 +63,10 @@ void Canvas::center(sf::Vector2f position) {
     this->setPosition(position - this->getRelMid());
 }
 
+void Canvas::center(float x, float y) {
+    this->center(sf::Vector2f{x, y});
+}
+
 void Canvas::center(sf::Vector2f position, sf::Vector2f relAnchor) {
     this->position = position - relAnchor;
 }
