@@ -21,7 +21,7 @@ class LootManager : public Manager<LootAction, Board> {
         LootManager(int nPlayers = 2);
 
         std::vector<LootAction> getActions() const override;
-        bool canPlay(LootAction action) const override;
+        bool canPlayAction(LootAction action) const override;
         Board evaluateAction(
             LootAction action, Board board) const override;
         

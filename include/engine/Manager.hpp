@@ -41,7 +41,7 @@ class Manager {
         /*
             Is action authorized/correct.
         */
-        virtual bool canPlay(ActionType action) const = 0;
+        virtual bool canPlayAction(ActionType action) const = 0;
         
         /*
             See the effect of the action

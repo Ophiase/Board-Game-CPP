@@ -73,6 +73,15 @@ run: $(TARGET)
 test: $(TARGET_TEST)
 	./$<
 
+
 clean:
 	rm -rf $(TARGET_FOLDER)
 	rm -rf obj
+
+# do not remove everytime resources folder
+cleansoft:
+	rm -f $(TARGET)
+	rm -f $(TARGET_TEST)
+	rm -rf obj
+
+re: cleansoft run

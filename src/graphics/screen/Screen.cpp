@@ -9,7 +9,8 @@ Container{launcher}, title{title} {
         0.35, 0.0,
         0.3, 0.1
     });
-    // TODO garbage collect it
+    
+    this->addObjectToDelete(textTitle);
 }
 
 bool Screen::isAlive() { 

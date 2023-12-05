@@ -9,6 +9,8 @@
 
 using Priority = int;
 
+class Canvas;
+
 /*
     Can contains sub component
 */
@@ -32,9 +34,13 @@ private:
 
     std::vector<std::tuple<Handler*, Priority>> handlers;
     std::vector<std::tuple<Drawable*, Priority>> drawables;
+    std::vector<Canvas*> deleteList;
 public:
     Container(Launcher *launcher) : DrawableHandler{launcher} {};
     Container(Container *parent, bool withHandler=true);
+    ~Container();
+
+    void addObjectToDelete(Canvas *d);
 
     void handleEvent(sf::Event event);
     void draw();

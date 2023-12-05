@@ -273,8 +273,13 @@ sf::Texture *ResourcesLoader::getTexture(SidePiece piece) {
     return getTexture(toSourceTexture(piece));
 }
 
-sf::Texture *ResourcesLoader::getCharTexture(char c) {
-    return charTextureMap.at(c);
+sf::Texture *ResourcesLoader::getCharTexture(char c, bool unsafe) {
+    if (unsafe)
+        return charTextureMap.at(c);
+    
+    return (charTextureMap.find(c) != charTextureMap.end()) ? 
+        charTextureMap.at(c) : 
+        charTextureMap.at('?');
 }
 
 sf::Font *ResourcesLoader::getFont(Font::SourceFont font) {

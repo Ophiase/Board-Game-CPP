@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include "SFML/Graphics.hpp"
 
 class Cli {
@@ -17,4 +18,8 @@ class Cli {
         static std::string toString(sf::FloatRect rect);
         static std::string toString(sf::Vector2f vect);
         static std::string toString(sf::Vector2i vect);
+
+        static std::string toString(std::vector<int> vect);
+        static std::string toString(std::vector<sf::Vector2f> vect);
+        static std::string toString(std::vector<sf::Vector2i> vect);
 };

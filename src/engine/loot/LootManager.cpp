@@ -64,7 +64,7 @@ std::vector<LootAction> LootManager::getActions() const {
     throw NotImplemented();
 };
 
-bool LootManager::canPlay(LootAction action) const {
+bool LootManager::canPlayAction(LootAction action) const {
     if (action.jumps.size() == 0)
         return false;
     

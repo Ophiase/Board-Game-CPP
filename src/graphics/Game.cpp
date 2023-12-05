@@ -37,7 +37,8 @@ Game::Game(Launcher *launcher, std::string title, float CELL_TRESHOLD) :
         auto scoreText = new Text{this, "Scores", 
             sf::Vector2f{0.70, 0.20}, 0.05
         };
-        (void)scoreText; // TODO DESTROY
+        this->addObjectToDelete(scoreText);
+
         score.setSizeY(0.05);
         score.center(scoreText->getMid() + sf::Vector2f{0.0, 0.05});
     }
@@ -62,6 +63,9 @@ void Game::setScores(std::vector<int> scores) {
     this->score.setText(scoreText, true);
 }
 
+/*
+    <Warning> chars need to be supported by ResourcesLoader
+*/
 void Game::setMessage(std::string msg) {
     auto mid = this->message.getMid();
     this->message.setText(msg);

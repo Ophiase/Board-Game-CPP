@@ -1,4 +1,5 @@
 #include "graphics/screen/Container.hpp"
+#include "graphics/screen/Canvas.hpp"
 #include "geometry/Geometry.hpp"
 #include "algorithm"
 #include "utils/Cli.hpp"
@@ -20,6 +21,15 @@ Container::Container(Container *parent, bool withHandler) : DrawableHandler{pare
     if (withHandler)
         parent->addHandler(this);
 }
+
+Container::~Container() {
+    for (Canvas *d : deleteList)
+        delete d;
+}
+
+void Container::addObjectToDelete(Canvas *d) {
+    this->deleteList.push_back(d);
+};
 
 void Container::handleEvent(sf::Event event) {
     for (auto handler : this->handlers)

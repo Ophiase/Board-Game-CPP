@@ -17,6 +17,8 @@ class Canvas : public Container {
             bool withHandler = true
             );
 
+        virtual ~Canvas() = default;
+
         sf::Vector2f getSize() const;
         void setSize(sf::Vector2f size);
         

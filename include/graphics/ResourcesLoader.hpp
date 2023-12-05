@@ -101,7 +101,7 @@ public:
     //static bool unload(); // TODO, dealocate
 
     static sf::Texture *getTexture(Texture::SourceTexture texture);
-    static sf::Texture *getCharTexture(char c);
+    static sf::Texture *getCharTexture(char c, bool unsafe=false);
     static sf::Texture *getTexture(CellPiece piece);
     static sf::Texture *getTexture(SidePiece piece);
 

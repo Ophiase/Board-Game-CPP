@@ -39,6 +39,10 @@ Menu::Menu(Launcher *launcher) : Screen{launcher, "Menu"} {
     lootGameButton->center(sf::Vector2f{0.5, 0.30});
     checkersGameButton->center(sf::Vector2f{0.5, 0.45});
     bullTrickerGameButton->center(sf::Vector2f{0.5, 0.60});
+
+    this->addObjectToDelete(lootGameButton);
+    this->addObjectToDelete(checkersGameButton);
+    this->addObjectToDelete(bullTrickerGameButton);
 };
 
 void Menu::draw() {

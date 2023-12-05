@@ -8,6 +8,7 @@ class LootGame : public Game {
     protected:
         LootManager manager;
         std::vector<CellPosition> cacheAction;
+        void cancelAction();
         void playAction();
         void AIturn();
 
@@ -18,6 +19,7 @@ class LootGame : public Game {
 
         void handleMouse(sf::Event);
         void handleKeyboard(sf::Event);
+        void handleCheckerBoard();
     public:
         LootGame(Launcher *launcher);
         void draw() override;

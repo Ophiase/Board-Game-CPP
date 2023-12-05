@@ -21,6 +21,9 @@ class Text : virtual public Canvas {
         const float overlap{0.6f};
         sf::Color color{DEFAULT_COLOR};
     public:
+        /*
+            <Warning> chars need to be supported by ResourcesLoader
+        */
         Text(Container *parent, 
             std::string text,
             sf::Vector2f position = sf::Vector2f{0.0, 0.0}, 
@@ -28,6 +31,9 @@ class Text : virtual public Canvas {
             bool withHandler = false
             );
 
+        /*
+            <Warning> chars need to be supported by ResourcesLoader
+        */
         void setText(std::string text, bool center=false);
         std::string getText() const;
 
