@@ -51,9 +51,10 @@ void ResourcesLoader::initializeTextures() {
         make_tuple(PawnBlackBis, "entity/pawn_black_bis"),
         make_tuple(PawnWhite, "entity/pawn_white"),
         make_tuple(PawnWhiteBis, "entity/pawn_white_bis"),
-        make_tuple(PawnRed, "entity/pawn_red"),
+
+        make_tuple(PawnRed, "entity/pawn_red_bis"),
         make_tuple(PawnGreen, "entity/pawn_green"),
-        make_tuple(PawnYellow, "entity/pawn_yellow"),
+        make_tuple(PawnYellow, "entity/pawn_yellow_bis"),
         make_tuple(PawnBlue, "entity/pawn_blue")
     };
 
