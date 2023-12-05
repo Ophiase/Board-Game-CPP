@@ -5,7 +5,11 @@ CC := g++
 
 CFLAGS := -g -Wall -Wextra 
 CFLAGS += -std=c++11 # std=c++17 necessary for std::optional
+
+ifdef RELEASE
+else
 CFLAGS += -DDEBUG
+endif
 
 INCLUDES := -Iinclude
 

@@ -24,6 +24,11 @@ Compilation
 ```bash
 make
 ```
+Flags
+```bash
+make RELEASE=1  # to disable debugging.
+make MAC=1      # necessary on MAC OS
+```
 
 # Execution
 
