@@ -67,6 +67,9 @@ std::vector<LootAction> LootManager::getActions() const {
 bool LootManager::canPlayAction(LootAction action) const {
     if (action.jumps.size() == 0)
         return false;
+
+    if (action.jumps.size() != 1 && step() < players.size())
+        return false;
     
     auto configuration = getConfiguration();
     if (!configuration.isCaseInBoard(action.jumps[0]))
