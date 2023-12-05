@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 #include "SFML/Graphics.hpp"
+#include <iostream>
+#include <sstream>
 
 class Cli {
     public:
@@ -22,4 +24,11 @@ class Cli {
         static std::string toString(std::vector<int> vect);
         static std::string toString(std::vector<sf::Vector2f> vect);
         static std::string toString(std::vector<sf::Vector2i> vect);
+
+        template <typename T>
+        static std::string toString(const T *pointer) {
+            std::ostringstream oss;
+            oss << "[ " <<  pointer << " ]";
+            return oss.str();
+        }
 };

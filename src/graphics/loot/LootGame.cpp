@@ -3,7 +3,6 @@
 
 LootGame::LootGame(Launcher *launcher) :
 Game{launcher, "Loot", 1.0f}, manager{} {
-
     {
         auto nPlayers = new Text{this,
             std::to_string(this->manager.players.size()) +
@@ -16,29 +15,7 @@ Game{launcher, "Loot", 1.0f}, manager{} {
         this->addObjectToDelete(nPlayers);
     }
 
-    {
-        auto validationButton = new TextButton{
-            this, "Play", [this](sf::Event) -> void {
-                this->playAction();
-            }
-        }; 
-        
-        validationButton->setSizeY(0.05);
-        validationButton->center(0.8, 0.65);
-        this->addObjectToDelete(validationButton);
-    }
 
-    {
-        auto cancelButton = new TextButton{
-            this, "Cancel", [this](sf::Event) -> void {
-                this->cancelAction();
-            }
-        }; 
-        
-        cancelButton->setSizeY(0.05);
-        cancelButton->center(0.8, 0.45);
-        this->addObjectToDelete(cancelButton);
-    }
 
     this->startTurn();
 

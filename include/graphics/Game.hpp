@@ -1,5 +1,6 @@
 #pragma once
 
+#include "utils/NotImplemented.hpp"
 #include "graphics/screen/Screen.hpp"
 #include "engine/BoardSided.hpp"
 #include "graphics/screen/Text.hpp"
@@ -25,6 +26,33 @@ class Game : public Screen {
             Returns values between (-0.5, -0.5) and (0.5, 0.5)
         */
         sf::Vector2f insideCellPosition() const;
+
+        /*
+            Reset interface on begining of a turn.
+        */
+        virtual void startTurn();
+
+        /*
+            If cache is empty, it cancel the last action,
+            otherwise it empty the cache. 
+        */
+        virtual void cancelAction();
+
+        /*
+            Launch the action in cache.
+        */
+        virtual void playAction();
+
+        /*
+            Delegate turn to an AI.
+        */
+        virtual void AIturn();
+
+        /*
+            Can the user interact with the game ? 
+        */
+        bool interactive{false};
+
     public:
         sf::Vector2f const BOARD_POSITION{0.1, 0.24};
         sf::Vector2f const BOARD_SIZE{0.5, 0.5};

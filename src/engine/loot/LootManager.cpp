@@ -86,8 +86,8 @@ bool LootManager::canPlayAction(LootAction action) const {
         if (!(
             (diff == CellPosition(2, 0)) || (diff == CellPosition(-2, 0)) ||
             (diff == CellPosition(0, 2)) || (diff == CellPosition(0, -2)) ||
-            (diff == CellPosition(1, 1)) || (diff == CellPosition(-1, -1)) ||
-            (diff == CellPosition(-1, 1)) || (diff == CellPosition(1, -1))
+            (diff == CellPosition(2, 2)) || (diff == CellPosition(-2, -2)) ||
+            (diff == CellPosition(-2, 2)) || (diff == CellPosition(2, -2))
         ))
             return false;
 

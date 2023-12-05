@@ -43,6 +43,30 @@ Game::Game(Launcher *launcher, std::string title, float CELL_TRESHOLD) :
         score.setSizeY(0.05);
         score.center(scoreText->getMid() + sf::Vector2f{0.0, 0.05});
     }
+
+    {
+        auto validationButton = new TextButton{
+            this, "Play", [this](sf::Event) -> void {
+                this->playAction();
+            }
+        }; 
+        
+        validationButton->setSizeY(0.05);
+        validationButton->center(0.8, 0.65);
+        this->addObjectToDelete(validationButton);
+    }
+
+    {
+        auto cancelButton = new TextButton{
+            this, "Cancel", [this](sf::Event) -> void {
+                this->cancelAction();
+            }
+        }; 
+        
+        cancelButton->setSizeY(0.05);
+        cancelButton->center(0.8, 0.45);
+        this->addObjectToDelete(cancelButton);
+    }
 };
 
 void Game::setCurrentPlayer(std::string currentPlayer) {
@@ -72,6 +96,16 @@ void Game::setMessage(std::string msg) {
     this->message.setText(msg);
     this->message.center(mid);
 };
+
+// ---------------------------------------------
+
+void Game::startTurn() { throw NotImplemented(); };
+void Game::cancelAction() { throw NotImplemented(); };
+void Game::playAction() { Cli::debug("no"); return; throw NotImplemented(); };
+void Game::AIturn() { throw NotImplemented(); };
+
+// ---------------------------------------------
+
 
 void Game::draw() {
     Screen::draw();  
