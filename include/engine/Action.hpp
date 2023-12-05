@@ -18,6 +18,6 @@ class Action {
     
     private:
     public:
-        const Player author;
-        Action(Player author) : author{author} {};
+        const PlayerId author;
+        Action(PlayerId author) : author{author} {};
 };

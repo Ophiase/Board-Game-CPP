@@ -11,17 +11,14 @@ LootManager::LootManager(int nPlayers) :
     configurations.push_back(initialBoard());
 };
 
-std::vector<
-    std::tuple<Player, std::string>
-    > LootManager::makePlayers(int n) {
-    
-    std::vector<std::tuple<Player, std::string>> output;
+std::vector<Player> LootManager::makePlayers(int n) {
+    std::vector<Player> output;
 
     for (int i = 0; i < n; i++)
-        output.push_back(std::make_tuple(
+        output.push_back(Player{
             i,
             "Player_" + std::to_string(i)
-        ));
+        });
 
     return output;
 }
@@ -116,8 +113,9 @@ Board LootManager::evaluateAction(
     }
 
     int nPlayers = players.size();
-    Player nextPlayer = std::get<0>(
-        players[getCurrentPlayerIndex() % nPlayers]);
+    PlayerId nextPlayer = (
+        players[getCurrentPlayerIndex() % nPlayers]
+        ).id;
     
     return Board{cells, nextPlayer};
 }

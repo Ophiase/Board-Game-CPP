@@ -5,7 +5,7 @@ LootGame::LootGame(Launcher *launcher) :
 Game{launcher, "Loot", 1.0f}, manager{} {
     
     this->setMessage("Select a yellow pawn.");
-    this->setCurrentPlayer(this->manager.getCurrentPlayerName());
+    this->setCurrentPlayer(this->manager.getCurrentPlayer().name);
 
     {
         auto nPlayers = new Text{this,
@@ -26,6 +26,8 @@ Game{launcher, "Loot", 1.0f}, manager{} {
         // add a validation action button
     }
 };
+
+
 
 
 void handleMouse(sf::Event e) {

@@ -5,7 +5,7 @@ bool CellPiece::isNone () const {
     return this->pieceType == CellPieceType::NoneCell;
 }
 
-Player CellPiece::owner() const {
+PlayerId CellPiece::owner() const {
     switch(this->pieceType) {
         case CellPieceType::BlackPawn : 
         case CellPieceType::BlackKing :

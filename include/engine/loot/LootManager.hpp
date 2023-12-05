@@ -17,9 +17,7 @@ class LootManager : public Manager<LootAction, Board> {
         const int TOTAL_RED_PAWN = 20;
         const int TOTAL_BLACK_PAWN = 10;
 
-        static std::vector<
-            std::tuple<Player, std::string>
-            > makePlayers(int n);
+        static std::vector<Player> makePlayers(int n);
         LootManager(int nPlayers = 2);
 
         std::vector<LootAction> getActions() const override;

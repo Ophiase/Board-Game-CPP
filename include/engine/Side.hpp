@@ -32,7 +32,7 @@ class SidePiece : public Piece {
             pieceType{pieceType} {};
 
         bool isNone() const;
-        Player owner() const;
+        PlayerId owner() const;
 
         bool operator==(SidePiece other) const;
         bool operator==(SidePieceType other) const;

@@ -12,7 +12,7 @@ class BoardSided : public Board {
             std::vector<std::vector<CellPiece>> cellPieces, 
             std::vector<std::vector<SidePiece>> horizontalSidePieces,
             std::vector<std::vector<SidePiece>> verticalSidePieces,
-            Player player) : 
+            PlayerId player) : 
                 Board{cellPieces, player}, 
                 horizontalSidePieces{horizontalSidePieces},
                 verticalSidePieces{verticalSidePieces} 

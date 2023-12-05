@@ -8,6 +8,7 @@
 #include <type_traits>
 #include <stdexcept>
 #include "utils/Cli.hpp"
+#include "Player.hpp"
 
 template <class ActionType, class BoardType>
 class Manager {
@@ -21,18 +22,17 @@ class Manager {
         std::vector<ActionType> actions;
         virtual BoardType initialBoard() = 0;
         Manager(
-            std::vector<std::tuple<Player, std::string>> players) : 
+            std::vector<Player> players) : 
             players{players} {};
 
         int getCurrentPlayerIndex() const;
     public:
-        const std::vector<std::tuple<Player, std::string>> players;
+        const std::vector<Player> players;
 
         BoardType getConfiguration() const;
         ActionType getLastAction() const;
         Player getCurrentPlayer() const;
-        std::string getCurrentPlayerName() const;
-
+        
         /*
             All possibles action from current configuration (up to isomorphism).
         */
@@ -80,24 +80,26 @@ int Manager<ActionType, BoardType>::step() const {
 
 template <class ActionType, class BoardType>
 Player Manager<ActionType, BoardType>::getCurrentPlayer() const {
-    return this->getConfiguration().player;
-};
+    PlayerId player = this->getConfiguration().player;
+    for (uint i = 0; i < players.size(); i++)
+        if (players[i] == player)
+            return players[i];
+
+    Cli::warning("Current player should be defined.");
+    exit(1);
+}
 
 template <class ActionType, class BoardType>
 int Manager<ActionType, BoardType>::getCurrentPlayerIndex() const {
-    Player player = this->getConfiguration().player;
+    PlayerId player = this->getConfiguration().player;
     for (uint i = 0; i < players.size(); i++)
-        if (std::get<0>(players[i]) == player)
+        if (players[i] == player)
             return i;
 
     Cli::warning("Current player index should be defined.");
     exit(1);
 }
 
-template <class ActionType, class BoardType>
-std::string Manager<ActionType, BoardType>::getCurrentPlayerName() const {
-    return std::get<1>(players[getCurrentPlayerIndex()]);
-};
 
 template <class ActionType, class BoardType>
 BoardType Manager<ActionType, BoardType>::evaluateAction(ActionType action) const {

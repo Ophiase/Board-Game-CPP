@@ -13,9 +13,9 @@
 class Board {
     public:
         const std::vector<std::vector<CellPiece>> cellPieces;
-        const Player player{0};
+        const PlayerId player{0};
         
-        Board(std::vector<std::vector<CellPiece>> cellPieces, Player player) : 
+        Board(std::vector<std::vector<CellPiece>> cellPieces, PlayerId player) : 
             cellPieces{cellPieces}, player{player} {};
         Board(const Board &board) : 
             Board{board.cellPieces, board.player} {};

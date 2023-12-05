@@ -17,7 +17,7 @@ class CellPiece : public Piece {
             pieceType{pieceType} {};
         
         bool isNone() const;
-        Player owner() const;
+        PlayerId owner() const;
 
         bool operator==(CellPiece other) const;
         bool operator==(CellPieceType other) const;
