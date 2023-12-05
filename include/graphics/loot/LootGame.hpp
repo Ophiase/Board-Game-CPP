@@ -8,12 +8,30 @@ class LootGame : public Game {
     protected:
         LootManager manager;
         std::vector<CellPosition> cacheAction;
+
+        /*
+            Reset interface on begining of a turn.
+        */
+        void startTurn();
+
+        /*
+            If cache is empty, it cancel the last action,
+            otherwise it empty the cache. 
+        */
         void cancelAction();
+
+        /*
+            Launch the action in cache.
+        */
         void playAction();
+
+        /*
+            Delegate turn to an AI.
+        */
         void AIturn();
 
         /*
-            Can player interact with the game ? 
+            Can the user interact with the game ? 
         */
         bool interactive{false};
 

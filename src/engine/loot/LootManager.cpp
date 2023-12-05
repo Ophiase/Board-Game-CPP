@@ -92,7 +92,10 @@ bool LootManager::canPlayAction(LootAction action) const {
             return false;
 
         CellPiece current = configuration.getCell(currentPosition);
-        if (current != CellPieceType::NoneCell)
+        if (!(
+            current == CellPieceType::NoneCell ||
+            currentPosition == action.jumps[0]
+            ))
             return false;
     }
         
@@ -104,6 +107,8 @@ Board LootManager::evaluateAction(
 
     auto cells = board.cellPieces;
 
+    cells[action.jumps[0].y][action.jumps[0].x] = 
+        CellPiece(CellPieceType::NoneCell); 
     for (uint i = 1; i < action.jumps.size(); i++) {
         CellPosition lastPosition = action.jumps[i-1];
         CellPosition currentPosition = action.jumps[i];
@@ -114,7 +119,7 @@ Board LootManager::evaluateAction(
 
     int nPlayers = players.size();
     PlayerId nextPlayer = (
-        players[getCurrentPlayerIndex() % nPlayers]
+        players[(getCurrentPlayerIndex() + 1) % nPlayers]
         ).id;
     
     return Board{cells, nextPlayer};

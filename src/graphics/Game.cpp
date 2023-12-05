@@ -14,7 +14,7 @@ Game::Game(Launcher *launcher, std::string title, float CELL_TRESHOLD) :
         [this](sf::Event) -> void{
             this->alive = false;
         }, }, 
-    message{this, "", sf::Vector2f{0.5,0.15}, 0.05},
+    message{this, "", sf::Vector2f{0.5,0.17}, 0.05},
     CELL_TRESHOLD{CELL_TRESHOLD} {
 
     Cli::info("Choose : " + title);
@@ -34,9 +34,10 @@ Game::Game(Launcher *launcher, std::string title, float CELL_TRESHOLD) :
     this->exitButton.center(sf::Vector2f{0.10, 0.05});
 
     {   
-        auto scoreText = new Text{this, "Scores", 
-            sf::Vector2f{0.70, 0.20}, 0.05
-        };
+        auto scoreText = new Text{this, "Scores"};
+        scoreText->setSizeY(0.05);
+        scoreText->center(sf::Vector2f{0.8, 0.3});
+
         this->addObjectToDelete(scoreText);
 
         score.setSizeY(0.05);

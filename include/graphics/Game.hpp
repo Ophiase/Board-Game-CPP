@@ -26,7 +26,7 @@ class Game : public Screen {
         */
         sf::Vector2f insideCellPosition() const;
     public:
-        sf::Vector2f const BOARD_POSITION{0.1, 0.205};
+        sf::Vector2f const BOARD_POSITION{0.1, 0.24};
         sf::Vector2f const BOARD_SIZE{0.5, 0.5};
         
         /*

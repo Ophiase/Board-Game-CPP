@@ -3,9 +3,6 @@
 
 LootGame::LootGame(Launcher *launcher) :
 Game{launcher, "Loot", 1.0f}, manager{} {
-    
-    this->setMessage("Select a yellow pawn.");
-    this->setCurrentPlayer(this->manager.getCurrentPlayer().name);
 
     {
         auto nPlayers = new Text{this,
@@ -17,10 +14,6 @@ Game{launcher, "Loot", 1.0f}, manager{} {
         nPlayers->center(sf::Vector2f{0.27, 0.05});
         this->setScores(std::vector<int>{0, 0});
         this->addObjectToDelete(nPlayers);
-    }
-
-    {
-        this->updateBoardContent(manager.getConfiguration());
     }
 
     {
@@ -43,14 +36,24 @@ Game{launcher, "Loot", 1.0f}, manager{} {
         }; 
         
         cancelButton->setSizeY(0.05);
-        cancelButton->center(0.8, 0.4);
+        cancelButton->center(0.8, 0.45);
         this->addObjectToDelete(cancelButton);
     }
+
+    this->startTurn();
 
     interactive = ! manager.getCurrentPlayer().isAI;
     if (!interactive)
         AIturn();
 };
+
+void LootGame::startTurn() {
+    this->cacheAction.clear();
+    this->updateBoardContent(manager.getConfiguration());
+    this->setCurrentPlayer(manager.getCurrentPlayer().name);
+    this->setScores(std::vector<int>{0, 0}); // TODO
+    this->setMessage("Select a yellow pawn.");
+}
 
 // --------------------------------------------------
 
@@ -63,10 +66,10 @@ void LootGame::playAction() {
         cacheAction
     };
 
-    manager.applyAction(action);
+    this->manager.applyAction(action);
+    this->startTurn();
 
-    this->setCurrentPlayer(manager.getCurrentPlayer().name);
-    //this->setScores()
+
     interactive = ! manager.getCurrentPlayer().isAI;
     if (!interactive)
         AIturn();
@@ -96,8 +99,11 @@ void LootGame::handleCheckerBoard() {
         Cli::warning("Invalid move");
         this->setMessage("Invalid move");
         cacheAction.pop_back();
+        return;
     }
-
+    
+    Cli::debug("Current Action : " + Cli::toString(cacheAction));
+    
     this->setMessage("Select another cell or play.");
 }
 
