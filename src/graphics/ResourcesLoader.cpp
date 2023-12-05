@@ -55,7 +55,10 @@ void ResourcesLoader::initializeTextures() {
         make_tuple(PawnRed, "entity/pawn_red_bis"),
         make_tuple(PawnGreen, "entity/pawn_green"),
         make_tuple(PawnYellow, "entity/pawn_yellow_bis"),
-        make_tuple(PawnBlue, "entity/pawn_blue")
+        make_tuple(PawnBlue, "entity/pawn_blue"),
+
+        make_tuple(Arrow, "entity/arrow"),
+        make_tuple(Selection, "entity/circle_selection"),
     };
 
     for (const auto& association : associations) {

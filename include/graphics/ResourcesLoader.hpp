@@ -39,7 +39,10 @@ namespace Texture {
         PawnRed,
         PawnGreen,
         PawnYellow,
-        PawnBlue
+        PawnBlue,
+
+        Arrow,
+        Selection
     };
 }
 namespace Font {

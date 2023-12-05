@@ -9,14 +9,14 @@
 
 class Game : public Screen {
     private:
-        sf::RenderTexture checkBoardTexture;
         sf::RectangleShape checkerBoardImage;
-
         Text currentPlayer;
         Text score;
         TextButton exitButton;
         Text message;
     protected:
+        sf::RenderTexture checkBoardTexture;
+
         void setCurrentPlayer(std::string currentPlayer);
         void setScores(std::vector<float> scores);
         void setScores(std::vector<int> scores);

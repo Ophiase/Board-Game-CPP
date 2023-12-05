@@ -17,8 +17,11 @@ class LootGame : public Game {
         void handleMouse(sf::Event);
         void handleKeyboard(sf::Event);
         void handleCheckerBoard();
+
     public:
         LootGame(Launcher *launcher);
         void draw() override;
         void handleEvent(sf::Event) override;
+        
+        void updateBoardContent(Board);
 };

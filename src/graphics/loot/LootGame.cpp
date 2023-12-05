@@ -15,8 +15,6 @@ Game{launcher, "Loot", 1.0f}, manager{} {
         this->addObjectToDelete(nPlayers);
     }
 
-
-
     this->startTurn();
 
     interactive = ! manager.getCurrentPlayer().isAI;
@@ -37,7 +35,7 @@ void LootGame::startTurn() {
 void LootGame::playAction() {
     if (!interactive) return;
 
-    Cli::debug("I'm playing : " + Cli::toString(cacheAction));
+    Cli::debug(manager.getCurrentPlayer().name + " : " + Cli::toString(cacheAction));
     LootAction action{
         manager.getCurrentPlayer().id,
         cacheAction
@@ -60,6 +58,32 @@ void LootGame::AIturn() {
     throw NotImplemented();
 }
 
+// -------------------------------------------------
+
+void LootGame::updateBoardContent (Board board) {
+    Game::updateBoardContent(board);
+    if (cacheAction.empty()) return;
+
+    float circleSpace = (float)(this->checkBoardTexture.getSize().x / 8); 
+    float circleScale = 1.0;
+    float circleSize = circleSpace*circleScale;
+
+    sf::RectangleShape circle{sf::Vector2f{
+        circleSize, circleSize
+    }};
+    
+    circle.setTexture(ResourcesLoader::getTexture(Texture::Selection));
+
+    float offset = circleSize / 2.0;
+    for (CellPosition position : cacheAction) {
+        float px = (circleSpace * (position.x + 0.5)) - offset;
+        float py = (circleSpace * (position.y + 0.5)) - offset;
+
+        circle.setPosition(px, py);
+        checkBoardTexture.draw(circle);
+    }
+}
+
 // --------------------------------------------------
 
 void LootGame::handleCheckerBoard() {
@@ -79,9 +103,9 @@ void LootGame::handleCheckerBoard() {
         return;
     }
     
-    Cli::debug("Current Action : " + Cli::toString(cacheAction));
-    
+    Cli::debug("Cached Action : " + Cli::toString(cacheAction));   
     this->setMessage("Select another cell or play.");
+    this->updateBoardContent(manager.getConfiguration());
 }
 
 void LootGame::handleMouse(sf::Event e) {
