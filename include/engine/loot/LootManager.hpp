@@ -12,6 +12,8 @@ class LootManager : public Manager<LootAction, Board> {
         CellPiece randomCellPiece(int & remaningYellow, 
             int & remaningRed, int & remaningBlack);
         Board initialBoard() override;
+
+        void removePointsFromScore(Board board, int & score) const;
     public:
         const int TOTAL_YELLOW_PAWN = 34;
         const int TOTAL_RED_PAWN = 20;
@@ -24,7 +26,8 @@ class LootManager : public Manager<LootAction, Board> {
         static std::vector<Player> makePlayers(int n);
         LootManager(int nPlayers = 2);
 
-        std::vector<LootAction> getActions() const override;
+        std::vector<LootAction> getActions(Board) const override;
+        bool canPlayAction(Board) const override;
         bool canPlayAction(LootAction action) const override;
         std::tuple<Board, scoreList> evaluateAction(
             LootAction action, Board board) const override;

@@ -35,17 +35,32 @@ class Manager {
         BoardType getConfiguration() const;
         ActionType getLastAction() const;
         Player getCurrentPlayer() const;
+        std::vector<Player> getWinners() const;
         std::vector<int> const getScores() const;
         
+
         /*
             All possibles action from current configuration (up to isomorphism).
         */
-        virtual std::vector<ActionType> getActions() const = 0;
+        virtual std::vector<ActionType> getActions(BoardType board) const;
+        std::vector<ActionType> getActions() const;
         
         /*
             Is action authorized/correct.
         */
         virtual bool canPlayAction(ActionType action) const = 0;
+        
+        /*
+            Is there any authorized/correct action ?
+
+            Advice: reimplement it wihout "getActions" for 
+            better performances.
+        */
+        virtual bool canPlayAction(BoardType) const;
+        bool canPlayAction() const;
+        
+        virtual bool isFinished(BoardType) const;
+        bool isFinished() const;
         
         /*
             See the effect of the action
@@ -54,9 +69,21 @@ class Manager {
             ActionType action, BoardType board) const = 0;
         
         std::tuple<BoardType, scoreList> evaluateAction(ActionType action) const;
+    
+        /*
+            If action is not valid, throw an error.
+        */
         void applyAction(ActionType action);
-        bool actionEquivalence(
+        
+        /*
+            Doe 2 actions have the same effect on the board?
+
+            Advice: reimplement it wihout "evaluateAction" for 
+            better performances.
+        */
+        virtual bool actionEquivalence(
             ActionType actionA, ActionType actionB) const;
+        
         void cancel();
         int step() const;
 };
@@ -95,6 +122,23 @@ Player Manager<ActionType, BoardType>::getCurrentPlayer() const {
 }
 
 template <class ActionType, class BoardType>
+std::vector<Player> Manager<ActionType, BoardType>::getWinners() const {
+    std::vector<Player> result;
+    
+    auto scores = this->getScores();
+    int maxScore = 0;
+    for (uint i = 0; i < scores.size(); i++)
+        if (scores[i] > maxScore)
+            maxScore = scores[i];
+
+    for (uint i = 0; i < players.size(); i++)
+        if (scores[i] == maxScore)
+            result.push_back(players[i]);
+
+    return result;
+}
+
+template <class ActionType, class BoardType>
 int Manager<ActionType, BoardType>::getCurrentPlayerIndex() const {
     PlayerId player = this->getConfiguration().player;
     for (uint i = 0; i < players.size(); i++)
@@ -114,6 +158,11 @@ std::tuple<BoardType, scoreList> Manager<ActionType, BoardType>::evaluateAction(
 
 template <class ActionType, class BoardType>
 void Manager<ActionType, BoardType>::applyAction(ActionType action) {
+    if (!canPlayAction(action) || isFinished()) {
+        Cli::error("Cannot play this Action");
+        throw std::invalid_argument("Cannot play this Action.");
+    }
+
     std::tuple<BoardType, scoreList> result = evaluateAction(action);
 
     this->configurations.push_back(std::get<0>(result));
@@ -124,7 +173,7 @@ void Manager<ActionType, BoardType>::applyAction(ActionType action) {
 template <class ActionType, class BoardType>
 bool Manager<ActionType, BoardType>::actionEquivalence(
     ActionType actionA, ActionType actionB) const {
-
+    
     return 
         (this->evaluateAction(actionA)) == 
         (this->evaluateAction(actionB));
@@ -134,3 +183,33 @@ template<class ActionType, class BoardType>
 std::vector<int> const Manager<ActionType, BoardType>::getScores() const {
     return scores[scores.size()-1];
 }
+
+template<class ActionType, class BoardType>
+std::vector<ActionType> Manager<ActionType, BoardType>::getActions(BoardType) const {
+    throw NotImplemented();
+};
+
+template<class ActionType, class BoardType>
+std::vector<ActionType> Manager<ActionType, BoardType>::getActions() const {
+    return this->getActions(this->getConfiguration());
+};
+
+template<class ActionType, class BoardType>
+bool Manager<ActionType, BoardType>::canPlayAction(BoardType board) const {
+    return this->getActions(board).size() != 0;
+};
+
+template<class ActionType, class BoardType>
+bool Manager<ActionType, BoardType>::canPlayAction() const {
+    return canPlayAction(this->getConfiguration());
+};
+
+template<class ActionType, class BoardType>
+bool Manager<ActionType, BoardType>::isFinished(BoardType board) const {
+    return !(this->canPlayAction(board));
+};
+
+template<class ActionType, class BoardType>
+bool Manager<ActionType, BoardType>::isFinished() const {
+    return !(this->canPlayAction());
+};

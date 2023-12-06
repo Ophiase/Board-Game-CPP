@@ -26,7 +26,22 @@ void LootGame::startTurn() {
     this->updateBoardContent(manager.getConfiguration());
     this->setCurrentPlayer(manager.getCurrentPlayer().name);
     this->setScores(manager.getScores());
-    this->setMessage("Select a yellow pawn.");
+
+    if (this->manager.isFinished()) {
+        auto winners = this->manager.getWinners();
+        if (winners.size() == 1) {            
+            this->setMessage("Winner is : " + winners[0].name);
+            Cli::info("Winner is : " + winners[0].name);
+            return;
+        }
+
+        std::string winnersString = "Winner are :";
+        for (auto winner : winners)
+            winnersString += " " + winner.name;
+        this->setMessage(winnersString);
+        Cli::info(winnersString);
+    } else
+        this->setMessage("Select a yellow pawn.");
 }
 
 // --------------------------------------------------
@@ -34,15 +49,21 @@ void LootGame::startTurn() {
 void LootGame::playAction() {
     if (!interactive) return;
 
-    Cli::debug(manager.getCurrentPlayer().name + " : " + Cli::toString(cacheAction));
     LootAction action{
         manager.getCurrentPlayer().id,
         cacheAction
     };
 
+    if (!manager.canPlayAction(action)) {
+        this->setMessage("Invalid action.");
+        Cli::debug("Invalid action.");
+        return;
+    }
+
+    Cli::debug(manager.getCurrentPlayer().name + " : " + Cli::toString(cacheAction));
+
     this->manager.applyAction(action);
     this->startTurn();
-
 
     interactive = ! manager.getCurrentPlayer().isAI;
     if (!interactive)
@@ -145,8 +166,14 @@ void LootGame::handleCheckerBoard() {
         manager.getCurrentPlayer().id, 
         cacheAction
     };
-    
-    if (!manager.canPlayAction(action)) {
+
+    bool const validAction = manager.canPlayAction(action);
+    bool const isFirstSelection = (action.jumps.size() == 1);
+    bool const isFirstSelectionCorrect = isFirstSelection &&
+        manager.getConfiguration().getCell(action.jumps[0])
+        .pieceType == CellPieceType::YellowPawn;
+        
+    if (!(validAction || isFirstSelectionCorrect)) {
         Cli::warning("Invalid move");
         this->setMessage("Invalid move");
         cacheAction.pop_back();

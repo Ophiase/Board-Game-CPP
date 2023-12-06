@@ -22,6 +22,10 @@ CellPiece Board::getCell(CellPosition v) const {
     return cellPieces[v.y][v.x];
 }
 
+CellPiece Board::getCell(int x, int y) const {
+    return cellPieces[y][x];
+}
+
 bool Board::operator==(Board other) const {
     return (this->player == other.player) && 
         (this->cellPieces == other.cellPieces);

@@ -62,16 +62,70 @@ Board LootManager::initialBoard() {
 // ------------------------------------------------------------
 
 
-std::vector<LootAction> LootManager::getActions() const {
+
+std::vector<LootAction> LootManager::getActions(Board board) const {
     throw NotImplemented();
+
+    PlayerId authorId = this->getCurrentPlayer().id;
+    std::vector<LootAction> result;
+    std::vector<CellPosition> yellows;
+    for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++)
+        if (board.getCell(x, y).pieceType == CellPieceType::YellowPawn)
+            yellows.push_back(CellPosition{x, y});
+
+    if ((uint)this->step() < this->players.size()) {
+        for (auto yellow : yellows)
+            result.push_back(LootAction{
+                authorId, std::vector<CellPosition>{yellow}});
+        return result;
+    }
+
+    // TODO: find all actions
+};
+
+bool LootManager::canPlayAction(Board board) const {
+    /* initialisation of the party */
+    if ((uint)this->step() < this->players.size())
+        return true;
+    
+    std::vector<LootAction> result;
+    std::vector<CellPosition> yellows;
+    for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++)
+        if (board.getCell(x, y).pieceType == CellPieceType::YellowPawn)
+            yellows.push_back(CellPosition{x, y});
+    
+    std::vector<CellPosition> offsets = {
+        {2, 0}, {0, 2}, {-2, 0}, {0, -2},
+        {2, 2}, {2, -2}, {-2, 2}, {-2, -2}
+    };
+
+    for (auto yellow : yellows) for (auto offset : offsets) {
+        CellPosition between = yellow + (offset)/2;
+        CellPosition afterJump = yellow + offset;
+        
+        if (!board.getCell(between).isNone() &&
+            board.getCell(afterJump).isNone())
+            return true;
+    }
+
+    return false;
+}
+
+/*
+    if and only if (<=>) logic gate
+*/
+inline bool iff(bool const a, bool const b) {
+    return (a && b) || (!a && !b);
 };
 
 bool LootManager::canPlayAction(LootAction action) const {
     if (action.jumps.size() == 0)
         return false;
 
-    if (action.jumps.size() != 1 && (uint)step() < players.size())
-        return false;
+    if (!iff(
+        (uint)step() < players.size(),
+        action.jumps.size() == 1
+        )) return false;
     
     auto configuration = getConfiguration();
     if (!configuration.isCaseInBoard(action.jumps[0]))
@@ -111,6 +165,20 @@ bool LootManager::canPlayAction(LootAction action) const {
     return true;
 };
 
+void LootManager::removePointsFromScore(Board board, int & score) const {
+    for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++)
+        switch (board.getCell(x, y).pieceType) {
+            case CellPieceType::YellowPawn : 
+                score -= YELLOW_BONUS; break;
+            case CellPieceType::RedPawn : 
+                score -= RED_BONUS; break;
+            case CellPieceType::BlackPawn : 
+                score -= BLACK_BONUS; break;
+
+            default : throw NotImplemented();
+        }
+}
+
 std::tuple<Board, scoreList> LootManager::evaluateAction(
     LootAction action, Board board) const {
 
@@ -146,5 +214,10 @@ std::tuple<Board, scoreList> LootManager::evaluateAction(
     scoreList scores{this->getScores()};
     scores[currentPlayerIndex] += moveScore;
 
-    return std::make_tuple(Board{cells, nextPlayer}, scores);
+    Board nextBoard{cells, nextPlayer};
+    if (isFinished(nextBoard)) {
+        removePointsFromScore(nextBoard, scores[currentPlayerIndex]);   
+    }
+
+    return std::make_tuple(nextBoard, scores);
 }

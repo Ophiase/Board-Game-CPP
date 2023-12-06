@@ -33,4 +33,5 @@ class Board {
         bool isCaseInBoard(CellPosition v) const;
         bool isCaseEmpty(CellPosition v) const;
         CellPiece getCell(CellPosition v) const;
+        CellPiece getCell(int x, int y) const;
 };
