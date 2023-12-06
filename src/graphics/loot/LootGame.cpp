@@ -11,7 +11,6 @@ Game{launcher, "Loot", 1.0f}, manager{} {
 
         nPlayers->setSizeY(0.04);
         nPlayers->center(sf::Vector2f{0.27, 0.05});
-        this->setScores(std::vector<int>{0, 0});
         this->addObjectToDelete(nPlayers);
     }
 
@@ -26,7 +25,7 @@ void LootGame::startTurn() {
     this->cacheAction.clear();
     this->updateBoardContent(manager.getConfiguration());
     this->setCurrentPlayer(manager.getCurrentPlayer().name);
-    this->setScores(std::vector<int>{0, 0}); // TODO
+    this->setScores(manager.getScores());
     this->setMessage("Select a yellow pawn.");
 }
 
@@ -51,7 +50,23 @@ void LootGame::playAction() {
 }
 
 void LootGame::cancelAction() {
-    throw NotImplemented();
+    if (!interactive) return;
+
+    if (!cacheAction.empty()) {
+        Cli::debug("Cleared Action");
+        cacheAction.clear();
+        this->startTurn();
+        return;
+    }
+
+    if (manager.step() == 0) {
+        Cli::warning("Cannot undo first action!");
+        setMessage("Cannot undo first action!");
+        return;
+    }
+
+    manager.cancel();
+    this->startTurn();
 }
 
 void LootGame::AIturn() {
@@ -60,49 +75,61 @@ void LootGame::AIturn() {
 
 // -------------------------------------------------
 
+float diffToRotation(sf::Vector2i diff) {
+    if (diff == sf::Vector2i{2,0}) return 0;
+    if (diff == sf::Vector2i{2,2}) return 45*1;
+    if (diff == sf::Vector2i{0,2}) return 45*2;
+    if (diff == sf::Vector2i{-2,2}) return 45*3;
+
+    if (diff == sf::Vector2i{-2,0}) return 45*4;
+    if (diff == sf::Vector2i{-2,-2}) return 45*5;
+    if (diff == sf::Vector2i{0,-2}) return 45*6;
+    if (diff == sf::Vector2i{2,-2}) return 45*7;
+
+    throw NotImplemented();
+}
+
 void LootGame::updateBoardContent (Board board) {
     Game::updateBoardContent(board);
     if (cacheAction.empty()) return;
 
     // SELECTION
 
-    float circleSpace = (float)(this->checkBoardTexture.getSize().x / 8); 
-    float circleScale = 1.0;
-    float circleSize = circleSpace*circleScale;
-
+    float const circleSpace = (float)(this->checkBoardTexture.getSize().x / 8); 
     sf::RectangleShape circle{sf::Vector2f{
-        circleSize, circleSize
+        circleSpace, circleSpace
     }};
     
     circle.setTexture(ResourcesLoader::getTexture(Texture::Selection));
 
-    float offset = circleSize / 2.0;
     for (CellPosition position : cacheAction) {
-        float px = (circleSpace * (position.x + 0.5)) - offset;
-        float py = (circleSpace * (position.y + 0.5)) - offset;
-
+        float const px = (circleSpace * position.x);
+        float const py = (circleSpace * position.y);
         circle.setPosition(px, py);
         checkBoardTexture.draw(circle);
     }
 
     // ARROWS
 
-    float arrowSpace = (float)(this->checkBoardTexture.getSize().x / 8); 
-    float arrowScale = 1.0;
-    float arrowSize = arrowSpace*arrowScale;
-
+    float const arrowSpace = (float)(this->checkBoardTexture.getSize().x / 8); 
     sf::RectangleShape arrow{sf::Vector2f{
-        arrowSize, arrowSize
+        arrowSpace, arrowSpace
     }};
+
+    arrow.setOrigin(sf::Vector2f{arrowSpace/2, arrowSpace/2});
+    arrow.scale(sf::Vector2f{1.5, 1.5});
     
     arrow.setTexture(ResourcesLoader::getTexture(Texture::Arrow));
     for (uint i = 1; i < cacheAction.size(); i++) {
         CellPosition position = (cacheAction[i] + cacheAction[i-1]) / 2;
+        CellPosition diff = (cacheAction[i] - cacheAction[i-1]);
 
-        float px = (arrowSpace * (position.x + 0.5)) - offset;
-        float py = (arrowSpace * (position.y + 0.5)) - offset;
+        float const px = (arrowSpace * (position.x + 0.5));
+        float const py = (arrowSpace * (position.y + 0.5));
+        float const rotation = diffToRotation(diff);
 
         arrow.setPosition(px, py);
+        arrow.setRotation(rotation);
         checkBoardTexture.draw(arrow);
     }
 }
@@ -144,6 +171,8 @@ void LootGame::handleMouse(sf::Event e) {
 void LootGame::handleKeyboard(sf::Event e) {
     if (e.key.code == sf::Keyboard::Return)
         playAction();
+    if (e.key.code == sf::Keyboard::Backspace)
+        cancelAction();
 };
 
 void LootGame::handleEvent(sf::Event e) {

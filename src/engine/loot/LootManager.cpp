@@ -9,6 +9,7 @@
 LootManager::LootManager(int nPlayers) : 
     Manager<LootAction, Board>{makePlayers(nPlayers)} {
     configurations.push_back(initialBoard());
+    scores.push_back(scoreList(nPlayers, 0));
 };
 
 std::vector<Player> LootManager::makePlayers(int n) {
@@ -24,6 +25,7 @@ std::vector<Player> LootManager::makePlayers(int n) {
 }
 
 CellPiece LootManager::randomCellPiece(int & ry, int & rd, int & rb) {
+    srand(time(NULL));
     int r = rand() % (ry+rd+rb);
 
     if (r < ry) {
@@ -81,6 +83,10 @@ bool LootManager::canPlayAction(LootAction action) const {
         CellPosition lastPosition = action.jumps[i-1];
         CellPosition currentPosition = action.jumps[i];
 
+        CellPosition between = (lastPosition+currentPosition)/2;
+        if (configuration.getCell(between).isNone())
+            return false;
+
         CellPosition diff = lastPosition-currentPosition;
 
         if (!(
@@ -105,10 +111,11 @@ bool LootManager::canPlayAction(LootAction action) const {
     return true;
 };
 
-Board LootManager::evaluateAction(
+std::tuple<Board, scoreList> LootManager::evaluateAction(
     LootAction action, Board board) const {
 
     auto cells = board.cellPieces;
+    int moveScore = YELLOW_BONUS;
 
     cells[action.jumps[0].y][action.jumps[0].x] = 
         CellPiece(CellPieceType::NoneCell); 
@@ -118,12 +125,26 @@ Board LootManager::evaluateAction(
 
         CellPosition between = (lastPosition+currentPosition) / 2;
         cells[between.y][between.x] = CellPiece(CellPieceType::NoneCell);
+        switch (board.getCell(between).pieceType) {
+            case CellPieceType::YellowPawn : 
+                moveScore += YELLOW_BONUS; break;
+            case CellPieceType::RedPawn : 
+                moveScore += RED_BONUS; break;
+            case CellPieceType::BlackPawn : 
+                moveScore += BLACK_BONUS; break;
+
+            default : throw NotImplemented();
+        }
     }
 
     int nPlayers = players.size();
+    int currentPlayerIndex = getCurrentPlayerIndex();
     PlayerId nextPlayer = (
-        players[(getCurrentPlayerIndex() + 1) % nPlayers]
+        players[(currentPlayerIndex + 1) % nPlayers]
         ).id;
     
-    return Board{cells, nextPlayer};
+    scoreList scores{this->getScores()};
+    scores[currentPlayerIndex] += moveScore;
+
+    return std::make_tuple(Board{cells, nextPlayer}, scores);
 }

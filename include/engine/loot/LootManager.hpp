@@ -17,12 +17,15 @@ class LootManager : public Manager<LootAction, Board> {
         const int TOTAL_RED_PAWN = 20;
         const int TOTAL_BLACK_PAWN = 10;
 
+        const int YELLOW_BONUS = 1;
+        const int RED_BONUS = 2;
+        const int BLACK_BONUS = 3;
+
         static std::vector<Player> makePlayers(int n);
         LootManager(int nPlayers = 2);
 
         std::vector<LootAction> getActions() const override;
         bool canPlayAction(LootAction action) const override;
-        Board evaluateAction(
+        std::tuple<Board, scoreList> evaluateAction(
             LootAction action, Board board) const override;
-        
 };

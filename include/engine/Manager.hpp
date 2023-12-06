@@ -10,6 +10,8 @@
 #include "utils/Cli.hpp"
 #include "Player.hpp"
 
+using scoreList = std::vector<int>;
+
 template <class ActionType, class BoardType>
 class Manager {
     static_assert(std::is_base_of<Action, ActionType>::value,
@@ -18,6 +20,7 @@ class Manager {
         "BordType must inherit from Board");
 
     protected:
+        std::vector<scoreList> scores;
         std::vector<BoardType> configurations;
         std::vector<ActionType> actions;
         virtual BoardType initialBoard() = 0;
@@ -32,6 +35,7 @@ class Manager {
         BoardType getConfiguration() const;
         ActionType getLastAction() const;
         Player getCurrentPlayer() const;
+        std::vector<int> const getScores() const;
         
         /*
             All possibles action from current configuration (up to isomorphism).
@@ -46,10 +50,10 @@ class Manager {
         /*
             See the effect of the action
         */
-        virtual BoardType evaluateAction(
+        virtual std::tuple<BoardType, scoreList> evaluateAction(
             ActionType action, BoardType board) const = 0;
         
-        BoardType evaluateAction(ActionType action) const;
+        std::tuple<BoardType, scoreList> evaluateAction(ActionType action) const;
         void applyAction(ActionType action);
         bool actionEquivalence(
             ActionType actionA, ActionType actionB) const;
@@ -71,6 +75,7 @@ template <class ActionType, class BoardType>
 void Manager<ActionType, BoardType>::cancel() {
     this->configurations.pop_back();
     this->actions.pop_back();
+    this->scores.pop_back();
 };
 
 template <class ActionType, class BoardType>
@@ -102,13 +107,17 @@ int Manager<ActionType, BoardType>::getCurrentPlayerIndex() const {
 
 
 template <class ActionType, class BoardType>
-BoardType Manager<ActionType, BoardType>::evaluateAction(ActionType action) const {
+std::tuple<BoardType, scoreList> Manager<ActionType, BoardType>::evaluateAction(
+    ActionType action) const {
     return this->evaluateAction(action, this->getConfiguration());
 }
 
 template <class ActionType, class BoardType>
 void Manager<ActionType, BoardType>::applyAction(ActionType action) {
-    this->configurations.push_back(evaluateAction(action));
+    std::tuple<BoardType, scoreList> result = evaluateAction(action);
+
+    this->configurations.push_back(std::get<0>(result));
+    this->scores.push_back(std::get<1>(result));
     this->actions.push_back(action);
 }
 
@@ -119,4 +128,9 @@ bool Manager<ActionType, BoardType>::actionEquivalence(
     return 
         (this->evaluateAction(actionA)) == 
         (this->evaluateAction(actionB));
+}
+
+template<class ActionType, class BoardType>
+std::vector<int> const Manager<ActionType, BoardType>::getScores() const {
+    return scores[scores.size()-1];
 }
