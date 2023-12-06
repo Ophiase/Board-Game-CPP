@@ -103,6 +103,9 @@ bool LootManager::canPlayAction(Board board) const {
         CellPosition between = yellow + (offset)/2;
         CellPosition afterJump = yellow + offset;
         
+        if (!board.isCaseInBoard(between) || !board.isCaseInBoard(afterJump))
+            continue;
+    
         if (!board.getCell(between).isNone() &&
             board.getCell(afterJump).isNone())
             return true;
@@ -174,6 +177,8 @@ void LootManager::removePointsFromScore(Board board, int & score) const {
                 score -= RED_BONUS; break;
             case CellPieceType::BlackPawn : 
                 score -= BLACK_BONUS; break;
+            case CellPieceType::NoneCell :
+                break;
 
             default : throw NotImplemented();
         }

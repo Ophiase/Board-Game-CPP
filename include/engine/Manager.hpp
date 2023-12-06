@@ -9,6 +9,7 @@
 #include <stdexcept>
 #include "utils/Cli.hpp"
 #include "Player.hpp"
+#include <climits>
 
 using scoreList = std::vector<int>;
 
@@ -126,7 +127,7 @@ std::vector<Player> Manager<ActionType, BoardType>::getWinners() const {
     std::vector<Player> result;
     
     auto scores = this->getScores();
-    int maxScore = 0;
+    int maxScore = INT_MIN;
     for (uint i = 0; i < scores.size(); i++)
         if (scores[i] > maxScore)
             maxScore = scores[i];
