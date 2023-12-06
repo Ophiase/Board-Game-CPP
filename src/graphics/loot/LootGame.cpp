@@ -65,6 +65,11 @@ void LootGame::playAction() {
     this->manager.applyAction(action);
     this->startTurn();
 
+    if (this->manager.isFinished()) {
+        interactive = false;
+        return;
+    }
+
     interactive = ! manager.getCurrentPlayer().isAI;
     if (!interactive)
         AIturn();
@@ -138,7 +143,7 @@ void LootGame::updateBoardContent (Board board) {
     }};
 
     arrow.setOrigin(sf::Vector2f{arrowSpace/2, arrowSpace/2});
-    arrow.scale(sf::Vector2f{1.5, 1.5});
+    arrow.scale(sf::Vector2f{1.8, 1.8});
     
     arrow.setTexture(ResourcesLoader::getTexture(Texture::Arrow));
     for (uint i = 1; i < cacheAction.size(); i++) {
