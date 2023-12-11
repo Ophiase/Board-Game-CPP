@@ -5,21 +5,25 @@ bool Cli::muted = false;
 
 void Cli::info(std::string message) {
     if (muted) return;
-    std::cout << "[Info] " << message << std::endl;
+    std::cout << "\x1B[32m[Info]\x1B[0m " 
+        << message << std::endl;
 }
 
 void Cli::warning(std::string message) {
     if (muted) return;
-    std::cout << "<Warning> " << message << std::endl;
+    std::cout << "\x1B[33m<Warning>\x1B[0m "
+        << message << std::endl;
 }
 
 void Cli::error(std::string message) {
-    std::cerr << "<Error> " << message << std::endl;
+    std::cerr << "\x1B[31m<Error>\x1B[0m " 
+        << message << std::endl;
 }
 
 void Cli::debug(std::string message) {
     #ifdef DEBUG
-        std::cerr << "<Debug> " << message << std::endl;
+        std::cerr << "\x1B[36m<Debug>\x1B[0m "
+            << message << std::endl;
     #else
         (void)message;
     #endif

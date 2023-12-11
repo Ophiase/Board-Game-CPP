@@ -48,9 +48,18 @@ void Menu::lootOptionInit() {
     [this](sf::Event) -> void {
         this->successor = new LootGame(this->getLauncher());
     }};
-
     playButton->center(sf::Vector2f{0.5, 0.60});
     lootOption.addObjectToDelete(playButton);
+
+    Text *nPlayers = new Text{&lootOption, "players : 2"};
+    nPlayers->setSizeY(0.05);
+    nPlayers->center(0.40, 0.35);
+    lootOption.addObjectToDelete(nPlayers);
+
+    Text *nBots = new Text{&lootOption, "bots : 0"};
+    nBots->setSizeY(0.05);
+    nBots->center(0.40, 0.40);
+    lootOption.addObjectToDelete(nBots);
 }
 
 void Menu::checkersOptionInit() {
@@ -91,12 +100,14 @@ Menu::Menu(Launcher *launcher) :
             continue;
 
         TextButton *exitButton = new TextButton {
-            context, "Back to Menu", 
+            context, "Back to Menu",
             [this](sf::Event) -> void {
                 this->setContext(MenuContext::GameSelection);
             }
         };
-        exitButton->center(0.5, 0.3);
+
+        exitButton->setSizeY(0.05);
+        exitButton->center(0.5, 0.25);
         context->addObjectToDelete(exitButton);
     }
 
