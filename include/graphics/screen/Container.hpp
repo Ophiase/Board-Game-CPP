@@ -16,6 +16,8 @@ class Canvas;
 */
 class Container : public DrawableHandler {
 private:
+    bool enabled{true};
+
     template <typename T>
     static bool compareByPriority(
         const std::tuple<T*, Priority>& a, 
@@ -42,7 +44,7 @@ public:
 
     void addObjectToDelete(Canvas *d);
 
-    void handleEvent(sf::Event event);
+    bool handleEvent(sf::Event event);
     void draw();
 
     void addHandler(Handler *handle, Priority priority = 0);
@@ -51,4 +53,7 @@ public:
 
     sf::Vector2f mouseWorldSpace() const;
     virtual sf::Vector2f getRelativeMousePosition() const;
+
+    void setEnabled(bool);
+    bool isEnabled() const;
 };

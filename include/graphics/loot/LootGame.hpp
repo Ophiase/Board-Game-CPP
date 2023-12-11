@@ -14,14 +14,14 @@ class LootGame : public Game {
         void playAction() override;
         void AIturn() override;
 
-        void handleMouse(sf::Event);
-        void handleKeyboard(sf::Event);
+        bool handleMouse(sf::Event);
+        bool handleKeyboard(sf::Event);
         void handleCheckerBoard();
 
     public:
         LootGame(Launcher *launcher);
         void draw() override;
-        void handleEvent(sf::Event) override;
+        bool handleEvent(sf::Event) override;
         
         void updateBoardContent(Board);
 };

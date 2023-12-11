@@ -31,12 +31,19 @@ void Container::addObjectToDelete(Canvas *d) {
     this->deleteList.push_back(d);
 };
 
-void Container::handleEvent(sf::Event event) {
+bool Container::handleEvent(sf::Event event) {
+    if (!enabled) return false;
+    
     for (auto handler : this->handlers)
-        std::get<0>(handler)->handleEvent(event);
+        if (std::get<0>(handler)->handleEvent(event))
+            return true;
+
+    return false;
 }
 
 void Container::draw() {
+    if (!enabled) return;
+
     for (auto drawable : this->drawables)
         std::get<0>(drawable)->draw();
 }
@@ -66,4 +73,12 @@ sf::Vector2f Container::mouseWorldSpace() const {
 
 sf::Vector2f Container::getRelativeMousePosition() const {
     return Geometry::toFloat(sf::Mouse::getPosition(this->getConstRenderWindow()));
+}
+
+void Container::setEnabled(bool enabled) {
+    this->enabled = enabled;
+}
+
+bool Container::isEnabled() const {
+    return this->enabled;
 }

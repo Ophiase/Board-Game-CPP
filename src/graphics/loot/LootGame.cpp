@@ -13,7 +13,7 @@ Game{launcher, "Loot", 1.0f}, manager{} {
         nPlayers->center(sf::Vector2f{0.27, 0.05});
         this->addObjectToDelete(nPlayers);
     }
-
+    
     this->startTurn();
 
     interactive = ! manager.getCurrentPlayer().isAI;
@@ -27,21 +27,25 @@ void LootGame::startTurn() {
     this->setCurrentPlayer(manager.getCurrentPlayer().name);
     this->setScores(manager.getScores());
 
-    if (this->manager.isFinished()) {
-        auto winners = this->manager.getWinners();
-        if (winners.size() == 1) {            
-            this->setMessage("Winner is : " + winners[0].name);
-            Cli::info("Winner is : " + winners[0].name);
-            return;
-        }
-
-        std::string winnersString = "Winner are :";
-        for (auto winner : winners)
-            winnersString += " " + winner.name;
-        this->setMessage(winnersString);
-        Cli::info(winnersString);
-    } else
+    if (!this->manager.isFinished()) {
         this->setMessage("Select a yellow pawn.");
+        this->draw();
+        return;
+    }
+
+    auto winners = this->manager.getWinners();
+    if (winners.size() == 1) {            
+        this->setMessage("Winner is : " + winners[0].name);
+        Cli::info("Winner is : " + winners[0].name);
+        return;
+    }
+
+    std::string winnersString = "Winner are :";
+    for (auto winner : winners)
+        winnersString += " " + winner.name;
+    this->setMessage(winnersString);
+    Cli::info(winnersString);
+    this->draw();
 }
 
 // --------------------------------------------------
@@ -190,32 +194,41 @@ void LootGame::handleCheckerBoard() {
     this->updateBoardContent(manager.getConfiguration());
 }
 
-void LootGame::handleMouse(sf::Event e) {
-    (void)e;
-    
-    if (!interactive) return;
+bool LootGame::handleMouse(sf::Event) {
+    if (!interactive) return false;
 
-    if (mouseInsideCheckerBoard())
+    if (mouseInsideCheckerBoard()) {
         handleCheckerBoard();
-    
+        return true;
+    }
+
+    return false;
 };
 
-void LootGame::handleKeyboard(sf::Event e) {
-    if (e.key.code == sf::Keyboard::Return)
+bool LootGame::handleKeyboard(sf::Event e) {
+    if (e.key.code == sf::Keyboard::Return) {
         playAction();
-    if (e.key.code == sf::Keyboard::Backspace)
+        return true;
+    }
+    
+    if (e.key.code == sf::Keyboard::Backspace) {
         cancelAction();
+        return true;
+    }
+
+    return false;
 };
 
-void LootGame::handleEvent(sf::Event e) {
+bool LootGame::handleEvent(sf::Event e) {
     Game::handleEvent(e);
 
     if (e.type == sf::Event::MouseButtonPressed)
-        handleMouse(e);
+        if (handleMouse(e)) return true;
     
     if (e.type == sf::Event::KeyPressed)
-        handleKeyboard(e);
+        if (handleKeyboard(e)) return true;
 
+    return false;
 };
 
 void LootGame::draw() {

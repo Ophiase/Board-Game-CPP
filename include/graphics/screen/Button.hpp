@@ -18,5 +18,5 @@ class Button : virtual public Canvas {
         onHoverFunction(onHoverAction),
         onClickFunction(onClickAction) {};
 
-        void handleEvent(sf::Event event);
+        bool handleEvent(sf::Event event);
 };

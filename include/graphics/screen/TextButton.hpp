@@ -20,5 +20,5 @@ class TextButton : public Button, public Text {
         Button{parent, onHoverAction, onClickAction},
         Text{parent, text} {};
 
-        void handleEvent(sf::Event event);
+        bool handleEvent(sf::Event event);
 };
