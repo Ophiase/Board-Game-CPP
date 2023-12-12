@@ -72,26 +72,66 @@ Board LootManager::initialBoard() {
 
 // ------------------------------------------------------------
 
+std::vector<Combination> LootManager::combinationsOfCapture(CellPosition) const {
+    throw NotImplemented();
 
+    std::vector<Combination> result;
+
+    std::vector<Combination> lastBatch;
+    std::vector<Combination> currentBatch;
+
+    // first iteration
+        // evaluates the 8 first jumps
+        // put corrects one them in lastBatch and result 
+
+    while (!lastBatch.empty()) {
+        for (auto combination : lastBatch) {
+            // find all the positions we can start from
+
+            // for every position, tries to find a new jump
+
+            // check if we don't add two time to currentBatch a same combination
+
+            // add it to the current batch and result
+        }
+
+        lastBatch = currentBatch;
+        currentBatch.clear();
+    }
+
+    return result;
+}
+
+std::vector<CellPath> LootManager::expendPaths(std::vector<CellPath> axioms) const {
+    throw NotImplemented();
+
+    for (auto axiom : axioms) {
+        // Find all the combinations of pieces that can be captured
+    }
+}
 
 std::vector<LootAction> LootManager::getActions(Board board) const {
     throw NotImplemented();
 
     PlayerId authorId = this->getCurrentPlayer().id;
     std::vector<LootAction> result;
-    std::vector<CellPosition> yellows;
+    std::vector<CellPath> paths;
+    
+    // every action start by selectioning a yellow pawn
+
     for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++)
         if (board.getCell(x, y).pieceType == CellPieceType::YellowPawn)
-            yellows.push_back(CellPosition{x, y});
+            paths.push_back(CellPath{CellPosition{x, y}});
 
-    if ((uint)this->step() < this->players.size()) {
-        for (auto yellow : yellows)
-            result.push_back(LootAction{
-                authorId, std::vector<CellPosition>{yellow}});
-        return result;
-    }
+    if ((uint)this->step() >= this->players.size())
+        // we expand paths only if we are not on first round
+        // (on first round, you can only capture one yellow pawn) 
+        paths = this->expendPaths(paths);
 
-    // TODO: find all actions
+    for (auto path : paths)
+        result.push_back(LootAction{authorId, path});    
+    
+    return result;
 };
 
 bool LootManager::canPlayAction(Board board) const {

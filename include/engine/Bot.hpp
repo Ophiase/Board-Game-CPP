@@ -1,10 +1,9 @@
 #pragma once
 
-#include "Board.hpp"
-
+template <class ActionType, class BoardType>
 class Bot {
     private:
     public:
-        Bot(Board board);
-        play();
-}
+        Bot(BoardType board);
+        ActionType play();
+};

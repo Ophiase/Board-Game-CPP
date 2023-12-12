@@ -13,6 +13,9 @@
 
 using scoreList = std::vector<int>;
 
+/*
+    Generic class for game controller.
+*/
 template <class ActionType, class BoardType>
 class Manager {
     static_assert(std::is_base_of<Action, ActionType>::value,

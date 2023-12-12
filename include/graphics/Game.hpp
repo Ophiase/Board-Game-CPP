@@ -7,6 +7,9 @@
 #include "graphics/screen/TextButton.hpp"
 #include "ResourcesLoader.hpp"
 
+/*
+    Parent class for Game View
+*/
 class Game : public Screen {
     private:
         sf::RectangleShape checkerBoardImage;
