@@ -72,7 +72,7 @@ Board LootManager::initialBoard() {
 
 // ------------------------------------------------------------
 
-std::vector<Combination> LootManager::combinationsOfCapture(CellPosition) const {
+std::vector<Combination> LootManager::combinationsOfCapture(CellPosition, Board) const {
     throw NotImplemented();
 
     std::vector<Combination> result;
@@ -102,7 +102,7 @@ std::vector<Combination> LootManager::combinationsOfCapture(CellPosition) const 
     return result;
 }
 
-std::vector<CellPath> LootManager::expendPaths(std::vector<CellPath> axioms) const {
+std::vector<CellPath> LootManager::expendPaths(std::vector<CellPath> axioms, Board) const {
     throw NotImplemented();
 
     for (auto axiom : axioms) {
@@ -111,6 +111,34 @@ std::vector<CellPath> LootManager::expendPaths(std::vector<CellPath> axioms) con
 }
 
 std::vector<LootAction> LootManager::getActions(Board board) const {
+    /*
+        You can only move of 2 on x and y axis.
+        It means, that remove pieces from the board
+        don't change where you can jump.
+        
+        It means that for every sequence of jump (starting from a yellow),
+        you can always complet in such a way that you take
+        the unique maximal combination of pieces
+
+        The worsts case senario (were there are a maximal number of jumpable pieces) :
+        x is an availible position, # a jumpable piece, ! not availible jump
+
+        x#x#x#x! !x#x#x#x !!!!!!!! and an other symmetry
+        #######! !####### !x#x#x#x
+        x#x#x#x! !x#x#x#x !#######
+        #######! !####### !x#x#x#x
+        x#x#x#x! !x#x#x#x !#######
+        #######! !####### !x#x#x#x
+        x#x#x#x! !x#x#x#x !#######
+        !!!!!!!! !!!!!!!! !x#x#x#x
+        
+        In the worst case, a combination has 8x3 + 4x4 = 40 elements
+        Which means there are at most 2^40 combinations. 
+        Fortunately, most of them are incorrects because most elements 
+        require to jump on multiple elements before.
+        And in practice there are very few moves availibles.
+    */
+    
     throw NotImplemented();
 
     PlayerId authorId = this->getCurrentPlayer().id;
@@ -126,7 +154,7 @@ std::vector<LootAction> LootManager::getActions(Board board) const {
     if ((uint)this->step() >= this->players.size())
         // we expand paths only if we are not on first round
         // (on first round, you can only capture one yellow pawn) 
-        paths = this->expendPaths(paths);
+        paths = this->expendPaths(paths, board);
 
     for (auto path : paths)
         result.push_back(LootAction{authorId, path});    

@@ -22,17 +22,22 @@ class LootManager : public Manager<LootAction, Board> {
         Board initialBoard() override;
 
         /*
+            Were can you jump from a given position.
+        */
+        std::vector<CellPosition> availiblesJumps(CellPosition, Board board) const;
+
+        /*
             For a given yellow pawn, we want to know
             all the combinations of positions captured
             we can form (up to isomorphism).
         */
-        std::vector<Combination> combinationsOfCapture(CellPosition axiom) const;
+        std::vector<Combination> combinationsOfCapture(CellPosition axiom, Board board) const;
         
         /*
             We want to know every paths (up to isomorphism) that can be build
             starting on input. Input paths should only have 1 element.
         */
-        std::vector<CellPath> expendPaths(std::vector<CellPath>) const;
+        std::vector<CellPath> expendPaths(std::vector<CellPath>, Board board) const;
 
         void removePointsFromScore(Board board, int & score) const;
     public:
