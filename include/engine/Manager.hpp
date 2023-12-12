@@ -38,7 +38,6 @@ class Manager {
         Player getCurrentPlayer() const;
         std::vector<Player> getWinners() const;
         std::vector<int> const getScores() const;
-        
 
         /*
             All possibles action from current configuration (up to isomorphism).

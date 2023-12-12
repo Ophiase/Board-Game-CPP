@@ -23,8 +23,9 @@ class LootManager : public Manager<LootAction, Board> {
         const int RED_BONUS = 2;
         const int BLACK_BONUS = 3;
 
-        static std::vector<Player> makePlayers(int n);
-        LootManager(int nPlayers = 2);
+        static std::vector<Player> makePlayers(
+            int nPlayers = 2, int nBots = 0);
+        LootManager(int nPlayers = 2, int nBots = 0);
 
         std::vector<LootAction> getActions(Board) const override;
         bool canPlayAction(Board) const override;

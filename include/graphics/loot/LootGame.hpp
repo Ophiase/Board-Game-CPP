@@ -19,7 +19,7 @@ class LootGame : public Game {
         void handleCheckerBoard();
 
     public:
-        LootGame(Launcher *launcher);
+        LootGame(Launcher *launcher, int nPlayers = 2, int nBots = 0);
         void draw() override;
         bool handleEvent(sf::Event) override;
         

@@ -42,25 +42,119 @@ void Menu::gameSelectionInit() {
     gameSelection.addObjectToDelete(bullTrickerGameButton);
 }
 
+// ---------------------------------
+// Loot Options
+
+void Menu::lootEditNPlayers(int n) {
+    int newValue = std::max(1, n);
+    
+    this->lootNPlayers = newValue;
+    this->lootNplayersText.setText(
+        std::to_string(newValue));
+
+    if (newValue < 2)
+        lootEditNBots(std::max(1, this->lootNBots));
+}
+
+void Menu::lootEditNBots(int n) {
+    int newValue = std::max(0, n);
+
+    this->lootNBots = newValue;
+    this->lootnBotsText.setText(std::to_string(newValue));
+
+    if (newValue + this->lootNPlayers < 2)
+        lootEditNPlayers(2);
+}
+
 void Menu::lootOptionInit() {
     TextButton *playButton = new TextButton{
     &lootOption, "Start Loot",
     [this](sf::Event) -> void {
-        this->successor = new LootGame(this->getLauncher());
+        this->successor = new LootGame(
+            this->getLauncher(), 
+            this->lootNPlayers, this->lootNBots
+            );
     }};
     playButton->center(sf::Vector2f{0.5, 0.60});
     lootOption.addObjectToDelete(playButton);
 
-    Text *nPlayers = new Text{&lootOption, "players : 2"};
-    nPlayers->setSizeY(0.05);
-    nPlayers->center(0.40, 0.35);
-    lootOption.addObjectToDelete(nPlayers);
+    {
+        Text *nPlayers = new Text{&lootOption, "players : "};
+        nPlayers->setSizeY(0.05);
+        nPlayers->center(0.40, 0.35);
+        lootOption.addObjectToDelete(nPlayers);
 
-    Text *nBots = new Text{&lootOption, "bots : 0"};
-    nBots->setSizeY(0.05);
-    nBots->center(0.40, 0.40);
-    lootOption.addObjectToDelete(nBots);
+        this->lootNplayersText.setSizeY(0.05);
+        this->lootNplayersText.setPosition(
+            nPlayers->getPosition().x + nPlayers->getSize().x,
+            nPlayers->getPosition().y
+            );
+
+        TextButton *minusPlayer = new TextButton{&lootOption, "-",
+            [this](sf::Event) -> void {
+                this->lootEditNPlayers(this->lootNPlayers - 1);
+            }
+        };
+        minusPlayer->setSizeY(0.05);
+        minusPlayer->setPosition(
+            lootNplayersText.getPosition().x + lootNplayersText.getSize().x,
+            lootNplayersText.getPosition().y
+        );
+        lootOption.addObjectToDelete(minusPlayer);
+
+        TextButton *plusPlayer = new TextButton{&lootOption, "+",
+            [this](sf::Event) -> void {
+                this->lootEditNPlayers(this->lootNPlayers + 1);
+            }
+        };
+        plusPlayer->setSizeY(0.05);
+        plusPlayer->setPosition(
+            minusPlayer->getPosition().x + minusPlayer->getSize().x,
+            minusPlayer->getPosition().y
+        );
+        lootOption.addObjectToDelete(plusPlayer);
+    }
+
+    {
+        Text *nBots = new Text{&lootOption, "bots : "};
+        nBots->setSizeY(0.05);
+        nBots->center(0.40, 0.40);
+        lootOption.addObjectToDelete(nBots);
+
+        this->lootnBotsText.setSizeY(0.05);
+        this->lootnBotsText.setPosition(
+            nBots->getPosition().x + nBots->getSize().x,
+            nBots->getPosition().y
+            );
+
+        TextButton *minusBot = new TextButton{&lootOption, "-",
+            [this](sf::Event) -> void {
+                this->lootEditNBots(this->lootNBots - 1);
+            }
+        };
+        minusBot->setSizeY(0.05);
+        minusBot->setPosition(
+            lootnBotsText.getPosition().x + lootnBotsText.getSize().x,
+            lootnBotsText.getPosition().y
+        );
+        lootOption.addObjectToDelete(minusBot);
+
+        TextButton *plusBot = new TextButton{&lootOption, "+",
+            [this](sf::Event) -> void {
+                this->lootEditNBots(this->lootNBots + 1);
+            }
+        };
+        plusBot->setSizeY(0.05);
+        plusBot->setPosition(
+            minusBot->getPosition().x + minusBot->getSize().x,
+            minusBot->getPosition().y
+        );
+        lootOption.addObjectToDelete(plusBot);
+    }
 }
+
+// ---------------------------------
+// Checker Options
 
 void Menu::checkersOptionInit() {
     TextButton *playButton = new TextButton{
@@ -73,6 +167,9 @@ void Menu::checkersOptionInit() {
     checkersOption.addObjectToDelete(playButton);
 }
 
+// ---------------------------------
+// BullTricker Options
+
 void Menu::bullTrickerOptionInit() {
     TextButton *playButton = new TextButton{
     &bullTrickerOption, "Start BullTricker",
@@ -83,6 +180,9 @@ void Menu::bullTrickerOptionInit() {
     playButton->center(sf::Vector2f{0.5, 0.60});
     bullTrickerOption.addObjectToDelete(playButton);
 }
+
+// ---------------------------------
+
 
 Menu::Menu(Launcher *launcher) : 
     Screen{launcher, "Menu"},

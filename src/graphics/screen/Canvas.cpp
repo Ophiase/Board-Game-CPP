@@ -40,6 +40,11 @@ void Canvas::setPosition(sf::Vector2f position) {
     this->position = position;
 }
 
+void Canvas::setPosition(float x, float y) {
+    this->position.x = x;
+    this->position.y = y;
+}
+
 sf::Vector2f Canvas::getPosition() const {
     return this->position;
 }

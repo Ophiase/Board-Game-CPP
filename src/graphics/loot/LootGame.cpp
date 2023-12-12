@@ -1,8 +1,8 @@
 #include "graphics/loot/LootGame.hpp"
 #include "graphics/Launcher.hpp"
 
-LootGame::LootGame(Launcher *launcher) :
-Game{launcher, "Loot", 1.0f}, manager{} {
+LootGame::LootGame(Launcher *launcher, int nPlayers, int nBots) :
+Game{launcher, "Loot", 1.0f}, manager{nPlayers, nBots} {
     {
         auto nPlayers = new Text{this,
             std::to_string(this->manager.players.size()) +

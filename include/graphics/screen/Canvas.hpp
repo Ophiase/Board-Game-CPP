@@ -34,6 +34,7 @@ class Canvas : public Container {
         
         sf::Vector2f getPosition() const;
         void setPosition(sf::Vector2f position);
+        void setPosition(float x, float y);
 
         /*
             size / 2.0

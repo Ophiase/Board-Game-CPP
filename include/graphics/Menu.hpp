@@ -3,6 +3,7 @@
 #include "graphics/screen/Screen.hpp"
 #include "SFML/Graphics.hpp"
 #include "utils/GarbageManager.hpp"
+#include "graphics/screen/Text.hpp"
 
 enum class MenuContext {
     GameSelection,
@@ -18,7 +19,8 @@ class Menu : public Screen {
         Container checkersOption;
         Container bullTrickerOption;
 
-        Container *getContext(MenuContext canvas);
+        void setContext(Container *context);
+        Container *getContext(MenuContext context);
         std::vector<Container*> getAllContext();
 
         void gameSelectionInit();
@@ -26,11 +28,22 @@ class Menu : public Screen {
         void checkersOptionInit();
         void bullTrickerOptionInit();
 
-        void setContext(Container *context);
+        // ---------------------------------
+        // Loot Options
+
+            int lootNPlayers{2};
+            Text lootNplayersText{&lootOption, "2"};
+            int lootNBots{0};
+            Text lootnBotsText{&lootOption, "0"};
+            void lootEditNPlayers(int);
+            void lootEditNBots(int); 
+        
+        // ---------------------------------
+
     public:
         Menu(Launcher *launcher);
         Screen *successor{nullptr};
 
         void draw();
-        void setContext(MenuContext context);
+        void setContext(MenuContext context);      
 };

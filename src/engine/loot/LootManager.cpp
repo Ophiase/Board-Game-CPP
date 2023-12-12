@@ -6,20 +6,31 @@
 // ------------------------------------------------------------
 // INITIALISATION
 
-LootManager::LootManager(int nPlayers) : 
-    Manager<LootAction, Board>{makePlayers(nPlayers)} {
+LootManager::LootManager(int nPlayers, int nBots) : 
+    Manager<LootAction, Board>{makePlayers(nPlayers, nBots)} {
     configurations.push_back(initialBoard());
-    scores.push_back(scoreList(nPlayers, 0));
+    scores.push_back(scoreList(nPlayers + nBots, 0));
 };
 
-std::vector<Player> LootManager::makePlayers(int n) {
+std::vector<Player> LootManager::makePlayers(
+    int nPlayers, int nBots) {
     std::vector<Player> output;
 
-    for (int i = 0; i < n; i++)
-        output.push_back(Player{
+    for (int i = 0; i < nPlayers; i++)
+        output.push_back(Player {
             i,
-            "Player_" + std::to_string(i)
+            "Player_" + std::to_string(i),
+            false
         });
+
+    for (int i = 0; i < nBots; i++)
+        output.push_back(Player {
+            i,
+            "Bots_" + std::to_string(i),
+            true
+        });
+
+    // shuffle ?
 
     return output;
 }
