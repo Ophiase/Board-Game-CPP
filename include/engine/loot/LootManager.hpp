@@ -2,14 +2,8 @@
 
 #include "engine/Board.hpp"
 #include "engine/Manager.hpp"
+#include "engine/Combination.hpp"
 #include "LootAction.hpp"
-
-/*
-    A Combination of CellPositions.
-    Two combinations should be considered equals if they share
-    the same elements (even wihout same order).
-*/
-using Combination = std::vector<CellPosition>;
 
 /*
     Proportion of each type of pawn could be a paramater.
@@ -22,9 +16,25 @@ class LootManager : public Manager<LootAction, Board> {
         Board initialBoard() override;
 
         /*
-            Were can you jump from a given position.
+            Given a capture/visited, we want to add to
+            current captures/visiteds a all the pair such that :
+                - the pair wasn't previously found
+                - the pair extend the given pair 
         */
-        std::vector<CellPosition> availiblesJumps(CellPosition, Board board) const;
+        void expandCombination(
+            std::vector<Combination> & result,
+
+            std::vector<Combination> & lastCaptures,
+            std::vector<Combination> & lastVisiteds,
+
+            std::vector<Combination> & currentCaptures,
+            std::vector<Combination> & currentVisiteds,
+            
+            Combination captureToExpand,
+            Combination visitedToExpand,
+
+            Board board
+        ) const;
 
         /*
             For a given yellow pawn, we want to know
@@ -41,6 +51,11 @@ class LootManager : public Manager<LootAction, Board> {
 
         void removePointsFromScore(Board board, int & score) const;
     public:
+        const std::vector<CellPosition> authorizedOffsets = {
+            {2, 0}, {0, 2}, {-2, 0}, {0, -2},
+            {2, 2}, {2, -2}, {-2, 2}, {-2, -2}
+        };
+
         const int TOTAL_YELLOW_PAWN = 34;
         const int TOTAL_RED_PAWN = 20;
         const int TOTAL_BLACK_PAWN = 10;

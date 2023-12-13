@@ -72,31 +72,96 @@ Board LootManager::initialBoard() {
 
 // ------------------------------------------------------------
 
-std::vector<Combination> LootManager::combinationsOfCapture(CellPosition, Board) const {
+/*
+    Given a capture/visited, we want to add to
+    current captures/visiteds a all the pair such that :
+        - the pair wasn't previously found
+        - the pair extend the given pair 
+*/
+void LootManager::expandCombination(
+    std::vector<Combination> & result,
+
+    std::vector<Combination> & lastCaptures,
+    std::vector<Combination> & lastVisiteds,
+
+    std::vector<Combination> & currentCaptures,
+    std::vector<Combination> & currentVisiteds,
+    
+    Combination captureToExpand,
+    Combination visitedToExpand,
+
+    Board board
+) const {
+    // for every jump we try to make an outside jump
+    for (auto position : visitedToExpand) 
+    for (auto offset : authorizedOffsets) {
+        auto jump = position + offset;
+        auto mid = position + offset/2;
+
+        // is jump correct ?
+        if (!board.isCaseInBoard(jump))
+            continue;
+
+        if (board.isCaseEmpty(mid))
+            continue;
+
+        auto captureExpension = captureToExpand;
+        auto visitExpension = visitedToExpand;
+
+        captureExpension.push_back(mid);
+        visitExpension.push_back(jump);
+
+        // check if we don't add two time to currentBatch a same combination
+        if (false) // TODO
+            continue;
+
+        (void)lastCaptures;
+        (void)lastVisiteds;
+
+
+        // add it to the current batch and result
+        currentCaptures.push_back(visitExpension);
+        currentVisiteds.push_back(captureExpension);
+        result.push_back(captureExpension);
+    }
+}
+
+/*
+    This function find all the combinations of positions we can capture.
+*/
+std::vector<Combination> LootManager::combinationsOfCapture(CellPosition initPosition, Board board) const {
     throw NotImplemented();
 
     std::vector<Combination> result;
 
-    std::vector<Combination> lastBatch;
-    std::vector<Combination> currentBatch;
+    std::vector<Combination> lastCaptures = std::vector<Combination>{Combination{}};
+    std::vector<Combination> lastVisiteds = std::vector<Combination>{Combination{initPosition}};
 
-    // first iteration
-        // evaluates the 8 first jumps
-        // put corrects one them in lastBatch and result 
+    std::vector<Combination> currentCaptures;
+    std::vector<Combination> currentVisiteds;
 
-    while (!lastBatch.empty()) {
-        for (auto combination : lastBatch) {
-            // find all the positions we can start from
+    while (!lastCaptures.empty()) {
+        for (uint i = 0; i < lastCaptures.size(); i++) {
+            auto lastCapture = lastCaptures[i];
+            auto lastVisited = lastVisiteds[i];
 
-            // for every position, tries to find a new jump
+            this->expandCombination(
+                result,
 
-            // check if we don't add two time to currentBatch a same combination
+                lastCaptures, lastVisiteds,
+                currentCaptures, currentVisiteds,
 
-            // add it to the current batch and result
+                lastCapture,
+                lastVisited,
+
+                board
+            );
         }
 
-        lastBatch = currentBatch;
-        currentBatch.clear();
+        lastCaptures = currentCaptures;
+        lastVisiteds = currentVisiteds;
+        currentCaptures.clear();
+        currentVisiteds.clear();
     }
 
     return result;
@@ -172,13 +237,8 @@ bool LootManager::canPlayAction(Board board) const {
     for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++)
         if (board.getCell(x, y).pieceType == CellPieceType::YellowPawn)
             yellows.push_back(CellPosition{x, y});
-    
-    std::vector<CellPosition> offsets = {
-        {2, 0}, {0, 2}, {-2, 0}, {0, -2},
-        {2, 2}, {2, -2}, {-2, 2}, {-2, -2}
-    };
 
-    for (auto yellow : yellows) for (auto offset : offsets) {
+    for (auto yellow : yellows) for (auto offset : authorizedOffsets) {
         CellPosition between = yellow + (offset)/2;
         CellPosition afterJump = yellow + offset;
         
