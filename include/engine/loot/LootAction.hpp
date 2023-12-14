@@ -2,6 +2,7 @@
 
 #include "engine/Action.hpp"
 #include "engine/Cell.hpp"
+#include "engine/type/CellPosition.hpp"
 
 using CellPath = std::vector<CellPosition>;
 

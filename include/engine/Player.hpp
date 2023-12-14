@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PieceInfo.hpp"
+#include "engine/type/PlayerId.hpp"
 #include <string>
 
 class Player {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Board.hpp"
+#include "type/SidePosition.hpp"
 
 class BoardSided : public Board {
     public :

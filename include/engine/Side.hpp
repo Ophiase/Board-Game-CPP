@@ -1,27 +1,13 @@
 #pragma once
 
-#include "PieceInfo.hpp"
+#include "engine/type/SidePieceType.hpp"
+#include "engine/type/Piece.hpp"
 
 #include <iostream>
 #include <vector>
 #include <stdlib.h>
 #include <SFML/System/Vector2.hpp>
 #include <tuple>
-
-using SideVector = sf::Vector2i;
-class SidePosition {
-    public:
-        SideVector sideVector;
-        bool horizontal;
-
-        SidePosition(SideVector sideVector, bool horizontal) :
-            sideVector{sideVector}, horizontal{horizontal} {};
-        SidePosition(const SidePosition & sidePostion) : 
-            sideVector{sidePostion.sideVector}, 
-            horizontal{sidePostion.horizontal} {};
-
-        std::string toString() const;
-};
 
 class SidePiece : public Piece {
     public:

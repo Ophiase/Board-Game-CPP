@@ -2,6 +2,7 @@
 
 #include "Combination.hpp"
 #include "LootAction.hpp"
+#include "CellPath.hpp"
 
 class CapturePath {
     private:

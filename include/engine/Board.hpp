@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include "engine/Cell.hpp"
 #include "engine/Side.hpp"
+#include "engine/type/CellPosition.hpp"
 
 /*
     Base class for any game board.

@@ -5,9 +5,9 @@
 #include <stdlib.h>
 #include <SFML/System/Vector2.hpp>
 
-#include "PieceInfo.hpp"
+#include "engine/type/Piece.hpp"
+#include "engine/type/CellPieceType.hpp"
 
-using CellPosition = sf::Vector2i;
 class CellPiece : public Piece {
     public:
         CellPieceType pieceType;
