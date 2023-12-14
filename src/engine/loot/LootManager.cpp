@@ -86,7 +86,7 @@ void LootManager::expandCombination(
 ) const {
     // for every jump we try to make an outside jump
     for (auto position : capturePathToExpand.visiteds) 
-    for (auto offset : authorizedOffsets) {
+    for (auto offset : LootAction::authorizedOffsets) {
         auto jump = position + offset;
         auto mid = position + offset/2;
 
@@ -151,7 +151,6 @@ std::vector<CapturePath> LootManager::combinationsOfCapture(CellPosition initPos
 
 std::vector<CellPath> LootManager::expendPaths(
     std::vector<CellPath> axioms, Board board) const {
-    throw NotImplemented();
 
     std::vector<CellPath> result;
 
@@ -159,7 +158,7 @@ std::vector<CellPath> LootManager::expendPaths(
         // Find all the combinations of pieces that can be captured
         auto capturePaths = combinationsOfCapture(axiom[0], board);
         for (auto capturePath : capturePaths)
-            result.push_back(capturePath.toCellpath());
+            result.push_back(capturePath.toCellPath(board));
     }
 
     return result;
@@ -193,8 +192,6 @@ std::vector<LootAction> LootManager::getActions(Board board) const {
         require to jump on multiple elements before.
         And in practice there are very few moves availibles.
     */
-    
-    throw NotImplemented();
 
     PlayerId authorId = this->getCurrentPlayer().id;
     std::vector<LootAction> result;
@@ -228,7 +225,7 @@ bool LootManager::canPlayAction(Board board) const {
         if (board.getCell(x, y).pieceType == CellPieceType::YellowPawn)
             yellows.push_back(CellPosition{x, y});
 
-    for (auto yellow : yellows) for (auto offset : authorizedOffsets) {
+    for (auto yellow : yellows) for (auto offset : LootAction::authorizedOffsets) {
         CellPosition between = yellow + (offset)/2;
         CellPosition afterJump = yellow + offset;
         

@@ -45,11 +45,6 @@ class LootManager : public Manager<LootAction, Board> {
 
         void removePointsFromScore(Board board, int & score) const;
     public:
-        const std::vector<CellPosition> authorizedOffsets = {
-            {2, 0}, {0, 2}, {-2, 0}, {0, -2},
-            {2, 2}, {2, -2}, {-2, 2}, {-2, -2}
-        };
-
         const int TOTAL_YELLOW_PAWN = 34;
         const int TOTAL_RED_PAWN = 20;
         const int TOTAL_BLACK_PAWN = 10;
