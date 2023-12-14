@@ -24,9 +24,6 @@ class LootManager : public Manager<LootAction, Board> {
         void expandCombination(
             std::vector<Combination> & result,
 
-            std::vector<Combination> & lastCaptures,
-            std::vector<Combination> & lastVisiteds,
-
             std::vector<Combination> & currentCaptures,
             std::vector<Combination> & currentVisiteds,
             

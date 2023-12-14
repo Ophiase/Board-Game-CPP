@@ -81,9 +81,6 @@ Board LootManager::initialBoard() {
 void LootManager::expandCombination(
     std::vector<Combination> & result,
 
-    std::vector<Combination> & lastCaptures,
-    std::vector<Combination> & lastVisiteds,
-
     std::vector<Combination> & currentCaptures,
     std::vector<Combination> & currentVisiteds,
     
@@ -99,6 +96,7 @@ void LootManager::expandCombination(
         auto mid = position + offset/2;
 
         // is jump correct ?
+
         if (!board.isCaseInBoard(jump))
             continue;
 
@@ -111,13 +109,18 @@ void LootManager::expandCombination(
         captureExpension.push_back(mid);
         visitExpension.push_back(jump);
 
-        // check if we don't add two time to currentBatch a same combination
-        if (false) // TODO
-            continue;
+        /*
+            We now check that we didn't already 
+            computed this combination.
+        */
+        bool canBeAdded = true;
+        for (auto captureAlreadyComputed : currentCaptures)
+            if (captureExpension == captureAlreadyComputed) {
+                canBeAdded = false;
+                break;
+            }
 
-        (void)lastCaptures;
-        (void)lastVisiteds;
-
+        if (!canBeAdded) continue;
 
         // add it to the current batch and result
         currentCaptures.push_back(visitExpension);
@@ -130,8 +133,6 @@ void LootManager::expandCombination(
     This function find all the combinations of positions we can capture.
 */
 std::vector<Combination> LootManager::combinationsOfCapture(CellPosition initPosition, Board board) const {
-    throw NotImplemented();
-
     std::vector<Combination> result;
 
     std::vector<Combination> lastCaptures = std::vector<Combination>{Combination{}};
@@ -146,10 +147,7 @@ std::vector<Combination> LootManager::combinationsOfCapture(CellPosition initPos
             auto lastVisited = lastVisiteds[i];
 
             this->expandCombination(
-                result,
-
-                lastCaptures, lastVisiteds,
-                currentCaptures, currentVisiteds,
+                result, currentCaptures, currentVisiteds,
 
                 lastCapture,
                 lastVisited,
