@@ -1,4 +1,4 @@
-#include "engine/Combination.hpp"
+#include "engine/loot/Combination.hpp"
 #include "utils/NotImplemented.hpp"
 
 bool Combination::isValid() const {

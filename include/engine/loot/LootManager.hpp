@@ -2,7 +2,8 @@
 
 #include "engine/Board.hpp"
 #include "engine/Manager.hpp"
-#include "engine/Combination.hpp"
+#include "Combination.hpp"
+#include "CapturePath.hpp"
 #include "LootAction.hpp"
 
 /*
@@ -22,14 +23,9 @@ class LootManager : public Manager<LootAction, Board> {
                 - the pair extend the given pair 
         */
         void expandCombination(
-            std::vector<Combination> & result,
-
-            std::vector<Combination> & currentCaptures,
-            std::vector<Combination> & currentVisiteds,
-            
-            Combination captureToExpand,
-            Combination visitedToExpand,
-
+            std::vector<CapturePath> & result,
+            std::vector<CapturePath> & currentCapturesPath,
+            CapturePath capturePathToExpand,
             Board board
         ) const;
 
@@ -38,7 +34,8 @@ class LootManager : public Manager<LootAction, Board> {
             all the combinations of positions captured
             we can form (up to isomorphism).
         */
-        std::vector<Combination> combinationsOfCapture(CellPosition axiom, Board board) const;
+        std::vector<CapturePath> combinationsOfCapture(
+                CellPosition axiom, Board board) const;
         
         /*
             We want to know every paths (up to isomorphism) that can be build

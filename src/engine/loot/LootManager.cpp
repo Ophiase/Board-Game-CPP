@@ -79,18 +79,13 @@ Board LootManager::initialBoard() {
         - the pair extend the given pair 
 */
 void LootManager::expandCombination(
-    std::vector<Combination> & result,
-
-    std::vector<Combination> & currentCaptures,
-    std::vector<Combination> & currentVisiteds,
-    
-    Combination captureToExpand,
-    Combination visitedToExpand,
-
+    std::vector<CapturePath> & result,
+    std::vector<CapturePath> & currentCapturePaths,
+    CapturePath capturePathToExpand,
     Board board
 ) const {
     // for every jump we try to make an outside jump
-    for (auto position : visitedToExpand) 
+    for (auto position : capturePathToExpand.visiteds) 
     for (auto offset : authorizedOffsets) {
         auto jump = position + offset;
         auto mid = position + offset/2;
@@ -103,8 +98,8 @@ void LootManager::expandCombination(
         if (board.isCaseEmpty(mid))
             continue;
 
-        auto captureExpension = captureToExpand;
-        auto visitExpension = visitedToExpand;
+        auto captureExpension = capturePathToExpand.captures;
+        auto visitExpension = capturePathToExpand.visiteds;
 
         captureExpension.push_back(mid);
         visitExpension.push_back(jump);
@@ -114,8 +109,8 @@ void LootManager::expandCombination(
             computed this combination.
         */
         bool canBeAdded = true;
-        for (auto captureAlreadyComputed : currentCaptures)
-            if (captureExpension == captureAlreadyComputed) {
+        for (auto captureAlreadyComputed : currentCapturePaths)
+            if (captureExpension == captureAlreadyComputed.captures) {
                 canBeAdded = false;
                 break;
             }
@@ -123,54 +118,51 @@ void LootManager::expandCombination(
         if (!canBeAdded) continue;
 
         // add it to the current batch and result
-        currentCaptures.push_back(visitExpension);
-        currentVisiteds.push_back(captureExpension);
-        result.push_back(captureExpension);
-    }
+        CapturePath expension{visitExpension, captureExpension};
+        currentCapturePaths.push_back(expension);
+        result.push_back(expension);
+        }
 }
 
 /*
     This function find all the combinations of positions we can capture.
 */
-std::vector<Combination> LootManager::combinationsOfCapture(CellPosition initPosition, Board board) const {
-    std::vector<Combination> result;
+std::vector<CapturePath> LootManager::combinationsOfCapture(CellPosition initPosition, Board board) const {
+    std::vector<CapturePath> result;
 
-    std::vector<Combination> lastCaptures = std::vector<Combination>{Combination{}};
-    std::vector<Combination> lastVisiteds = std::vector<Combination>{Combination{initPosition}};
+    std::vector<CapturePath> lastCapturePaths{
+        CapturePath{Combination{}, Combination{initPosition}}
+    };
+    
+    std::vector<CapturePath> currentCapturePaths;
 
-    std::vector<Combination> currentCaptures;
-    std::vector<Combination> currentVisiteds;
-
-    while (!lastCaptures.empty()) {
-        for (uint i = 0; i < lastCaptures.size(); i++) {
-            auto lastCapture = lastCaptures[i];
-            auto lastVisited = lastVisiteds[i];
-
+    while (!lastCapturePaths.empty()) {
+        for (auto capturePath : lastCapturePaths)
             this->expandCombination(
-                result, currentCaptures, currentVisiteds,
-
-                lastCapture,
-                lastVisited,
-
-                board
+                result, currentCapturePaths, capturePath, board
             );
-        }
 
-        lastCaptures = currentCaptures;
-        lastVisiteds = currentVisiteds;
-        currentCaptures.clear();
-        currentVisiteds.clear();
+        lastCapturePaths = currentCapturePaths;
+        currentCapturePaths.clear();
     }
 
     return result;
 }
 
-std::vector<CellPath> LootManager::expendPaths(std::vector<CellPath> axioms, Board) const {
+std::vector<CellPath> LootManager::expendPaths(
+    std::vector<CellPath> axioms, Board board) const {
     throw NotImplemented();
+
+    std::vector<CellPath> result;
 
     for (auto axiom : axioms) {
         // Find all the combinations of pieces that can be captured
+        auto capturePaths = combinationsOfCapture(axiom[0], board);
+        for (auto capturePath : capturePaths)
+            result.push_back(capturePath.toCellpath());
     }
+
+    return result;
 }
 
 std::vector<LootAction> LootManager::getActions(Board board) const {
