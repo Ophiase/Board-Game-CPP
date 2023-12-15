@@ -54,7 +54,9 @@ void LootGame::playAction() {
     if (!interactive) return;
 
     LootAction action{
+        &(this->manager),
         manager.getCurrentPlayer().id,
+        manager.step(),
         cacheAction
     };
 
@@ -172,7 +174,7 @@ void LootGame::handleCheckerBoard() {
     cacheAction.push_back(getCellPosition());
     
     LootAction action{
-        manager.getCurrentPlayer().id, 
+        &(this->manager), manager.getCurrentPlayer().id, manager.step(),
         cacheAction
     };
 

@@ -209,7 +209,7 @@ std::vector<LootAction> LootManager::getActions(Board board) const {
         paths = this->expendPaths(paths, board);
 
     for (auto path : paths)
-        result.push_back(LootAction{authorId, path});    
+        result.push_back(LootAction{this, authorId, this->step(), path});    
     
     return result;
 };

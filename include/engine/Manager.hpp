@@ -18,10 +18,12 @@ using scoreList = std::vector<int>;
 */
 template <class ActionType, class BoardType>
 class Manager {
+    /*
     static_assert(std::is_base_of<Action, ActionType>::value,
         "ActionType must inherit from Action");
     static_assert(std::is_base_of<Board, BoardType>::value,
         "BordType must inherit from Board");
+    */
 
     protected:
         std::vector<scoreList> scores;
@@ -88,7 +90,7 @@ class Manager {
             ActionType actionA, ActionType actionB) const;
         
         void cancel();
-        int step() const;
+        uint step() const;
 };
 
 template <class ActionType, class BoardType>
@@ -109,7 +111,7 @@ void Manager<ActionType, BoardType>::cancel() {
 };
 
 template <class ActionType, class BoardType>
-int Manager<ActionType, BoardType>::step() const {
+uint Manager<ActionType, BoardType>::step() const {
     return this->actions.size();
 };
 
