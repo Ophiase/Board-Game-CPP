@@ -111,6 +111,7 @@ std::vector<LootAction> LootAction::getActions(
     uint step,
     Board board) { 
 
+
     /*
         You can only move of 2 on x and y axis.
         It means, that remove pieces from the board
@@ -164,7 +165,7 @@ std::vector<LootAction> LootAction::getActions(
     Is there any authorized/correct action ?
 */
 bool LootAction::hasRemainingActions(
-    const LootManager * manager, 
+    const LootManager *manager,
     PlayerId author,
     uint step,
     Board board) {
@@ -302,7 +303,7 @@ std::tuple<Board, ScoreList> LootAction::apply(
     scores[author] += moveScore;
 
     Board nextBoard{cells, nextPlayer};
-    if (manager->isFinished(nextBoard)) {
+    if (manager->isFinished(nextPlayer, step+1, nextBoard)) {
         this->removePointsFromScore(nextBoard, scores[author]);   
     }
 

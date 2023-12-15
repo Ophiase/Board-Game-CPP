@@ -46,31 +46,31 @@ class Manager {
         /*
             All possibles action from current configuration (up to isomorphism).
         */
-        virtual std::vector<ActionType> getActions(BoardType board) const;
+        std::vector<ActionType> getActions(BoardType board) const;
         std::vector<ActionType> getActions() const;
         
         /*
             Is action authorized/correct.
         */
-        virtual bool canPlayAction(ActionType action) const = 0;
+        bool canPlayAction(ActionType action) const;
         
         /*
             Is there any authorized/correct action ?
 
-            Advice: reimplement it wihout "getActions" for 
-            better performances.
+            Need to be reimplemented in child class using 
+            ActionType::hasRemainingAction
         */
-        virtual bool canPlayAction(BoardType) const;
+        virtual bool canPlayAction(PlayerId, uint step, BoardType) const;
         bool canPlayAction() const;
         
-        virtual bool isFinished(BoardType) const;
+        bool isFinished(PlayerId, uint step, BoardType) const;
         bool isFinished() const;
         
         /*
             See the effect of the action
         */
-        virtual std::tuple<BoardType, ScoreList> evaluateAction(
-            ActionType action, BoardType board) const = 0;
+        std::tuple<BoardType, ScoreList> evaluateAction(
+            ActionType action, BoardType board, ScoreList scoreList) const;
         
         std::tuple<BoardType, ScoreList> evaluateAction(ActionType action) const;
     
@@ -81,11 +81,8 @@ class Manager {
         
         /*
             Doe 2 actions have the same effect on the board?
-
-            Advice: reimplement it wihout "evaluateAction" for 
-            better performances.
         */
-        virtual bool actionEquivalence(
+        bool actionEquivalence(
             ActionType actionA, ActionType actionB) const;
         
         void cancel();
@@ -155,9 +152,21 @@ int Manager<ActionType, BoardType>::getCurrentPlayerIndex() const {
 
 
 template <class ActionType, class BoardType>
+bool Manager<ActionType, BoardType>::canPlayAction(ActionType action) const {
+    return action.isValid(this->getConfiguration());
+}
+
+template <class ActionType, class BoardType>
+std::tuple<BoardType, ScoreList> Manager<ActionType, BoardType>::evaluateAction(
+    ActionType action, BoardType board, ScoreList scoreList) const {
+    
+    return action.apply(board, scoreList);
+}
+
+template <class ActionType, class BoardType>
 std::tuple<BoardType, ScoreList> Manager<ActionType, BoardType>::evaluateAction(
     ActionType action) const {
-    return this->evaluateAction(action, this->getConfiguration());
+    return this->evaluateAction(action, this->getConfiguration(), this->getScores());
 }
 
 template <class ActionType, class BoardType>
@@ -198,19 +207,38 @@ std::vector<ActionType> Manager<ActionType, BoardType>::getActions() const {
     return this->getActions(this->getConfiguration());
 };
 
+
 template<class ActionType, class BoardType>
-bool Manager<ActionType, BoardType>::canPlayAction(BoardType board) const {
-    return this->getActions(board).size() != 0;
+bool Manager<ActionType, BoardType>::canPlayAction(
+    PlayerId, uint, BoardType) const {
+    
+    throw NotImplemented();
+
+    // needs to be reimplemented in child class because "this"
+    // need to be correctly casted
+
+    /*
+    return ActionType::hasRemainingActions(
+        this, 
+        author,
+        step,
+        board
+        );
+    */
 };
 
 template<class ActionType, class BoardType>
 bool Manager<ActionType, BoardType>::canPlayAction() const {
-    return canPlayAction(this->getConfiguration());
+    return canPlayAction(
+        this->getCurrentPlayerIndex(),
+        this->step(),
+        this->getConfiguration());
 };
 
 template<class ActionType, class BoardType>
-bool Manager<ActionType, BoardType>::isFinished(BoardType board) const {
-    return !(this->canPlayAction(board));
+bool Manager<ActionType, BoardType>::isFinished(PlayerId author, uint step, BoardType board) const {
+    return !(this->canPlayAction(
+        author, step, board));
 };
 
 template<class ActionType, class BoardType>
