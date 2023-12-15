@@ -28,23 +28,27 @@ class LootAction : public Action<LootManager, Board> {
             All possibles action from current configuration (up to isomorphism).
         */
         static std::vector<LootAction> getActions(
-            LootManager *const manager, 
+            const LootManager * manager, 
             PlayerId author, 
             int step,
-            Board board) { (void)manager; (void)author; (void)step; (void)board; throw NotImplemented(); };
+            Board board);
 
         /*
             Is there any authorized/correct action ?
         */
-        static bool hasRemainingActions(Board) { throw NotImplemented(); };
+        static bool hasRemainingActions(
+            const LootManager * manager, 
+            PlayerId author, 
+            int step,
+            Board board);
 
         /*
             Is action authorized/correct.
         */
-        bool  isValid(Board) const override { throw NotImplemented(); };
+        bool  isValid(Board) const override;
         
         /*
             If action is not valid, throw an error.
         */
-        Board apply(Board) const override { throw NotImplemented(); };
+        Board apply(Board) const override;
 };

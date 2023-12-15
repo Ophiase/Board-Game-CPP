@@ -45,7 +45,7 @@ class Action {
             version of getActions.
         */
         static std::vector<Action> getActions(
-            ManagerType *const manager, 
+            const ManagerType * manager, 
             PlayerId author, 
             int step,
             BoardType board);
@@ -56,7 +56,11 @@ class Action {
             every class that implements Action, should have its own
             version of hasRemainingActions.
         */
-        static bool hasRemainingActions(BoardType board);
+        static bool hasRemainingActions(
+            const ManagerType *manager, 
+            PlayerId author, 
+            int step,
+            BoardType board);
 };
 
 template <class ManagerType, class BoardType>
@@ -67,7 +71,7 @@ bool Action<ManagerType, BoardType>::actionEquivalence(BoardType board, Action o
 template <class ManagerType, class BoardType>
 std::vector<Action<ManagerType, BoardType>> 
 Action<ManagerType, BoardType>::getActions(
-    ManagerType *const manager, 
+    const ManagerType *manager, 
     PlayerId author, 
     int step,
     BoardType board) {
@@ -77,6 +81,9 @@ Action<ManagerType, BoardType>::getActions(
 
 template <class ManagerType, class BoardType>
 bool Action<ManagerType, BoardType>::hasRemainingActions(
+    const ManagerType *manager, 
+    PlayerId author, 
+    int step,
     BoardType board) {
 
     throw NotImplemented();
