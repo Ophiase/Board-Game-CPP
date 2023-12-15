@@ -1,5 +1,6 @@
 #include "engine/loot/CapturePath.hpp"
 #include "utils/NotImplemented.hpp"
+#include "engine/loot/LootAction.hpp"
 
 bool CapturePath::findCapturePath(
     CellPath &cache, CellPosition capture,

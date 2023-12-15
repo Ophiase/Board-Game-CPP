@@ -2,6 +2,7 @@
 
 #include "Board.hpp"
 #include "engine/Action.hpp"
+#include "engine/type/ScoreList.hpp"
 
 #include <utils/NotImplemented.hpp>
 #include <vector>
@@ -10,8 +11,6 @@
 #include "utils/Cli.hpp"
 #include "Player.hpp"
 #include <climits>
-
-using scoreList = std::vector<int>;
 
 /*
     Generic class for game controller.
@@ -26,7 +25,7 @@ class Manager {
     */
 
     protected:
-        std::vector<scoreList> scores;
+        std::vector<ScoreList> scores;
         std::vector<BoardType> configurations;
         std::vector<ActionType> actions;
         virtual BoardType initialBoard() = 0;
@@ -70,10 +69,10 @@ class Manager {
         /*
             See the effect of the action
         */
-        virtual std::tuple<BoardType, scoreList> evaluateAction(
+        virtual std::tuple<BoardType, ScoreList> evaluateAction(
             ActionType action, BoardType board) const = 0;
         
-        std::tuple<BoardType, scoreList> evaluateAction(ActionType action) const;
+        std::tuple<BoardType, ScoreList> evaluateAction(ActionType action) const;
     
         /*
             If action is not valid, throw an error.
@@ -156,7 +155,7 @@ int Manager<ActionType, BoardType>::getCurrentPlayerIndex() const {
 
 
 template <class ActionType, class BoardType>
-std::tuple<BoardType, scoreList> Manager<ActionType, BoardType>::evaluateAction(
+std::tuple<BoardType, ScoreList> Manager<ActionType, BoardType>::evaluateAction(
     ActionType action) const {
     return this->evaluateAction(action, this->getConfiguration());
 }
@@ -168,7 +167,7 @@ void Manager<ActionType, BoardType>::applyAction(ActionType action) {
         throw std::invalid_argument("Cannot play this Action.");
     }
 
-    std::tuple<BoardType, scoreList> result = evaluateAction(action);
+    std::tuple<BoardType, ScoreList> result = evaluateAction(action);
 
     this->configurations.push_back(std::get<0>(result));
     this->scores.push_back(std::get<1>(result));

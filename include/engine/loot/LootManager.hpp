@@ -60,6 +60,6 @@ class LootManager : public Manager<LootAction, Board> {
         std::vector<LootAction> getActions(Board) const override;
         bool canPlayAction(Board) const override;
         bool canPlayAction(LootAction action) const override;
-        std::tuple<Board, scoreList> evaluateAction(
+        std::tuple<Board, ScoreList> evaluateAction(
             LootAction action, Board board) const override;
 };

@@ -9,7 +9,7 @@
 LootManager::LootManager(int nPlayers, int nBots) : 
     Manager<LootAction, Board>{makePlayers(nPlayers, nBots)} {
     configurations.push_back(initialBoard());
-    scores.push_back(scoreList(nPlayers + nBots, 0));
+    scores.push_back(ScoreList(nPlayers + nBots, 0));
 };
 
 std::vector<Player> LootManager::makePlayers(
@@ -310,7 +310,7 @@ void LootManager::removePointsFromScore(Board board, int & score) const {
         }
 }
 
-std::tuple<Board, scoreList> LootManager::evaluateAction(
+std::tuple<Board, ScoreList> LootManager::evaluateAction(
     LootAction action, Board board) const {
 
     auto cells = board.cellPieces;
@@ -342,7 +342,7 @@ std::tuple<Board, scoreList> LootManager::evaluateAction(
         players[(currentPlayerIndex + 1) % nPlayers]
         ).id;
     
-    scoreList scores{this->getScores()};
+    ScoreList scores{this->getScores()};
     scores[currentPlayerIndex] += moveScore;
 
     Board nextBoard{cells, nextPlayer};

@@ -3,6 +3,7 @@
 #include "engine/type/PlayerId.hpp"
 #include <vector>
 #include "utils/NotImplemented.hpp"
+#include "engine/type/ScoreList.hpp"
 
 /*
     PlaceHolder, game defined.
@@ -29,7 +30,8 @@ class Action {
         /*
             If action is not valid, throw an error.
         */
-        virtual BoardType apply(BoardType board) const = 0;
+        virtual std::tuple<BoardType, ScoreList> apply(
+            BoardType board, ScoreList) const = 0;
         
         /*
             Doe 2 actions have the same effect on the board?
@@ -47,7 +49,7 @@ class Action {
         static std::vector<Action> getActions(
             const ManagerType * manager, 
             PlayerId author, 
-            int step,
+            uint step,
             BoardType board);
         
         /*
@@ -59,7 +61,7 @@ class Action {
         static bool hasRemainingActions(
             const ManagerType *manager, 
             PlayerId author, 
-            int step,
+            uint step,
             BoardType board);
 };
 
@@ -73,7 +75,7 @@ std::vector<Action<ManagerType, BoardType>>
 Action<ManagerType, BoardType>::getActions(
     const ManagerType *manager, 
     PlayerId author, 
-    int step,
+    uint step,
     BoardType board) {
 
     throw NotImplemented();
@@ -83,7 +85,7 @@ template <class ManagerType, class BoardType>
 bool Action<ManagerType, BoardType>::hasRemainingActions(
     const ManagerType *manager, 
     PlayerId author, 
-    int step,
+    uint step,
     BoardType board) {
 
     throw NotImplemented();
