@@ -11,7 +11,6 @@
 */
 class LootManager : public Manager<LootAction, Board> {
     private:
-
         CellPiece randomCellPiece(int & remaningYellow, 
             int & remaningRed, int & remaningBlack);
         Board initialBoard() override;
