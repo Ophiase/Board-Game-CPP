@@ -165,23 +165,91 @@ std::vector<LootAction> LootAction::getActions(
 */
 bool LootAction::hasRemainingActions(
     const LootManager * manager, 
-    PlayerId author, 
+    PlayerId author,
     uint step,
     Board board) {
+
+    (void)author;
      
-    (void)manager; (void)author; (void)step; (void)board;
-    throw NotImplemented(); 
+    /* initialisation of the party */
+    if (step < manager->players.size())
+        return true;
+    
+    std::vector<LootAction> result;
+    std::vector<CellPosition> yellows;
+    for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++)
+        if (board.getCell(x, y).pieceType == CellPieceType::YellowPawn)
+            yellows.push_back(CellPosition{x, y});
+
+    for (auto yellow : yellows) for (auto offset : LootAction::authorizedOffsets) {
+        CellPosition between = yellow + (offset)/2;
+        CellPosition afterJump = yellow + offset;
+        
+        if (!board.isCaseInBoard(between) || !board.isCaseInBoard(afterJump))
+            continue;
+    
+        if (!board.getCell(between).isNone() &&
+            board.getCell(afterJump).isNone())
+            return true;
+    }
+
+    return false;
 };
 
 ////////////////////////////////////////////////////////////////////////
 // NOT STATIC
 
 /*
-    Is action authorized/correct.
+    if and only if (<=>) logic gate
 */
-bool LootAction::isValid(Board) const { 
-    throw NotImplemented(); 
+inline bool iff(bool const a, bool const b) {
+    return (a && b) || (!a && !b);
+};
 
+bool LootAction::isValid(Board configuration) const { 
+    if (jumps.size() == 0)
+        return false;
+
+    if (!iff(
+        step < manager->players.size(),
+        jumps.size() == 1
+        )) return false;
+    
+    if (!configuration.isCaseInBoard(jumps[0]))
+        return false;
+    if (configuration.getCell(jumps[0]) != CellPieceType::YellowPawn)
+        return false;
+
+    for (uint i = 1; i < jumps.size(); i++) {
+        CellPosition lastPosition = jumps[i-1];
+        CellPosition currentPosition = jumps[i];
+
+        CellPosition between = (lastPosition+currentPosition)/2;
+        if (configuration.getCell(between).isNone())
+            return false;
+
+        CellPosition diff = lastPosition-currentPosition;
+
+        if (!(
+            (diff == CellPosition(2, 0)) || (diff == CellPosition(-2, 0)) ||
+            (diff == CellPosition(0, 2)) || (diff == CellPosition(0, -2)) ||
+            (diff == CellPosition(2, 2)) || (diff == CellPosition(-2, -2)) ||
+            (diff == CellPosition(-2, 2)) || (diff == CellPosition(2, -2))
+        ))
+            return false;
+
+        if (!configuration.isCaseInBoard(currentPosition))
+            return false;
+
+        CellPiece current = configuration.getCell(currentPosition);
+        if (!(
+            current == CellPieceType::NoneCell ||
+            currentPosition == jumps[0]
+            ))
+            return false;
+    }
+        
+    return true;
 };
 
 void LootAction::removePointsFromScore(Board board, int & score) const {
