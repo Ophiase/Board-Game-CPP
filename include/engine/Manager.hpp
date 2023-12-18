@@ -33,13 +33,14 @@ class Manager {
             std::vector<Player> players) : 
             players{players} {};
 
-        int getCurrentPlayerIndex() const;
     public:
         const std::vector<Player> players;
 
         BoardType getConfiguration() const;
         ActionType getLastAction() const;
         Player getCurrentPlayer() const;
+        int getPlayerIndex(PlayerId) const;
+        int getCurrentPlayerIndex() const;
         std::vector<Player> getWinners() const;
         std::vector<int> const getScores() const;
 
@@ -140,14 +141,18 @@ std::vector<Player> Manager<ActionType, BoardType>::getWinners() const {
 }
 
 template <class ActionType, class BoardType>
-int Manager<ActionType, BoardType>::getCurrentPlayerIndex() const {
-    PlayerId player = this->getConfiguration().player;
+int Manager<ActionType, BoardType>::getPlayerIndex(PlayerId id) const {
     for (uint i = 0; i < players.size(); i++)
-        if (players[i] == player)
+        if (players[i] == id)
             return i;
 
-    Cli::error("Current player index should be defined.");
+    Cli::error("Player index should be defined.");
     exit(1);
+}
+
+template <class ActionType, class BoardType>
+int Manager<ActionType, BoardType>::getCurrentPlayerIndex() const {
+    return this->getPlayerIndex(this->getConfiguration().player);
 }
 
 

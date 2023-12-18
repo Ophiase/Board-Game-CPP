@@ -4,6 +4,7 @@
 #include <vector>
 #include "utils/NotImplemented.hpp"
 #include "engine/type/ScoreList.hpp"
+#include "utils/Cli.hpp"
 
 /*
     PlaceHolder, game defined.
@@ -47,7 +48,7 @@ class Action {
             version of getActions.
         */
         static std::vector<Action> getActions(
-            const ManagerType * manager, 
+            const ManagerType *manager, 
             PlayerId author, 
             uint step,
             BoardType board);

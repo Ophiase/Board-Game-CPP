@@ -57,6 +57,9 @@ std::string Cli::toString(sf::Vector2i vect) {
 
 
 std::string Cli::toString(std::vector<int> vect) {
+    if (vect.size() == 0)
+        return "[empty]";
+        
     std::string result = "[ ";
 
     for (size_t i = 0; i < vect.size() - 1; ++i)
@@ -68,6 +71,9 @@ std::string Cli::toString(std::vector<int> vect) {
 }
 
 std::string Cli::toString(std::vector<sf::Vector2f> vect) {
+    if (vect.size() == 0)
+        return "[empty]";
+
     std::string result = "[ ";
 
     for (size_t i = 0; i < vect.size() - 1; ++i)
@@ -79,6 +85,9 @@ std::string Cli::toString(std::vector<sf::Vector2f> vect) {
 }
 
 std::string Cli::toString(std::vector<sf::Vector2i> vect) {
+    if (vect.size() == 0)
+        return "[empty]";
+
     std::string result = "[ ";
 
     for (size_t i = 0; i < vect.size() -1; ++i)

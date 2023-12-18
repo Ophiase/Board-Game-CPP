@@ -101,7 +101,8 @@ void Game::setMessage(std::string msg) {
 
 void Game::startTurn() { throw NotImplemented(); };
 void Game::cancelAction() { throw NotImplemented(); };
-void Game::playAction() { Cli::debug("no"); return; throw NotImplemented(); };
+void Game::playAction() { throw NotImplemented(); };
+void Game::AIinit() { throw NotImplemented(); };
 void Game::AIturn() { throw NotImplemented(); };
 
 // ---------------------------------------------

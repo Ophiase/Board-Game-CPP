@@ -7,7 +7,6 @@ bool CapturePath::findCapturePath(
     Board const & board, CellPath _visiteds) const {
 
     auto current = cache[cache.size() - 1];
-
     _visiteds.push_back(current);
 
     if (_visiteds.size() > 1) {
@@ -19,7 +18,7 @@ bool CapturePath::findCapturePath(
 
     for (auto offset : LootAction::authorizedOffsets) {
         auto next = current + offset;
-        if (board.isCaseInBoard(next)) {
+        if (board.isCaseInBoard(next) && visiteds.has(next)) {
             cache.push_back(next);
             if (findCapturePath(cache, capture, board, _visiteds))
                 return true;

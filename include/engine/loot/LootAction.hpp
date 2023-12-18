@@ -21,6 +21,7 @@ class LootAction : public Action<LootManager, Board> {
                 - the pair extend the given pair 
         */
         static void expandCombination(
+            CellPosition axiom,
             std::vector<CapturePath> & result,
             std::vector<CapturePath> & currentCapturesPath,
             CapturePath capturePathToExpand,

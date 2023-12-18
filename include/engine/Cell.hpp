@@ -23,4 +23,6 @@ class CellPiece : public Piece {
         bool operator==(CellPieceType other) const;
         bool operator!=(CellPiece other) const;
         bool operator!=(CellPieceType other) const;
+
+        std::string toString() const;
 };

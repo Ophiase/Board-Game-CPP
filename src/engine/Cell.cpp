@@ -20,6 +20,10 @@ PlayerId CellPiece::owner() const {
     }
 }
 
+std::string CellPiece::toString() const {
+    return "[" + std::to_string((int)this->pieceType) + "]";
+}
+
 bool CellPiece::operator==(CellPiece other) const {
     return this->pieceType == other.pieceType;
 }

@@ -19,7 +19,7 @@ bool BoardSided::isCaseInBoard(SidePosition v) const {
 }
 
 bool BoardSided::isCaseEmpty(SidePosition v) const {
-    return !getCell(v).isNone();
+    return getCell(v).isNone();
 }
 
 SidePiece BoardSided::getCell(SidePosition v) const {

@@ -9,8 +9,6 @@ std::vector<CellPosition> const LootAction::authorizedOffsets = {
     {2, 2}, {2, -2}, {-2, 2}, {-2, -2}
 };
 
-
-
 /*
     Given a capture/visited, we want to add to
     current captures/visiteds a all the pair such that :
@@ -18,6 +16,7 @@ std::vector<CellPosition> const LootAction::authorizedOffsets = {
         - the pair extend the given pair 
 */
 void LootAction::expandCombination(
+    CellPosition initPosition,
     std::vector<CapturePath> & result,
     std::vector<CapturePath> & currentCapturePaths,
     CapturePath capturePathToExpand,
@@ -34,11 +33,18 @@ void LootAction::expandCombination(
         if (!board.isCaseInBoard(jump))
             continue;
 
+        if (!board.isCaseEmpty(jump) && jump != initPosition)
+            continue;
+
         if (board.isCaseEmpty(mid))
             continue;
+        Cli::debug(Cli::toString(mid) + " is " + std::to_string((int)board.getCell(mid).pieceType));
 
         auto captureExpension = capturePathToExpand.captures;
         auto visitExpension = capturePathToExpand.visiteds;
+
+        if (captureExpension.has(mid))
+            continue;
 
         captureExpension.push_back(mid);
         visitExpension.push_back(jump);
@@ -53,11 +59,14 @@ void LootAction::expandCombination(
                 canBeAdded = false;
                 break;
             }
-
+        
         if (!canBeAdded) continue;
 
+        Cli::debug("::added: "+ Cli::toString(captureExpension));
+        Cli::debug("\t"+Cli::toString(visitExpension));
+
         // add it to the current batch and result
-        CapturePath expension{visitExpension, captureExpension};
+        CapturePath expension{captureExpension, visitExpension};
         currentCapturePaths.push_back(expension);
         result.push_back(expension);
         }
@@ -69,24 +78,24 @@ void LootAction::expandCombination(
 std::vector<CapturePath> LootAction::combinationsOfCapture(
     CellPosition initPosition, Board board) {
 
+    Cli::debug("> " + Cli::toString(initPosition));
     std::vector<CapturePath> result;
 
     std::vector<CapturePath> lastCapturePaths{
         CapturePath{Combination{}, Combination{initPosition}}
     };
-    
     std::vector<CapturePath> currentCapturePaths;
 
     while (!lastCapturePaths.empty()) {
         for (auto capturePath : lastCapturePaths)
-            expandCombination(
+            expandCombination(initPosition,
                 result, currentCapturePaths, capturePath, board
             );
 
         lastCapturePaths = currentCapturePaths;
         currentCapturePaths.clear();
     }
-
+    Cli::debug("axiom finished");
     return result;
 }
 
@@ -110,7 +119,6 @@ std::vector<LootAction> LootAction::getActions(
     PlayerId authorId, 
     uint step,
     Board board) { 
-
 
     /*
         You can only move of 2 on x and y axis.
@@ -143,8 +151,8 @@ std::vector<LootAction> LootAction::getActions(
     std::vector<LootAction> result;
     std::vector<CellPath> paths;
     
-    // every action start by selectioning a yellow pawn
-
+    // every action start by selectioning a yellow pawnCellPosition
+    
     for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++)
         if (board.getCell(x, y).pieceType == CellPieceType::YellowPawn)
             paths.push_back(CellPath{CellPosition{x, y}});
@@ -189,8 +197,8 @@ bool LootAction::hasRemainingActions(
         if (!board.isCaseInBoard(between) || !board.isCaseInBoard(afterJump))
             continue;
     
-        if (!board.getCell(between).isNone() &&
-            board.getCell(afterJump).isNone())
+        if (!board.isCaseEmpty(between) &&
+            board.isCaseEmpty(afterJump))
             return true;
     }
 
@@ -215,18 +223,20 @@ bool LootAction::isValid(Board configuration) const {
         step < manager->players.size(),
         jumps.size() == 1
         )) return false;
-    
+
     if (!configuration.isCaseInBoard(jumps[0]))
         return false;
+
     if (configuration.getCell(jumps[0]) != CellPieceType::YellowPawn)
         return false;
 
     for (uint i = 1; i < jumps.size(); i++) {
+
         CellPosition lastPosition = jumps[i-1];
         CellPosition currentPosition = jumps[i];
 
         CellPosition between = (lastPosition+currentPosition)/2;
-        if (configuration.getCell(between).isNone())
+        if (configuration.isCaseEmpty(between))
             return false;
 
         CellPosition diff = lastPosition-currentPosition;
@@ -249,7 +259,7 @@ bool LootAction::isValid(Board configuration) const {
             ))
             return false;
     }
-        
+    
     return true;
 };
 
@@ -270,8 +280,8 @@ void LootAction::removePointsFromScore(Board board, int & score) const {
 }
 
 std::tuple<Board, ScoreList> LootAction::apply(
-    Board board, ScoreList scores) const {
-
+    Board board, ScoreList scores) const 
+{
     auto cells = board.cellPieces;
     int moveScore = this->manager->YELLOW_BONUS;
 
@@ -296,16 +306,20 @@ std::tuple<Board, ScoreList> LootAction::apply(
     }
 
     int nPlayers = manager->players.size();
+    int authorIndex = manager->getPlayerIndex(author);
+
     PlayerId nextPlayer = (
-        manager->players[(author + 1) % nPlayers]
+        manager->players[(authorIndex + 1) % nPlayers]
         ).id;
     
-    scores[author] += moveScore;
-
+    
+    scores[authorIndex] += moveScore;
+    
+    
     Board nextBoard{cells, nextPlayer};
     if (manager->isFinished(nextPlayer, step+1, nextBoard)) {
-        this->removePointsFromScore(nextBoard, scores[author]);   
+        this->removePointsFromScore(nextBoard, scores[authorIndex]);   
     }
-
+    
     return std::make_tuple(nextBoard, scores);
 }

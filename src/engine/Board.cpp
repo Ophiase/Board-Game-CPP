@@ -15,7 +15,7 @@ bool Board::isCaseInBoard(CellPosition v) const {
 }
 
 bool Board::isCaseEmpty(CellPosition v) const {
-    return !getCell(v).isNone();
+    return getCell(v).isNone();
 }
 
 CellPiece Board::getCell(CellPosition v) const {

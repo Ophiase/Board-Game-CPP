@@ -47,6 +47,11 @@ class Game : public Screen {
         virtual void playAction();
 
         /*
+            Initialize the bots.
+        */
+        virtual void AIinit();
+
+        /*
             Delegate turn to an AI.
         */
         virtual void AIturn();

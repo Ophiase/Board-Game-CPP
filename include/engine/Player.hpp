@@ -12,6 +12,9 @@ class Player {
         Player(PlayerId id, std::string name, bool isAI = false) : 
         id{id}, name{name}, isAI{isAI} {};
 
+        Player(Player const &other) : 
+        Player{other.id, other.name, other.isAI} {};
+
         bool operator==(PlayerId otherId) const;
         bool operator==(Player other) const;
         bool operator!=(PlayerId otherId) const;

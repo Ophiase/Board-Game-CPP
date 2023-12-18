@@ -13,7 +13,8 @@ Game{launcher, "Loot", 1.0f}, manager{nPlayers, nBots} {
         nPlayers->center(sf::Vector2f{0.27, 0.05});
         this->addObjectToDelete(nPlayers);
     }
-    
+
+    this->AIinit();
     this->startTurn();
 
     interactive = ! manager.getCurrentPlayer().isAI;
@@ -50,6 +51,24 @@ void LootGame::startTurn() {
 
 // --------------------------------------------------
 
+void LootGame::applyAction(LootAction action) {
+    Cli::info(
+        manager.getCurrentPlayer().name + " : " + 
+        Cli::toString(action.jumps));
+
+    this->manager.applyAction(action);
+    this->startTurn();
+
+    if (this->manager.isFinished()) {
+        interactive = false;
+        return;
+    }
+
+    interactive = !manager.getCurrentPlayer().isAI;
+    if (!interactive)
+        AIturn();
+}
+
 void LootGame::playAction() {
     if (!interactive) return;
 
@@ -66,19 +85,7 @@ void LootGame::playAction() {
         return;
     }
 
-    Cli::debug(manager.getCurrentPlayer().name + " : " + Cli::toString(cacheAction));
-
-    this->manager.applyAction(action);
-    this->startTurn();
-
-    if (this->manager.isFinished()) {
-        interactive = false;
-        return;
-    }
-
-    interactive = ! manager.getCurrentPlayer().isAI;
-    if (!interactive)
-        AIturn();
+    applyAction(action);
 }
 
 void LootGame::cancelAction() {
@@ -101,8 +108,33 @@ void LootGame::cancelAction() {
     this->startTurn();
 }
 
+void LootGame::AIinit() {
+    for (auto player : this->manager.players)
+        if (player.isAI)
+            this->bots.push_back(
+                Bot<LootAction, Board, LootManager>{
+                    &this->manager, player.id
+            });
+}
+
 void LootGame::AIturn() {
-    throw NotImplemented();
+    this->setMessage(this->manager.getCurrentPlayer().name + 
+        "'s turn !");
+    this->draw();
+
+    Bot<LootAction, Board, LootManager> *bot;
+    for (auto &x : bots)
+        if (x.botId == this->manager.getCurrentPlayer().id)
+           bot = &x;
+
+    Cli::debug("Turn : " + std::to_string(bot->botId));
+    
+    LootAction action = bot->play(
+        this->manager.step(),
+        this->manager.getConfiguration()
+    );
+
+    applyAction(action);
 }
 
 // -------------------------------------------------

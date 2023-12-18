@@ -6,33 +6,51 @@
 // ------------------------------------------------------------
 // INITIALISATION
 
-LootManager::LootManager(int nPlayers, int nBots) : 
-    Manager<LootAction, Board>{makePlayers(nPlayers, nBots)} {
+LootManager::LootManager(const int nPlayers, const int nBots) : 
+    Manager<LootAction, Board>{makePlayers(nPlayers, nBots)} 
+{
     configurations.push_back(initialBoard());
     scores.push_back(ScoreList(nPlayers + nBots, 0));
 };
 
 std::vector<Player> LootManager::makePlayers(
-    int nPlayers, int nBots) {
-    std::vector<Player> output;
+    const int nPlayers, const int nBots) 
+{
+    std::vector<int> outputIndices;
+    for (int i = 0; i < nPlayers+nBots; i++)
+        outputIndices.push_back(i);
 
+    std::random_shuffle(outputIndices.begin(), outputIndices.end());
+
+    std::vector<Player> output;
     for (int i = 0; i < nPlayers; i++)
         output.push_back(Player {
             i,
             "Player_" + std::to_string(i),
             false
         });
-
-    for (int i = 0; i < nBots; i++)
+    for (int i = nPlayers; i < nBots+nPlayers; i++)
         output.push_back(Player {
             i,
             "Bots_" + std::to_string(i),
             true
         });
 
-    // shuffle ?
+    std::vector<Player> shuffledOutput;
+    for (auto i : outputIndices)
+        shuffledOutput.push_back(output[i]);
 
-    return output;
+    std::string players = "";
+    for (auto player : shuffledOutput) {
+        players += " - [";
+        players += player.name + " - " + std::to_string(player.id);
+        players += " - " + std::to_string(player.isAI);
+        players += "]\n";
+    }
+
+    Cli::info("Players are : \n" + players);
+
+    return shuffledOutput;
 }
 
 CellPiece LootManager::randomCellPiece(int & ry, int & rd, int & rb) {

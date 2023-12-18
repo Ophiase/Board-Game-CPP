@@ -3,15 +3,24 @@
 #include "engine/loot/LootAction.hpp"
 #include "engine/loot/LootManager.hpp"
 #include "graphics/Game.hpp"
+#include "engine/Bot.hpp"
 
 class LootGame : public Game {
     protected:
         LootManager manager;
+        std::vector<Bot<LootAction, Board, LootManager>> bots;
         std::vector<CellPosition> cacheAction;
+        
+        /*
+            unsafe, apply an Action to the game.
+        */
+        void applyAction(LootAction action);
 
         void startTurn() override;
         void cancelAction() override;
         void playAction() override;
+
+        void AIinit() override;
         void AIturn() override;
 
         bool handleMouse(sf::Event);
