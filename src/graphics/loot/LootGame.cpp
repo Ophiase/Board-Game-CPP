@@ -29,6 +29,7 @@ void LootGame::startTurn() {
     this->setScores(manager.getScores());
 
     if (!this->manager.isFinished()) {
+        Cli::info("Current player : " + manager.getCurrentPlayer().name);
         this->setMessage("Select a yellow pawn.");
         this->draw();
         return;
@@ -127,8 +128,6 @@ void LootGame::AIturn() {
         if (x.botId == this->manager.getCurrentPlayer().id)
            bot = &x;
 
-    Cli::debug("Turn : " + std::to_string(bot->botId));
-    
     LootAction action = bot->play(
         this->manager.step(),
         this->manager.getConfiguration()

@@ -60,6 +60,7 @@ ActionType Bot<ActionType, BoardType, ManagerType>::play(
     std::vector<ActionType> actions = 
         ActionType::getActions(manager, id, step, board);
 
+    /*
     Cli::debug("possible actions:");
     for (auto action : actions) {
         Cli::debug("\taction: " + Cli::toString(action.jumps));
@@ -72,6 +73,7 @@ ActionType Bot<ActionType, BoardType, ManagerType>::play(
             Cli::debug(captured);
         }
     }
+    */
 
     if (actions.empty())
         throw std::invalid_argument("Cannot play any action on this board.");
