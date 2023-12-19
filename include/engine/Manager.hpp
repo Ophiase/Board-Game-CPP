@@ -178,6 +178,9 @@ template <class ActionType, class BoardType>
 void Manager<ActionType, BoardType>::applyAction(ActionType action) {
     if (!canPlayAction(action) || isFinished()) {
         Cli::error("Cannot play this Action");
+        Cli::error("Action : " + action.toString());
+        Cli::error("On Board :\n" + this->getConfiguration().toString());
+
         throw std::invalid_argument("Cannot play this Action.");
     }
 

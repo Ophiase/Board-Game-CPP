@@ -65,7 +65,7 @@ void LootAction::expandCombination(
         CapturePath expension{captureExpension, visitExpension};
         currentCapturePaths.push_back(expension);
         result.push_back(expension);
-        }
+    }
 }
 
 /*
@@ -318,3 +318,7 @@ std::tuple<Board, ScoreList> LootAction::apply(
     
     return std::make_tuple(nextBoard, scores);
 }
+
+std::string LootAction::toString() const {
+    return Cli::toString(jumps);
+};

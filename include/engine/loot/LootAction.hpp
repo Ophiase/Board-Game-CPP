@@ -86,4 +86,6 @@ class LootAction : public Action<LootManager, Board> {
             If action is not valid, throw an error.
         */
         std::tuple<Board, ScoreList> apply(Board, ScoreList) const override;
+
+        std::string toString() const override;
 };

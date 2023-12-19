@@ -1,4 +1,5 @@
 #include "engine/BoardSided.hpp"
+#include "utils/NotImplemented.hpp"
 
 bool BoardSided::isSideEven (SidePosition v) const {
     return ((v.sideVector.x + v.sideVector.y) & 1) == 0;
@@ -36,4 +37,8 @@ bool BoardSided::operator==(BoardSided other) const {
 
 bool BoardSided::operator!=(BoardSided other) const {
     return (*this) != other;
+}
+
+std::string BoardSided::toString() const {
+    throw NotImplemented();
 }

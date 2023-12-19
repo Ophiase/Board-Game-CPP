@@ -1,5 +1,5 @@
 #include "engine/Board.hpp"
-
+#include "utils/Cli.hpp"
 
 int Board::getDimension() const {
     return cellPieces.size();
@@ -34,3 +34,16 @@ bool Board::operator==(Board other) const {
 bool Board::operator!=(Board other) const {
     return (*this) != other;
 };
+
+std::string Board::toString() const {
+    std::string result = "[\n";
+
+    for (auto line : cellPieces) {
+        result += "\t";
+        for (auto e : line)
+            result += std::to_string((int)e.pieceType) + ", ";
+        result += "\n";
+    }
+
+    return result + "]";
+}

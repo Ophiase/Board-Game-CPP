@@ -35,4 +35,6 @@ class Board {
         bool isCaseEmpty(CellPosition v) const;
         CellPiece getCell(CellPosition v) const;
         CellPiece getCell(int x, int y) const;
+
+        std::string toString() const;
 };

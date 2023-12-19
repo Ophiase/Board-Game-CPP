@@ -39,6 +39,11 @@ class Action {
         */
         bool actionEquivalence(BoardType board, Action other) const;
 
+        /*
+            for debug purpose.
+        */
+        virtual std::string toString() const = 0;
+
         // ----------------------------------------------- 
 
         /*

@@ -31,4 +31,6 @@ class BoardSided : public Board {
         bool isCaseInBoard(SidePosition v) const;
         bool isCaseEmpty(SidePosition v) const;
         SidePiece getCell(SidePosition v) const;
+
+        std::string toString() const;
 };

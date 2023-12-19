@@ -18,8 +18,10 @@ bool CapturePath::findCapturePath(
 
     for (auto offset : LootAction::authorizedOffsets) {
         auto next = current + offset;
+        auto mid = current + (offset/2);
         if (
             board.isCaseInBoard(next) && 
+            !board.isCaseEmpty(mid) &&
             visiteds.has(next) &&
             !_visiteds.has(next)
         ) {
@@ -36,7 +38,7 @@ bool CapturePath::findCapturePath(
 
 CellPath CapturePath::toCellPath(Board const & board) const {
     CellPath result{this->visiteds[0]};
-
+    
     for (auto capture : this->captures) {
         if (!findCapturePath(result, capture, board))
             std::logic_error("Should find capture path.");
