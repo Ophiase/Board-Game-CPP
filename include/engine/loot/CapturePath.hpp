@@ -8,7 +8,7 @@ class CapturePath {
         // find a path to capture using only visiteds, starting at axiom    
         bool findCapturePath(
             CellPath &cache, CellPosition capture, Board const & board, 
-            CellPath _visiteds = CellPath{}) const;
+            Combination _visiteds = Combination{}) const;
 
     public:
         Combination captures;

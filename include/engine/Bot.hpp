@@ -66,18 +66,16 @@ ActionType Bot<ActionType, BoardType, ManagerType>::play(
         if (action.jumps.size() > 1) {
             std::string captured = "\t\tcaptured : ";
             for (uint i = 1; i < action.jumps.size(); i++) {
-                auto mid = (action.jumps[i] + action.jumps[i-1]);
+                auto mid = (action.jumps[i] + action.jumps[i-1])/2;
                 captured += board.getCell(mid).toString();
             }
             Cli::debug(captured);
         }
     }
-    Cli::debug("time to act\n");
 
     if (actions.empty())
         throw std::invalid_argument("Cannot play any action on this board.");
 
-    Cli::debug("?");
     int r = rand() % (actions.size());
     return actions[r];
 };

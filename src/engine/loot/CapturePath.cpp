@@ -4,8 +4,8 @@
 
 bool CapturePath::findCapturePath(
     CellPath &cache, CellPosition capture,
-    Board const & board, CellPath _visiteds) const {
-
+    Board const & board, Combination _visiteds) const {
+    
     auto current = cache[cache.size() - 1];
     _visiteds.push_back(current);
 
@@ -18,7 +18,11 @@ bool CapturePath::findCapturePath(
 
     for (auto offset : LootAction::authorizedOffsets) {
         auto next = current + offset;
-        if (board.isCaseInBoard(next) && visiteds.has(next)) {
+        if (
+            board.isCaseInBoard(next) && 
+            visiteds.has(next) &&
+            !_visiteds.has(next)
+        ) {
             cache.push_back(next);
             if (findCapturePath(cache, capture, board, _visiteds))
                 return true;
@@ -33,8 +37,9 @@ bool CapturePath::findCapturePath(
 CellPath CapturePath::toCellPath(Board const & board) const {
     CellPath result{this->visiteds[0]};
 
-    for (auto capture : this->captures)
-        findCapturePath(result, capture, board);
-
+    for (auto capture : this->captures) {
+        if (!findCapturePath(result, capture, board))
+            std::logic_error("Should find capture path.");
+    }
     return result;
 }

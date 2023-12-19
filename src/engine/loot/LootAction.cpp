@@ -38,7 +38,6 @@ void LootAction::expandCombination(
 
         if (board.isCaseEmpty(mid))
             continue;
-        Cli::debug(Cli::toString(mid) + " is " + std::to_string((int)board.getCell(mid).pieceType));
 
         auto captureExpension = capturePathToExpand.captures;
         auto visitExpension = capturePathToExpand.visiteds;
@@ -62,9 +61,6 @@ void LootAction::expandCombination(
         
         if (!canBeAdded) continue;
 
-        Cli::debug("::added: "+ Cli::toString(captureExpension));
-        Cli::debug("\t"+Cli::toString(visitExpension));
-
         // add it to the current batch and result
         CapturePath expension{captureExpension, visitExpension};
         currentCapturePaths.push_back(expension);
@@ -78,7 +74,6 @@ void LootAction::expandCombination(
 std::vector<CapturePath> LootAction::combinationsOfCapture(
     CellPosition initPosition, Board board) {
 
-    Cli::debug("> " + Cli::toString(initPosition));
     std::vector<CapturePath> result;
 
     std::vector<CapturePath> lastCapturePaths{
@@ -95,7 +90,7 @@ std::vector<CapturePath> LootAction::combinationsOfCapture(
         lastCapturePaths = currentCapturePaths;
         currentCapturePaths.clear();
     }
-    Cli::debug("axiom finished");
+
     return result;
 }
 
