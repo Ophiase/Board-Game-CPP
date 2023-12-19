@@ -23,18 +23,23 @@ std::vector<Player> LootManager::makePlayers(
     std::random_shuffle(outputIndices.begin(), outputIndices.end());
 
     std::vector<Player> output;
-    for (int i = 0; i < nPlayers; i++)
+    for (int i = 0; i < nPlayers; i++) {
+        int id = outputIndices[i];
         output.push_back(Player {
-            i,
+            id,
             "Player_" + std::to_string(i),
             false
         });
-    for (int i = nPlayers; i < nBots+nPlayers; i++)
+    }
+
+    for (int i = nPlayers; i < nBots+nPlayers; i++) {
+        int id = outputIndices[i];
         output.push_back(Player {
-            i,
+            id,
             "Bots_" + std::to_string(i),
             true
         });
+    }
 
     std::vector<Player> shuffledOutput;
     for (auto i : outputIndices)

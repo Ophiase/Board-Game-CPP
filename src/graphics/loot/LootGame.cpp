@@ -54,7 +54,7 @@ void LootGame::startTurn() {
 
 void LootGame::applyAction(LootAction action) {
     Cli::info(
-        manager.getCurrentPlayer().name + " : " + 
+        "Action : " + manager.getCurrentPlayer().name + " : " + 
         Cli::toString(action.jumps));
 
     this->manager.applyAction(action);
@@ -222,7 +222,8 @@ void LootGame::handleCheckerBoard() {
         return;
     }
     
-    Cli::debug("Cached Action : " + Cli::toString(cacheAction));   
+    //Cli::debug("Cached Action : " + Cli::toString(cacheAction));   
+    
     this->setMessage("Select another cell or play.");
     this->updateBoardContent(manager.getConfiguration());
 }
