@@ -46,13 +46,8 @@ std::vector<Player> LootManager::makePlayers(
         shuffledOutput.push_back(output[i]);
 
     std::string players = "";
-    for (auto player : shuffledOutput) {
-        players += " - [";
-        players += player.name + " - " + std::to_string(player.id);
-        players += " - " + std::to_string(player.isAI);
-        players += "]\n";
-    }
-
+    for (auto player : shuffledOutput)
+        players += " - " + player.name + "\n";
     Cli::info("Players are : \n" + players);
 
     return shuffledOutput;
