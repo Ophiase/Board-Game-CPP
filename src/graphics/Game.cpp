@@ -37,11 +37,7 @@ Game::Game(Launcher *launcher, std::string title, float CELL_TRESHOLD) :
         auto scoreText = new Text{this, "Scores"};
         scoreText->setSizeY(0.05);
         scoreText->center(sf::Vector2f{0.8, 0.3});
-
         this->addObjectToDelete(scoreText);
-
-        score.setSizeY(0.05);
-        score.center(scoreText->getMid() + sf::Vector2f{0.0, 0.05});
     }
 
     {
@@ -86,6 +82,7 @@ void Game::setScores(std::vector<int> scores) {
     scoreText += std::to_string(scores[scores.size()-1]);
 
     this->score.setText(scoreText, true);
+    this->score.fit(sf::FloatRect{0.67, 0.33, 0.25, 0.08});
 }
 
 /*
