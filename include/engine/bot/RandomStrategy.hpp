@@ -1,61 +1,31 @@
 #pragma once
 
+#include "Strategy.hpp"
 #include "utils/NotImplemented.hpp"
-#include "engine/type/PlayerId.hpp"
 
-#include <random>
-#include <vector>
-#include <stdexcept>
-#include <unistd.h>
-
-/*
-    The bot need to be able to use
-
-    For simplicity, we assume that bot cannot use previous computations.
-    If needed we could rework MonteCarlo, so that it re-use its previous exploration.
-*/
 template <class ActionType, class BoardType, class ManagerType>
-class Bot {
+class RandomStrategy : 
+public Strategy<ActionType, BoardType, ManagerType> {
     public:
-        const ManagerType *manager;
-        const PlayerId botId;
-
-        Bot(ManagerType *manager, PlayerId botId) : 
-        manager{manager}, botId{botId} {}; 
+        RandomStrategy() : 
+            Strategy<ActionType, BoardType, ManagerType>() {};
         
-        ActionType play(
-            uint step,
-            BoardType board
-        );
+        ~RandomStrategy() override = default;
 
-        /*
-            unsafe
-
-            If nothing is playable, will throw an error.
-        */
         ActionType play(
-            PlayerId id,
-            uint step,
-            BoardType board
-        );
+            const ManagerType*, 
+            PlayerId, 
+            uint step, 
+            BoardType) override;
 };
 
 template <class ActionType, class BoardType, class ManagerType>
-ActionType Bot<ActionType, BoardType, ManagerType>::play(
-    uint step,
-    BoardType board
-) {  
-    return this->play(this->botId, step, board);
-}
-
-
-template <class ActionType, class BoardType, class ManagerType>
-ActionType Bot<ActionType, BoardType, ManagerType>::play(
+ActionType RandomStrategy<ActionType, BoardType, ManagerType>::play(
+    const ManagerType *manager,
     PlayerId id,
     uint step,
     BoardType board
-) {  
-
+) {
     srand(time(NULL));
     std::vector<ActionType> actions = 
         ActionType::getActions(manager, id, step, board);
@@ -74,6 +44,7 @@ ActionType Bot<ActionType, BoardType, ManagerType>::play(
         }
     }
     */
+    
 
     if (actions.empty())
         throw std::invalid_argument("Cannot play any action on this board.");
