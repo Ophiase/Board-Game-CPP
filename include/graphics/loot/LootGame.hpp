@@ -3,12 +3,12 @@
 #include "engine/loot/LootAction.hpp"
 #include "engine/loot/LootManager.hpp"
 #include "graphics/Game.hpp"
-#include "engine/Bot.hpp"
+#include "engine/bot/Bot.hpp"
 
 class LootGame : public Game {
     protected:
         LootManager manager;
-        std::vector<Bot<LootAction, Board, LootManager>> bots;
+        std::vector<Bot<LootAction, Board, LootManager>*> bots;
         std::vector<CellPosition> cacheAction;
         
         /*
@@ -29,6 +29,8 @@ class LootGame : public Game {
 
     public:
         LootGame(Launcher *launcher, int nPlayers = 2, int nBots = 0);
+        ~LootGame();
+
         void draw() override;
         bool handleEvent(sf::Event) override;
         

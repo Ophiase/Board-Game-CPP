@@ -22,6 +22,11 @@ Game{launcher, "Loot", 1.0f}, manager{nPlayers, nBots} {
         AIturn();
 };
 
+LootGame::~LootGame() {
+    for (auto *bot : this->bots)
+        delete bot;
+};
+
 void LootGame::startTurn() {
     this->cacheAction.clear();
     this->updateBoardContent(manager.getConfiguration());
@@ -113,7 +118,7 @@ void LootGame::AIinit() {
     for (auto player : this->manager.players)
         if (player.isAI)
             this->bots.push_back(
-                Bot<LootAction, Board, LootManager>{
+                new Bot<LootAction, Board, LootManager>{
                     &this->manager, player.id
             });
 }
@@ -124,9 +129,9 @@ void LootGame::AIturn() {
     this->draw();
 
     Bot<LootAction, Board, LootManager> *bot;
-    for (auto &x : bots)
-        if (x.botId == this->manager.getCurrentPlayer().id)
-           bot = &x;
+    for (auto *x : bots)
+        if (x->botId == this->manager.getCurrentPlayer().id)
+           bot = x;
 
     LootAction action = bot->play(
         this->manager.step(),
