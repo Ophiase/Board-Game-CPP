@@ -73,7 +73,7 @@ class Action {
 
 template <class ManagerType, class BoardType>
 bool Action<ManagerType, BoardType>::actionEquivalence(BoardType board, const Action & other) const {
-    return (this->apply(board)) == (other->apply(board));
+    return (this->apply(board)) == (other.apply(board));
 }
 
 template <class ManagerType, class BoardType>
