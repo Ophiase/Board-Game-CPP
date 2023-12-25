@@ -37,7 +37,7 @@ class Action {
         /*
             Doe 2 actions have the same effect on the board?
         */
-        bool actionEquivalence(BoardType board, Action other) const;
+        bool actionEquivalence(BoardType board, Action *other) const;
 
         /*
             for debug purpose.
@@ -72,8 +72,8 @@ class Action {
 };
 
 template <class ManagerType, class BoardType>
-bool Action<ManagerType, BoardType>::actionEquivalence(BoardType board, Action other) const {
-    return (this->apply(board)) == (other.apply(board));
+bool Action<ManagerType, BoardType>::actionEquivalence(BoardType board, Action *other) const {
+    return (this->apply(board)) == (other->apply(board));
 }
 
 template <class ManagerType, class BoardType>
