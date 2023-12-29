@@ -3,6 +3,7 @@
 #include "engine/Board.hpp"
 #include "engine/Manager.hpp"
 #include "CheckersAction.hpp"
+#include "CheckersState.hpp"
 
 /*
     Proportion of each type of pawn could be a paramater.
@@ -23,5 +24,5 @@ class CheckersManager : public Manager<CheckersAction, Board> {
             int nPlayers = 2, int nBots = 0);
         CheckersManager(int nPlayers = 2, int nBots = 0);
 
-        bool canPlayAction(PlayerId, uint step, Board) const override;
+        bool canPlayAction(CheckersState) const override;
 };
