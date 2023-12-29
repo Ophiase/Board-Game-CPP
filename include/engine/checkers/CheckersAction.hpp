@@ -5,6 +5,8 @@
 #include "engine/Cell.hpp"
 #include "engine/type/CellPosition.hpp"
 #include "engine/Board.hpp"
+#include "CheckersState.hpp"
+
 
 using CellPath = std::vector<CellPosition>;
 
@@ -34,20 +36,16 @@ class CheckersAction : public Action<CheckersManager, Board> {
             Is there any authorized/correct action ?
         */
         static bool hasRemainingActions(
-            const CheckersManager * manager, 
-            PlayerId author, 
-            uint step,
-            Board board);
+            const CheckersManager *, CheckersState);
 
         /*
             Is action authorized/correct.
         */
-        bool  isValid(Board) const override;
+        bool  isValid(CheckersState) const override;
         
         /*
             If action is not valid, throw an error.
         */
-        std::tuple<Board, ScoreList> apply(Board, ScoreList) const override;
-
+        CheckersState apply(CheckersState) const override;
         std::string toString() const override;
 };

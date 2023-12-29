@@ -4,8 +4,10 @@
 CheckersManager::CheckersManager(const int nPlayers, const int nBots) : 
     Manager<CheckersAction, Board>{makePlayers(nPlayers, nBots)} 
 {
-    configurations.push_back(initialBoard());
-    scores.push_back(ScoreList(nPlayers + nBots, 0));
+    states.push_back(CheckersState(
+        initialBoard(), 
+        ScoreList(nPlayers + nBots, 0)
+        ));
 };
 
 std::vector<Player> CheckersManager::makePlayers(const int nPlayers, const int nBots) 
