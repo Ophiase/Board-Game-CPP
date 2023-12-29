@@ -3,6 +3,7 @@
 #include "Board.hpp"
 #include "engine/Action.hpp"
 #include "engine/type/ScoreList.hpp"
+#include "engine/GameState.hpp"
 
 #include <utils/NotImplemented.hpp>
 #include <vector>
@@ -11,6 +12,7 @@
 #include "utils/Cli.hpp"
 #include "Player.hpp"
 #include <climits>
+
 
 /*
     Generic class for game controller.
@@ -25,8 +27,7 @@ class Manager {
     */
 
     protected:
-        std::vector<ScoreList> scores;
-        std::vector<BoardType> configurations;
+        std::vector<GameState<BoardType>> states;
         std::vector<ActionType> actions;
         virtual BoardType initialBoard() = 0;
         Manager(
@@ -36,18 +37,21 @@ class Manager {
     public:
         const std::vector<Player> players;
 
-        BoardType getConfiguration() const;
+        GameState<BoardType> getState() const;
+
+        BoardType getBoard() const;
         ActionType getLastAction() const;
         Player getCurrentPlayer() const;
         int getPlayerIndex(PlayerId) const;
         int getCurrentPlayerIndex() const;
+        ScoreList const getScores() const;
+        
         std::vector<Player> getWinners() const;
-        std::vector<int> const getScores() const;
 
         /*
             All possibles action from current configuration (up to isomorphism).
         */
-        std::vector<ActionType> getActions(BoardType board) const;
+        std::vector<ActionType> getActions(GameState<BoardType>) const;
         std::vector<ActionType> getActions() const;
         
         /*
@@ -61,19 +65,19 @@ class Manager {
             Need to be reimplemented in child class using 
             ActionType::hasRemainingAction
         */
-        virtual bool canPlayAction(PlayerId, uint step, BoardType) const;
+        virtual bool canPlayAction(GameState<BoardType>) const;
         bool canPlayAction() const;
         
-        bool isFinished(PlayerId, uint step, BoardType) const;
+        bool isFinished(GameState<BoardType>) const;
         bool isFinished() const;
         
         /*
             See the effect of the action
         */
-        std::tuple<BoardType, ScoreList> evaluateAction(
-            ActionType action, BoardType board, ScoreList scoreList) const;
+        GameState<BoardType> evaluateAction(
+            ActionType action, GameState<BoardType>) const;
         
-        std::tuple<BoardType, ScoreList> evaluateAction(ActionType action) const;
+        GameState<BoardType> evaluateAction(ActionType action) const;
     
         /*
             If action is not valid, throw an error.
@@ -90,9 +94,15 @@ class Manager {
         uint step() const;
 };
 
+
 template <class ActionType, class BoardType>
-BoardType Manager<ActionType, BoardType>::getConfiguration() const {
-    return configurations.at(configurations.size()-1);
+GameState<BoardType> Manager<ActionType, BoardType>::getState() const {
+    return states[states.size()-1];
+};
+
+template <class ActionType, class BoardType>
+BoardType Manager<ActionType, BoardType>::getBoard() const {
+    return getState().board;
 };
 
 template <class ActionType, class BoardType>
@@ -102,19 +112,18 @@ ActionType Manager<ActionType, BoardType>::getLastAction() const {
 
 template <class ActionType, class BoardType>
 void Manager<ActionType, BoardType>::cancel() {
-    this->configurations.pop_back();
+    this->states.pop_back();
     this->actions.pop_back();
-    this->scores.pop_back();
 };
 
 template <class ActionType, class BoardType>
 uint Manager<ActionType, BoardType>::step() const {
-    return this->actions.size();
+    return this->getState().step;
 };
 
 template <class ActionType, class BoardType>
 Player Manager<ActionType, BoardType>::getCurrentPlayer() const {
-    PlayerId player = this->getConfiguration().player;
+    PlayerId player = this->getState().player;
     for (uint i = 0; i < players.size(); i++)
         if (players[i] == player)
             return players[i];
@@ -152,26 +161,26 @@ int Manager<ActionType, BoardType>::getPlayerIndex(PlayerId id) const {
 
 template <class ActionType, class BoardType>
 int Manager<ActionType, BoardType>::getCurrentPlayerIndex() const {
-    return this->getPlayerIndex(this->getConfiguration().player);
+    return this->getPlayerIndex(this->getState().player);
 }
 
 
 template <class ActionType, class BoardType>
 bool Manager<ActionType, BoardType>::canPlayAction(ActionType action) const {
-    return action.isValid(this->getConfiguration());
+    return action.isValid(this->getState());
 }
 
 template <class ActionType, class BoardType>
-std::tuple<BoardType, ScoreList> Manager<ActionType, BoardType>::evaluateAction(
-    ActionType action, BoardType board, ScoreList scoreList) const {
+GameState<BoardType> Manager<ActionType, BoardType>::evaluateAction(
+    ActionType action, GameState<BoardType> state) const {
     
-    return action.apply(board, scoreList);
+    return action.apply(state);
 }
 
 template <class ActionType, class BoardType>
-std::tuple<BoardType, ScoreList> Manager<ActionType, BoardType>::evaluateAction(
+GameState<BoardType> Manager<ActionType, BoardType>::evaluateAction(
     ActionType action) const {
-    return this->evaluateAction(action, this->getConfiguration(), this->getScores());
+    return this->evaluateAction(action, this->getState());
 }
 
 template <class ActionType, class BoardType>
@@ -179,15 +188,14 @@ void Manager<ActionType, BoardType>::applyAction(ActionType action) {
     if (!canPlayAction(action) || isFinished()) {
         Cli::error("Cannot play this Action");
         Cli::error("Action : " + action.toString());
-        Cli::error("On Board :\n" + this->getConfiguration().toString());
+        Cli::error("On Board :\n" + this->getBoard().toString());
 
         throw std::invalid_argument("Cannot play this Action.");
     }
 
-    std::tuple<BoardType, ScoreList> result = evaluateAction(action);
+    GameState<BoardType> result = evaluateAction(action);
 
-    this->configurations.push_back(std::get<0>(result));
-    this->scores.push_back(std::get<1>(result));
+    this->states.push_back(result);
     this->actions.push_back(action);
 }
 
@@ -201,52 +209,49 @@ bool Manager<ActionType, BoardType>::actionEquivalence(
 }
 
 template<class ActionType, class BoardType>
-std::vector<int> const Manager<ActionType, BoardType>::getScores() const {
-    return scores[scores.size()-1];
+ScoreList const Manager<ActionType, BoardType>::getScores() const {
+    return this->getState().scores;
 }
 
 template<class ActionType, class BoardType>
-std::vector<ActionType> Manager<ActionType, BoardType>::getActions(BoardType) const {
-    throw NotImplemented();
+std::vector<ActionType> Manager<ActionType, BoardType>::
+getActions(GameState<BoardType>) const {
+    
+    throw NotImplemented(); 
+    
+    // needs to be reimplemented in child class because "this"
+    // need to be correctly casted
+
+    // return ActionType::getActions(this, state);
+    
 };
 
 template<class ActionType, class BoardType>
 std::vector<ActionType> Manager<ActionType, BoardType>::getActions() const {
-    return this->getActions(this->getConfiguration());
+    return this->getActions(this->getBoard());
 };
 
 
 template<class ActionType, class BoardType>
-bool Manager<ActionType, BoardType>::canPlayAction(
-    PlayerId, uint, BoardType) const {
-    
-    throw NotImplemented();
+bool Manager<ActionType, BoardType>::canPlayAction(GameState<BoardType>) const {
 
+    throw NotImplemented();
+    
     // needs to be reimplemented in child class because "this"
     // need to be correctly casted
 
-    /*
-    return ActionType::hasRemainingActions(
-        this, 
-        author,
-        step,
-        board
-        );
-    */
+    // return ActionType::hasRemainingActions(this, state);
+    
 };
 
 template<class ActionType, class BoardType>
 bool Manager<ActionType, BoardType>::canPlayAction() const {
-    return canPlayAction(
-        this->getCurrentPlayerIndex(),
-        this->step(),
-        this->getConfiguration());
+    return canPlayAction(getState());
 };
 
 template<class ActionType, class BoardType>
-bool Manager<ActionType, BoardType>::isFinished(PlayerId author, uint step, BoardType board) const {
-    return !(this->canPlayAction(
-        author, step, board));
+bool Manager<ActionType, BoardType>::isFinished(GameState<BoardType> state) const {
+    return !(this->canPlayAction(state));
 };
 
 template<class ActionType, class BoardType>

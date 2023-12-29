@@ -5,6 +5,7 @@
 #include "utils/NotImplemented.hpp"
 #include "engine/type/ScoreList.hpp"
 #include "utils/Cli.hpp"
+#include "engine/GameState.hpp"
 
 /*
     PlaceHolder, game defined.
@@ -25,19 +26,17 @@ class Action {
         /*
             Is action authorized/correct.
         */
-        virtual bool isValid(BoardType board) const = 0;
+        virtual bool isValid(GameState<BoardType> gameState) const = 0;
         
-
         /*
             If action is not valid, throw an error.
         */
-        virtual std::tuple<BoardType, ScoreList> apply(
-            BoardType board, ScoreList) const = 0;
+        virtual GameState<BoardType> apply(GameState<BoardType> gameState) const = 0;
         
         /*
             Doe 2 actions have the same effect on the board?
         */
-        bool actionEquivalence(BoardType board, const Action &other) const;
+        bool actionEquivalence(GameState<BoardType>, const Action &other) const;
 
         /*
             for debug purpose.
@@ -53,10 +52,7 @@ class Action {
             version of getActions.
         */
         static std::vector<Action> getActions(
-            const ManagerType *manager, 
-            PlayerId author, 
-            uint step,
-            BoardType board);
+            const ManagerType *manager, GameState<BoardType>);
         
         /*
             Is there any authorized/correct action ?
@@ -65,34 +61,24 @@ class Action {
             version of hasRemainingActions.
         */
         static bool hasRemainingActions(
-            const ManagerType *manager, 
-            PlayerId author, 
-            uint step,
-            BoardType board);
+            const ManagerType *manager, GameState<BoardType>);
 };
 
 template <class ManagerType, class BoardType>
-bool Action<ManagerType, BoardType>::actionEquivalence(BoardType board, const Action & other) const {
-    return (this->apply(board)) == (other.apply(board));
+bool Action<ManagerType, BoardType>::actionEquivalence(GameState<BoardType> gamestate, const Action & other) const {
+    return (this->apply(gamestate)) == (other.apply(gamestate));
 }
 
 template <class ManagerType, class BoardType>
 std::vector<Action<ManagerType, BoardType>> 
 Action<ManagerType, BoardType>::getActions(
-    const ManagerType *manager, 
-    PlayerId author, 
-    uint step,
-    BoardType board) {
-
+    const ManagerType *, GameState<BoardType>) {
     throw NotImplemented();
 }
 
 template <class ManagerType, class BoardType>
 bool Action<ManagerType, BoardType>::hasRemainingActions(
-    const ManagerType *manager, 
-    PlayerId author, 
-    uint step,
-    BoardType board) {
+    const ManagerType *manager, GameState<BoardType> state) {
 
-    throw NotImplemented();
+    return !getActions(manager, state).empty();
 };

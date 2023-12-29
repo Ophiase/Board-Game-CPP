@@ -9,8 +9,10 @@
 LootManager::LootManager(const int nPlayers, const int nBots) : 
     Manager<LootAction, Board>{makePlayers(nPlayers, nBots)} 
 {
-    configurations.push_back(initialBoard());
-    scores.push_back(ScoreList(nPlayers + nBots, 0));
+    states.push_back(LootState(
+        initialBoard(), 
+        ScoreList(nPlayers + nBots, 0)
+        ));
 };
 
 std::vector<Player> LootManager::makePlayers(
@@ -88,6 +90,6 @@ Board LootManager::initialBoard() {
     return Board(cellPieces, 0);
 };
 
-bool LootManager::canPlayAction(PlayerId author, uint step, Board board) const {
-    return LootAction::hasRemainingActions(this, author, step, board);
+bool LootManager::canPlayAction(LootState state) const {
+    return LootAction::hasRemainingActions(this, state);
 }
