@@ -1,17 +1,15 @@
 #pragma once
 
 #include "engine/type/PlayerId.hpp"
+#include "engine/GameState.hpp"
 
 template <class ActionType, class BoardType, class ManagerType>
 class Strategy {
     public:
-        Strategy() {};
+        const ManagerType* manager;
+
+        Strategy(const ManagerType* manager) : manager{manager} {};
         virtual ~Strategy() = default;
 
-        virtual ActionType play(
-            const ManagerType*, 
-            PlayerId, 
-            uint step, 
-            BoardType
-            ) = 0;
+        virtual ActionType play(GameState<BoardType>) = 0;
 };

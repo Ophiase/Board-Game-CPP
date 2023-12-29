@@ -2,6 +2,7 @@
 
 #include "utils/NotImplemented.hpp"
 #include "engine/type/PlayerId.hpp"
+#include "engine/GameState.hpp"
 
 #include "Strategy.hpp"
 #include "RandomStrategy.hpp"
@@ -29,21 +30,12 @@ class Bot {
         Strategy<ActionType, BoardType, ManagerType> *strategy = nullptr); 
         ~Bot();
         
-        ActionType play(
-            uint step,
-            BoardType board
-        );
-
         /*
             unsafe
 
             If nothing is playable, will throw an error.
         */
-        ActionType play(
-            PlayerId id,
-            uint step,
-            BoardType board
-        );
+        ActionType play(GameState<BoardType>);
 };
 
 
@@ -55,7 +47,8 @@ Bot<ActionType, BoardType, ManagerType>::Bot(
 {
     this->strategy = strategy ? 
         strategy :
-        new RandomStrategy<ActionType, BoardType, ManagerType>();
+        new RandomStrategy<ActionType, BoardType, ManagerType>(
+            this->manager);
 };
 
 template <class ActionType, class BoardType, class ManagerType>
@@ -65,21 +58,7 @@ Bot<ActionType, BoardType, ManagerType>::~Bot() {
 
 template <class ActionType, class BoardType, class ManagerType>
 ActionType Bot<ActionType, BoardType, ManagerType>::play(
-    uint step,
-    BoardType board
-) {  
-    return this->play(this->botId, step, board);
-}
-
-template <class ActionType, class BoardType, class ManagerType>
-ActionType Bot<ActionType, BoardType, ManagerType>::play(
-    PlayerId id,
-    uint step,
-    BoardType board
+    GameState<BoardType> state
 ) {
-    return this->strategy->play(
-        this->manager, 
-        id, 
-        step, 
-        board);
+    return this->strategy->play(state);
 };

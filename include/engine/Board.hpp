@@ -8,7 +8,9 @@
 #include "engine/type/CellPosition.hpp"
 
 /*
-    Base class for any game board.
+    Base class for any board.
+    For simplicity, we'll consider Board as GameState (without score information).
+
     Should be immutable.
 */
 class Board {

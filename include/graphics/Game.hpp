@@ -60,6 +60,7 @@ class Game : public Screen {
             Can the user interact with the game ? 
         */
         bool interactive{false};
+        bool isFinished{false};
 
     public:
         sf::Vector2f const BOARD_POSITION{0.1, 0.24};

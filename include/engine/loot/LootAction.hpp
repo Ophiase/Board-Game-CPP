@@ -7,6 +7,7 @@
 #include "engine/Board.hpp"
 #include "CapturePath.hpp"
 #include "Combination.hpp"
+#include "LootState.hpp"
 
 using CellPath = std::vector<CellPosition>;
 
@@ -63,29 +64,22 @@ class LootAction : public Action<LootManager, Board> {
             All possibles action from current configuration (up to isomorphism).
         */
         static std::vector<LootAction> getActions(
-            const LootManager * manager, 
-            PlayerId author, 
-            uint step,
-            Board board);
+            const LootManager * manager, LootState);
 
         /*
             Is there any authorized/correct action ?
         */
-        static bool hasRemainingActions(
-            const LootManager * manager, 
-            PlayerId author, 
-            uint step,
-            Board board);
+        static bool hasRemainingActions(const LootManager *, LootState);
 
         /*
             Is action authorized/correct.
         */
-        bool  isValid(Board) const override;
+        bool  isValid(LootState) const override;
         
         /*
             If action is not valid, throw an error.
         */
-        std::tuple<Board, ScoreList> apply(Board, ScoreList) const override;
+        LootState apply(LootState) const override;
 
         std::string toString() const override;
 };

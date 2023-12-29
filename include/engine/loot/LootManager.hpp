@@ -5,6 +5,7 @@
 #include "Combination.hpp"
 #include "CapturePath.hpp"
 #include "LootAction.hpp"
+#include "LootState.hpp"
 
 /*
     Proportion of each type of pawn could be a paramater.
@@ -29,5 +30,5 @@ class LootManager : public Manager<LootAction, Board> {
             int nPlayers = 2, int nBots = 0);
         LootManager(int nPlayers = 2, int nBots = 0);
 
-        bool canPlayAction(PlayerId, uint step, Board) const override;
+        bool canPlayAction(LootState) const override;
 };
