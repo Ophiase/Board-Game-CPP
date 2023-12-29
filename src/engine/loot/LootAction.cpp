@@ -110,10 +110,10 @@ std::vector<CellPath> LootAction::expendPaths(
 }
 
 std::vector<LootAction> LootAction::getActions(
-    const LootManager* manager, 
-    PlayerId authorId, 
-    uint step,
-    Board board) { 
+    const LootManager* manager, LootState state) 
+{ 
+    Board board = state.board;    
+    uint step = state.step;
 
     /*
         You can only move of 2 on x and y axis.
@@ -158,7 +158,7 @@ std::vector<LootAction> LootAction::getActions(
         paths = expendPaths(paths, board);
 
     for (auto path : paths)
-        result.push_back(LootAction{manager, authorId, step, path});    
+        result.push_back(LootAction{manager, board.player, step, path});    
     
     return result;
 };
@@ -168,13 +168,11 @@ std::vector<LootAction> LootAction::getActions(
     Is there any authorized/correct action ?
 */
 bool LootAction::hasRemainingActions(
-    const LootManager *manager,
-    PlayerId author,
-    uint step,
-    Board board) {
+    const LootManager* manager, LootState state) 
+{ 
+    Board board = state.board;    
+    uint step = state.step;
 
-    (void)author;
-     
     /* initialisation of the party */
     if (step < manager->players.size())
         return true;
@@ -210,7 +208,9 @@ inline bool iff(bool const a, bool const b) {
     return (a && b) || (!a && !b);
 };
 
-bool LootAction::isValid(Board configuration) const { 
+bool LootAction::isValid(LootState state) const {
+    auto configuration = state.board;
+
     if (jumps.size() == 0)
         return false;
 
@@ -274,9 +274,12 @@ void LootAction::removePointsFromScore(Board board, int & score) const {
         }
 }
 
-std::tuple<Board, ScoreList> LootAction::apply(
-    Board board, ScoreList scores) const 
+LootState LootAction::apply(
+    LootState state) const 
 {
+    auto board = state.board;
+    auto scores = state.scores;
+
     auto cells = board.cellPieces;
     int moveScore = this->manager->YELLOW_BONUS;
 
@@ -307,16 +310,26 @@ std::tuple<Board, ScoreList> LootAction::apply(
         manager->players[(authorIndex + 1) % nPlayers]
         ).id;
     
-    
     scores[authorIndex] += moveScore;
     
-    
     Board nextBoard{cells, nextPlayer};
-    if (manager->isFinished(nextPlayer, step+1, nextBoard)) {
-        this->removePointsFromScore(nextBoard, scores[authorIndex]);   
-    }
     
-    return std::make_tuple(nextBoard, scores);
+    LootState tempNextState{
+        nextBoard, scores, 
+        state.step+1, nextBoard.player
+        };
+    
+    if (manager->isFinished(tempNextState)) {
+        this->removePointsFromScore(nextBoard, scores[authorIndex]);   
+        
+    }
+
+    LootState nextState{
+        nextBoard, scores, 
+        state.step+1, nextBoard.player
+    };
+
+    return nextState;
 }
 
 std::string LootAction::toString() const {

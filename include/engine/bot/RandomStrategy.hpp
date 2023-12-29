@@ -7,28 +7,21 @@ template <class ActionType, class BoardType, class ManagerType>
 class RandomStrategy : 
 public Strategy<ActionType, BoardType, ManagerType> {
     public:
-        RandomStrategy() : 
-            Strategy<ActionType, BoardType, ManagerType>() {};
+        RandomStrategy(const ManagerType* manager) : 
+            Strategy<ActionType, BoardType, ManagerType>(manager) {};
         
         ~RandomStrategy() override = default;
 
-        ActionType play(
-            const ManagerType*, 
-            PlayerId, 
-            uint step, 
-            BoardType) override;
+        ActionType play(GameState<BoardType>) override;
 };
 
 template <class ActionType, class BoardType, class ManagerType>
 ActionType RandomStrategy<ActionType, BoardType, ManagerType>::play(
-    const ManagerType *manager,
-    PlayerId id,
-    uint step,
-    BoardType board
+    GameState<BoardType> state
 ) {
     srand(time(NULL));
     std::vector<ActionType> actions = 
-        ActionType::getActions(manager, id, step, board);
+        ActionType::getActions(this->manager, state);
 
     /*
     Cli::debug("possible actions:");
@@ -45,7 +38,6 @@ ActionType RandomStrategy<ActionType, BoardType, ManagerType>::play(
     }
     */
     
-
     if (actions.empty())
         throw std::invalid_argument("Cannot play any action on this board.");
 

@@ -29,16 +29,21 @@ LootGame::~LootGame() {
 
 void LootGame::startTurn() {
     this->cacheAction.clear();
-    this->updateBoardContent(manager.getConfiguration());
+    this->updateBoardContent(manager.getBoard());
     this->setCurrentPlayer(manager.getCurrentPlayer().name);
     this->setScores(manager.getScores());
 
-    if (!this->manager.isFinished()) {
+    if (!manager.isFinished()) {
+        this->isFinished = false;
+        
         Cli::info("Current player : " + manager.getCurrentPlayer().name);
         this->setMessage("Select a yellow pawn.");
         this->draw();
         return;
     }
+
+    this->interactive = true;
+    this->isFinished = true;
 
     auto winners = this->manager.getWinners();
     if (winners.size() == 1) {            
@@ -65,10 +70,7 @@ void LootGame::applyAction(LootAction action) {
     this->manager.applyAction(action);
     this->startTurn();
 
-    if (this->manager.isFinished()) {
-        interactive = false;
-        return;
-    }
+    if (isFinished) return;
 
     interactive = !manager.getCurrentPlayer().isAI;
     if (!interactive)
@@ -104,13 +106,17 @@ void LootGame::cancelAction() {
         return;
     }
 
-    if (manager.step() == 0) {
+    if (manager.step() < manager.players.size()) {
         Cli::warning("Cannot undo first action!");
         setMessage("Cannot undo first action!");
         return;
     }
 
-    manager.cancel();
+    do {
+        manager.cancel();
+    } while (manager.getCurrentPlayer().isAI);
+    
+    isFinished = false;
     this->startTurn();
 }
 
@@ -133,10 +139,7 @@ void LootGame::AIturn() {
         if (x->botId == this->manager.getCurrentPlayer().id)
            bot = x;
 
-    LootAction action = bot->play(
-        this->manager.step(),
-        this->manager.getConfiguration()
-    );
+    LootAction action = bot->play(this->manager.getState());
 
     applyAction(action);
 }
@@ -205,7 +208,7 @@ void LootGame::updateBoardContent (Board board) {
 // --------------------------------------------------
 
 void LootGame::handleCheckerBoard() {
-    if (!interactive) return;
+    if (!interactive || isFinished) return;
 
     cacheAction.push_back(getCellPosition());
     
@@ -217,7 +220,7 @@ void LootGame::handleCheckerBoard() {
     bool const validAction = manager.canPlayAction(action);
     bool const isFirstSelection = (action.jumps.size() == 1);
     bool const isFirstSelectionCorrect = isFirstSelection &&
-        manager.getConfiguration().getCell(action.jumps[0])
+        manager.getBoard().getCell(action.jumps[0])
         .pieceType == CellPieceType::YellowPawn;
         
     if (!(validAction || isFirstSelectionCorrect)) {
@@ -230,7 +233,7 @@ void LootGame::handleCheckerBoard() {
     //Cli::debug("Cached Action : " + Cli::toString(cacheAction));   
     
     this->setMessage("Select another cell or play.");
-    this->updateBoardContent(manager.getConfiguration());
+    this->updateBoardContent(manager.getBoard());
 }
 
 bool LootGame::handleMouse(sf::Event) {
