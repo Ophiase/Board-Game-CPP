@@ -20,6 +20,9 @@ class Action {
 
         Action(const ManagerType * manager, PlayerId author, uint step) : 
         manager{manager}, author{author}, step{step} {};
+
+        Action (const Action & other) :
+        manager{other.manager}, author{other.author}, step{other.step} {};
         
         // ----------------------------------------------- 
 

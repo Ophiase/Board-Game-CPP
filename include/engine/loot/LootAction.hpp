@@ -55,11 +55,15 @@ class LootAction : public Action<LootManager, Board> {
         Action<LootManager, Board>{manager, author, step}, 
         jumps{jumps} {};
 
+        LootAction(const LootAction & other) :
+        Action{other},  jumps{other.jumps} {};
+
         void removePointsFromScore(Board board, int & score) const;
 
         // ----------------------------------------------- 
         // OVERRIDES
 
+        
         /*
             All possibles action from current configuration (up to isomorphism).
         */
