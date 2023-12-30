@@ -124,16 +124,18 @@ void Game::updateBoard() {
 void Game::updateBoardContent(Board board) {
     this->updateBoard();
 
-    float cellSpace = (float)(this->checkBoardTexture.getSize().x / 8); 
-    float pieceScale = 0.7;
-    float pieceSize = cellSpace*pieceScale;
+    const int BOARD_DIMENSION = board.getDimension();
+
+    const float cellSpace = (float)(this->checkBoardTexture.getSize().x / BOARD_DIMENSION); 
+    const float pieceScale = 0.7;
+    const float pieceSize = cellSpace*pieceScale;
 
     sf::RectangleShape piece{sf::Vector2f{
         pieceSize, pieceSize
     }};
 
     float offset = pieceSize / 2.0;
-    for (int x = 0; x < 8; x++) for (int y = 0; y < 8; y++) {
+    for (int x = 0; x < BOARD_DIMENSION; x++) for (int y = 0; y < BOARD_DIMENSION; y++) {
         CellPiece cell = board.getCell(CellPosition(x, y));
         if (!cell.isNone()) {
             float px = (cellSpace * (x + 0.5)) - offset;

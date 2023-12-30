@@ -9,7 +9,6 @@
 
 /*
     Base class for any board.
-    For simplicity, we'll consider Board as GameState (without score information).
 
     Should be immutable.
 */
