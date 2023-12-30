@@ -36,3 +36,5 @@ class LootGame : public Game {
         
         void updateBoardContent(Board);
 };
+
+float diffToRotation(sf::Vector2i diff);

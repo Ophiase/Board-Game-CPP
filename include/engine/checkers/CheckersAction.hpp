@@ -26,6 +26,9 @@ class CheckersAction : public Action<CheckersManager, Board> {
             CellPath jumps) :
         Action<CheckersManager, Board>{manager, author, step}, 
         jumps{jumps} {};
+        
+        CheckersAction(const CheckersAction & other) :
+        Action{other}, jumps{other.jumps} {};
 
         void removePointsFromScore(Board board, int & score) const;
 
