@@ -157,11 +157,11 @@ void Game::updateBoardSidedContent(BoardSided boardSided) {
 
 // ---------------------------------------------
 
-sf::Vector2f Game::insideCellPosition() const {
+sf::Vector2f Game::insideCellPosition(Board board) const {
     sf::Vector2f mousePosition = this->mouseBoardPosition();
     return sf::Vector2f{
-        fmodf(mousePosition.x * 8, 1.0) - 0.5f,
-        fmodf(mousePosition.y * 8, 1.0) - 0.5f
+        fmodf(mousePosition.x * board.getDimension(), 1.0) - 0.5f,
+        fmodf(mousePosition.y * board.getDimension(), 1.0) - 0.5f
     };
 }
 
@@ -178,35 +178,35 @@ bool Game::mouseInsideCheckerBoard() const {
         sf::FloatRect{BOARD_POSITION, BOARD_SIZE});
 };
 
-bool Game::mouseOnCase(bool extended) const {
+bool Game::mouseOnCase(Board board, bool extended) const {
     if (!extended && !mouseInsideCheckerBoard())
         return false;
 
-    sf::Vector2f positionInsideCell = this->insideCellPosition();
+    sf::Vector2f positionInsideCell = this->insideCellPosition(board);
     
     return 
         (abs(positionInsideCell.x) < (CELL_TRESHOLD / 2.0)) &&
         (abs(positionInsideCell.y) < (CELL_TRESHOLD / 2.0));
 };
 
-bool Game::mouseOnSide(bool extended) const {
+bool Game::mouseOnSide(BoardSided board, bool extended) const {
     if (!extended && !mouseInsideCheckerBoard())
         return false;
     
-    return !mouseOnCase(true);
+    return !mouseOnCase(board, true);
 };
 
-CellPosition Game::getCellPosition() const {
+CellPosition Game::getCellPosition(Board board) const {
     sf::Vector2f mousePosition = this->mouseBoardPosition();
     return CellPosition{
-        (int)(std::floor(mousePosition.x * 8)),
-        (int)(std::floor(mousePosition.y * 8))
+        (int)(std::floor(mousePosition.x * board.getDimension())),
+        (int)(std::floor(mousePosition.y * board.getDimension()))
     };
 };
 
-SidePosition Game::getSidePosition() const {
-    auto cellPosition = getCellPosition();
-    sf::Vector2f positionInsideCell = this->insideCellPosition();
+SidePosition Game::getSidePosition(BoardSided board) const {
+    auto cellPosition = getCellPosition(board);
+    sf::Vector2f positionInsideCell = this->insideCellPosition(board);
 
     bool horizontal = 
         std::abs(positionInsideCell.x) < std::abs(positionInsideCell.y);

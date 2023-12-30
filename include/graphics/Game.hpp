@@ -28,7 +28,7 @@ class Game : public Screen {
             Position Inside The cell (centered toward the origin).
             Returns values between (-0.5, -0.5) and (0.5, 0.5)
         */
-        sf::Vector2f insideCellPosition() const;
+        sf::Vector2f insideCellPosition(Board) const;
 
         /*
             Reset interface on begining of a turn.
@@ -84,12 +84,12 @@ class Game : public Screen {
         bool mouseInsideCheckerBoard() const;
 
         /* if extended it will not check that the case is inside the board */
-        bool mouseOnCase(bool extended=false) const;
+        bool mouseOnCase(Board board, bool extended=false) const;
         /* if extended it will not check that the case is inside the board */
-        bool mouseOnSide(bool extended=false) const;
+        bool mouseOnSide(BoardSided board, bool extended=false) const;
 
-        CellPosition getCellPosition() const;
-        SidePosition getSidePosition() const;
+        CellPosition getCellPosition(Board) const;
+        SidePosition getSidePosition(BoardSided) const;
 
         void setMessage(std::string);
 };

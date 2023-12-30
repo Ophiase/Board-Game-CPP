@@ -210,7 +210,7 @@ void LootGame::updateBoardContent (Board board) {
 void LootGame::handleCheckerBoard() {
     if (!interactive || isFinished) return;
 
-    cacheAction.push_back(getCellPosition());
+    cacheAction.push_back(getCellPosition(manager.getBoard()));
     
     LootAction action{
         &(this->manager), manager.getCurrentPlayer().id, manager.step(),
