@@ -212,7 +212,7 @@ void CheckersGame::updateBoardContent (Board board) {
 void CheckersGame::handleCheckerBoard() {
     if (!interactive || isFinished) return;
 
-    cacheAction.push_back(getCellPosition());
+    cacheAction.push_back(getCellPosition(manager.getBoard()));
     
     CheckersAction action{
         &(this->manager), manager.getCurrentPlayer().id, manager.step(),
