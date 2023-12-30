@@ -71,3 +71,7 @@ Board CheckersManager::initialBoard() {
 
     return Board(cellPieces, 0);
 };
+
+bool CheckersManager::canPlayAction(CheckersState state) const {
+    return CheckersAction::hasRemainingActions(this, state);
+}
