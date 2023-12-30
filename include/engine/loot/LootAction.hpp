@@ -63,7 +63,6 @@ class LootAction : public Action<LootManager, Board> {
         // ----------------------------------------------- 
         // OVERRIDES
 
-        
         /*
             All possibles action from current configuration (up to isomorphism).
         */

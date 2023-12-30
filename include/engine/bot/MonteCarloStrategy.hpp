@@ -13,6 +13,12 @@ public Strategy<ActionType, BoardType, ManagerType> {
         ~MonteCarloStrategy() override = default;
 
         ActionType play(GameState<BoardType>) override;
+
+        // needs a tree representation of exploration
+        // needs a method to choose which node to explore
+        // needs a method to random walk a node, state -> final score
+            // needs a function final score -> value
+        // needs a method to update tree
 };
 
 template <class ActionType, class BoardType, class ManagerType>
