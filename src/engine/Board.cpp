@@ -1,7 +1,7 @@
 #include "engine/Board.hpp"
 #include "utils/Cli.hpp"
 
-int Board::getDimension() const {
+uint Board::getDimension() const {
     return cellPieces.size();
 }
 
@@ -9,9 +9,13 @@ bool Board::isCellEven (CellPosition v) const {
     return ((v.x + v.y) & 1) == 0;
 }
 
+bool Board::isCellEven (int x, int y) const {
+    return ((x + y) & 1) == 0;
+}
+
 bool Board::isCaseInBoard(CellPosition v) const {
     return (0 <= v.x) && (0 <= v.y)
-        && (v.x < getDimension()) && (v.y < getDimension());
+        && (v.x < (int)getDimension()) && (v.y < (int)getDimension());
 }
 
 bool Board::isCaseEmpty(CellPosition v) const {
