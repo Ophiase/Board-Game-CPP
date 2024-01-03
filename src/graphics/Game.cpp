@@ -110,19 +110,58 @@ void Game::draw() {
     this->getRenderWindow().draw(this->checkerBoardImage);
 };
 
-void Game::updateBoard() {
+void Game::updateBoard(Board board) {
     this->checkBoardTexture.clear(sf::Color::Transparent);
 
-    sf::RectangleShape background{
-        Geometry::toFloat(checkBoardTexture.getSize())};
-    background.setTexture(ResourcesLoader::getTexture(Texture::CheckerBoard0));
-    this->checkBoardTexture.draw(background);
+    /* baked 8x8 board (faster)
+        sf::RectangleShape background{
+            Geometry::toFloat(checkBoardTexture.getSize())};
+        background.setTexture(ResourcesLoader::getTexture(Texture::CheckerBoard0));
+        this->checkBoardTexture.draw(background);
+    */
+
+    const sf::Vector2f tileGeometry = Geometry::toFloat(
+        sf::Vector2i{
+            (int)checkBoardTexture.getSize().x / (int)board.getDimension(),
+            (int)checkBoardTexture.getSize().y / (int)board.getDimension()
+        }
+    );
+    
+    const sf::Vector2f tileOrigin = sf::Vector2f{
+        tileGeometry.x/2, 
+        tileGeometry.y/2
+    };
+
+    sf::RectangleShape 
+        evenTile{tileGeometry}, 
+        oddTile{tileGeometry};
+
+    evenTile.setTexture(ResourcesLoader::getTexture(Texture::TileDesert));
+    evenTile.setOrigin(tileOrigin);
+    evenTile.setScale(sf::Vector2f{CELL_TRESHOLD, CELL_TRESHOLD});
+    
+    oddTile.setTexture(ResourcesLoader::getTexture(Texture::TileWheatBis));
+    oddTile.setOrigin(tileOrigin);
+    oddTile.setScale(sf::Vector2f{CELL_TRESHOLD, CELL_TRESHOLD});
+
+    for (uint y = 0; y < board.getDimension(); y++)
+    for (uint x = 0; x < board.getDimension(); x++) {
+        sf::RectangleShape *tile = board.isCellEven(x, y) ? 
+            &evenTile : &oddTile;
+
+        tile->setPosition(
+            (tileGeometry.x/2) + (tileGeometry.x * (int)x),
+            (tileGeometry.y/2) + (tileGeometry.y * (int)y)
+        );
+
+        this->checkBoardTexture.draw(*tile);
+    }
 
     this->checkBoardTexture.display();
 };
 
 void Game::updateBoardContent(Board board) {
-    this->updateBoard();
+    this->updateBoard(board);
 
     const int BOARD_DIMENSION = board.getDimension();
 

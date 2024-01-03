@@ -25,6 +25,7 @@ namespace Texture {
         TileRock,
         TileSheep,
         TileWheat,
+        TileWheatBis,
         TileWood,
 
         CheckerBoard0,

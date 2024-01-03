@@ -11,12 +11,12 @@ bool BoardSided::isCaseInBoard(SidePosition v) const {
     
     if (v.horizontal)
         return 
-            v.sideVector.x <= getDimension() && 
-            v.sideVector.y <= getDimension();
+            v.sideVector.x <= (int)getDimension() && 
+            v.sideVector.y <= (int)getDimension();
     
     return
-        v.sideVector.x < getDimension() && 
-        v.sideVector.y <= getDimension();
+        v.sideVector.x < (int)getDimension() && 
+        v.sideVector.y <= (int)getDimension();
 }
 
 bool BoardSided::isCaseEmpty(SidePosition v) const {

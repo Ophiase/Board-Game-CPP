@@ -2,7 +2,7 @@
 #include "graphics/Launcher.hpp"
 
 LootGame::LootGame(Launcher *launcher, int nPlayers, int nBots) :
-Game{launcher, "Loot", 1.0f}, manager{nPlayers, nBots} {
+Game{launcher, "Loot", 0.9f}, manager{nPlayers, nBots} {
     {
         auto nPlayers = new Text{this,
             std::to_string(this->manager.players.size()) +

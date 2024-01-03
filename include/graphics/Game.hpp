@@ -74,7 +74,7 @@ class Game : public Screen {
         Game(Launcher *launcher, std::string title="Game", 
             float CELL_TRESHOLD=0.7);
 
-        void updateBoard();
+        void updateBoard(Board board);
         void updateBoardContent(Board board);
         void updateBoardSidedContent(BoardSided boardSided);
 
