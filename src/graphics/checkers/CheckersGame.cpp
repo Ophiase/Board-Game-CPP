@@ -148,19 +148,14 @@ void CheckersGame::cancelAction() {
 
 // // -------------------------------------------------
 
-// float diffToRotation(sf::Vector2i diff) {
-//     if (diff == sf::Vector2i{2,0}) return 0;
-//     if (diff == sf::Vector2i{2,2}) return 45*1;
-//     if (diff == sf::Vector2i{0,2}) return 45*2;
-//     if (diff == sf::Vector2i{-2,2}) return 45*3;
+float diffToRotationCheck(sf::Vector2i diff) {
+    if (diff == sf::Vector2i{2,2} || diff == sf::Vector2i{1,1}) return 45*1;
+    if (diff == sf::Vector2i{-2,2} || diff == sf::Vector2i{-1,1}) return 45*3;
+    if (diff == sf::Vector2i{-2,-2} || diff == sf::Vector2i{-1,-1}) return 45*5;
+    if (diff == sf::Vector2i{2,-2} || diff == sf::Vector2i{1,-1}) return 45*7;
 
-//     if (diff == sf::Vector2i{-2,0}) return 45*4;
-//     if (diff == sf::Vector2i{-2,-2}) return 45*5;
-//     if (diff == sf::Vector2i{0,-2}) return 45*6;
-//     if (diff == sf::Vector2i{2,-2}) return 45*7;
-
-//     throw NotImplemented();
-// }
+    throw NotImplemented();
+}
 
 void CheckersGame::updateBoardContent (Board board) {
     Game::updateBoardContent(board);
@@ -168,7 +163,7 @@ void CheckersGame::updateBoardContent (Board board) {
 
     // SELECTION
 
-    float const circleSpace = (float)(this->checkBoardTexture.getSize().x / 8); 
+    float const circleSpace = (float)(this->checkBoardTexture.getSize().x / 10); 
     sf::RectangleShape circle{sf::Vector2f{
         circleSpace, circleSpace
     }};
@@ -184,7 +179,7 @@ void CheckersGame::updateBoardContent (Board board) {
 
     // ARROWS
 
-    float const arrowSpace = (float)(this->checkBoardTexture.getSize().x / 8); 
+    float const arrowSpace = (float)(this->checkBoardTexture.getSize().x / 10); 
     sf::RectangleShape arrow{sf::Vector2f{
         arrowSpace, arrowSpace
     }};
@@ -199,7 +194,7 @@ void CheckersGame::updateBoardContent (Board board) {
 
         float const px = (arrowSpace * (position.x + 0.5));
         float const py = (arrowSpace * (position.y + 0.5));
-        float const rotation = diffToRotation(diff);
+        float const rotation = diffToRotationCheck(diff);
 
         arrow.setPosition(px, py);
         arrow.setRotation(rotation);
