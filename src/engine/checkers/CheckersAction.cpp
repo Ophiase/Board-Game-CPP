@@ -87,7 +87,7 @@ bool CheckersAction::isValid(CheckersState state) const {
             return true;
         }
     } else {
-        for (int i = 0 ; i < jumps.size() - 1 ; i++) {
+        for (long unsigned int i = 0 ; i < jumps.size() - 1 ; i++) {
             CellPosition lastPosition = jumps[i];
             CellPosition currentPosition = jumps[i+1];
             CellPosition offset = currentPosition - lastPosition;
@@ -101,6 +101,7 @@ bool CheckersAction::isValid(CheckersState state) const {
         }
         return true;
     }
+    throw NotImplemented();
 }
 
 void CheckersAction::removePointsFromScore(Board board, int & score) const {
@@ -141,7 +142,7 @@ CheckersState CheckersAction::apply(
             moveScore += 1;
         }
     } else {
-        for (int i = 0 ; i < jumps.size() - 1 ; i++) {
+        for (long unsigned int i = 0 ; i < jumps.size() - 1 ; i++) {
             CellPosition lastPosition = jumps[i];
             CellPosition currentPosition = jumps[i+1];
             CellPosition offset = currentPosition - lastPosition;
