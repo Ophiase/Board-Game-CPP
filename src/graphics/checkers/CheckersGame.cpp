@@ -215,7 +215,6 @@ void CheckersGame::handleCheckerBoard() {
     };
 
     CellPieceType playerColor = manager.getCurrentPlayer().id == 0 ? CellPieceType::WhitePawn : CellPieceType::BlackPawn;
-    CellPieceType rivalColor = manager.getCurrentPlayer().id == 0 ? CellPieceType::BlackPawn : CellPieceType::WhitePawn;
     bool const validAction = manager.canPlayAction(action);
     bool const isFirstSelection = (action.jumps.size() == 1);
     bool const isFirstSelectionCorrect = isFirstSelection &&
