@@ -27,11 +27,12 @@ class Board {
 
         // ---------------------------------------------------
         
-        int getDimension() const ;
+        uint getDimension() const ;
 
         // ---------------------------------------------------
 
         bool isCellEven (CellPosition v) const;
+        bool isCellEven (int x, int y) const;
         bool isCaseInBoard(CellPosition v) const;
         bool isCaseEmpty(CellPosition v) const;
         CellPiece getCell(CellPosition v) const;

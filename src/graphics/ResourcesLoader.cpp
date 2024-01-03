@@ -40,6 +40,7 @@ void ResourcesLoader::initializeTextures() {
         make_tuple(TileRock, "tile/rock"),
         make_tuple(TileSheep, "tile/sheep"),
         make_tuple(TileWheat, "tile/wheat"),
+        make_tuple(TileWheatBis, "tile/wheat_bis"),
         make_tuple(TileWood, "tile/wood"),
 
         make_tuple(CheckerBoard0, "checkerboard/checkerboard_0"),
