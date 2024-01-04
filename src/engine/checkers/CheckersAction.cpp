@@ -13,8 +13,7 @@ bool CheckersAction::hasRemainingActions(
     const CheckersManager *manager, CheckersState state) {
 
 	CellPieceType playerPawn = state.player == 0 ? CellPieceType::WhitePawn : CellPieceType::BlackPawn;
-    CellPieceType rivalPawn = state.player == 0 ? CellPieceType::BlackPawn : CellPieceType::WhitePawn;
-
+    //CellPieceType rivalPawn = state.player == 0 ? CellPieceType::BlackPawn : CellPieceType::WhitePawn;
      
     /* initialisation of the party */
     if (state.step < manager->players.size())
@@ -63,7 +62,7 @@ bool CheckersAction::isValid(CheckersState state) const {
     CellPieceType playerPawn = state.player == 0 ? CellPieceType::WhitePawn : CellPieceType::BlackPawn;
     CellPieceType rivalPawn = state.player == 0 ? CellPieceType::BlackPawn : CellPieceType::WhitePawn;
     CellPieceType playerKing = state.player == 0 ? CellPieceType::WhiteKing : CellPieceType::BlackKing;
-    CellPieceType rivalKing = state.player == 0 ? CellPieceType::BlackKing : CellPieceType::WhiteKing;
+    //CellPieceType rivalKing = state.player == 0 ? CellPieceType::BlackKing : CellPieceType::WhiteKing;
 
     if (!(state.board.getCell(jumps[0]) == playerPawn || state.board.getCell(jumps[0]) == playerKing))
         return false;
@@ -86,22 +85,22 @@ bool CheckersAction::isValid(CheckersState state) const {
                 return false;
             return true;
         }
-    } else {
-        for (long unsigned int i = 0 ; i < jumps.size() - 1 ; i++) {
-            CellPosition lastPosition = jumps[i];
-            CellPosition currentPosition = jumps[i+1];
-            CellPosition offset = currentPosition - lastPosition;
-            if (! (offset == CellPosition(2,2) || offset == CellPosition(2,-2) || offset == CellPosition(-2,2) || offset == CellPosition(-2,-2)))
-                return false;
-            CellPosition between = lastPosition + (offset)/2;
-            if (!state.board.isCaseInBoard(currentPosition) || !state.board.isCaseInBoard(between))
-                return false;
-            if (!(state.board.getCell(between).pieceType == rivalPawn))
-                return false;
-        }
-        return true;
     }
-    throw NotImplemented();
+
+    for (long unsigned int i = 0 ; i < jumps.size() - 1 ; i++) {
+        CellPosition lastPosition = jumps[i];
+        CellPosition currentPosition = jumps[i+1];
+        CellPosition offset = currentPosition - lastPosition;
+        if (! (offset == CellPosition(2,2) || offset == CellPosition(2,-2) || offset == CellPosition(-2,2) || offset == CellPosition(-2,-2)))
+            return false;
+        CellPosition between = lastPosition + (offset)/2;
+        if (!state.board.isCaseInBoard(currentPosition) || !state.board.isCaseInBoard(between))
+            return false;
+        if (!(state.board.getCell(between).pieceType == rivalPawn))
+            return false;
+    }
+
+    return true;
 }
 
 void CheckersAction::removePointsFromScore(Board board, int & score) const {
