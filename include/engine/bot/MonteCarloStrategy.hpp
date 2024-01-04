@@ -3,12 +3,17 @@
 #include "Strategy.hpp"
 #include "utils/NotImplemented.hpp"
 
+#include "ExplorationNode.hpp"
+#include "Score.hpp"
+
 template <class ActionType, class BoardType, class ManagerType>
 class MonteCarloStrategy : 
 public Strategy<ActionType, BoardType, ManagerType> {
     public:
-        MonteCarloStrategy(const ManagerType* manager) : 
-            Strategy<ActionType, BoardType, ManagerType>(manager) {};
+        int maxHeight;
+
+        MonteCarloStrategy(const ManagerType* manager, int maxHeight=20) : 
+            Strategy<ActionType, BoardType, ManagerType>(manager), maxHeight{maxHeight} {};
         
         ~MonteCarloStrategy() override = default;
 
