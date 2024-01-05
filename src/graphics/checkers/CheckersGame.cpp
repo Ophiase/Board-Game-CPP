@@ -1,6 +1,7 @@
 #include "graphics/checkers/CheckersGame.hpp"
 #include "graphics/Launcher.hpp"
 #include "graphics/loot/LootGame.hpp"
+#include "engine/bot/AlphaBetaStrategy.hpp"
 
 CheckersGame::CheckersGame(Launcher *launcher, bool againstBot) :
 Game{launcher, "Checkers", 1.0f}, manager{againstBot} {
@@ -122,12 +123,17 @@ void CheckersGame::cancelAction() {
 }
 
 void CheckersGame::AIinit() {
-     for (auto player : this->manager.players)
-         if (player.isAI)
-             this->bots.push_back(
-                 new Bot<CheckersAction, Board, CheckersManager>{
-                     &this->manager, player.id
-             });
+    for (auto player : this->manager.players)
+        if (player.isAI) {
+            auto *strategy = new AlphaBetaStrategy<CheckersAction, Board, CheckersManager>{
+                &this->manager, 5
+            };
+
+            this->bots.push_back(
+                new Bot<CheckersAction, Board, CheckersManager>{
+                    &this->manager, player.id, strategy
+            });
+        }
  }
 
  void CheckersGame::AIturn() {
