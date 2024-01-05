@@ -222,10 +222,11 @@ void CheckersAction::completeSpecificQueenActions(
         manager, state.player, state.step, currentPath}.toCaptured(state);
 
     for (auto offset : directQueenOffsets) {
-        Cli::debug("offset: " + Cli::toString(offset));
         auto toPosition = currentPosition + offset;
         
         Combination capturing{};
+        std::vector<CellPath> candidates{};
+
         while (board->isCaseInBoard(toPosition+offset)) {
             auto between = toPosition;
             toPosition += offset;
@@ -235,8 +236,10 @@ void CheckersAction::completeSpecificQueenActions(
             if (!state.board.isCaseEmpty(between)) {
                 if (state.board.getCell(between).owner() == state.player)
                     break;
-                else
+                else {
                     capturing.push_back(between);
+                    candidates.clear(); // forced to maximise along axis
+                }
             }
 
             if (!state.board.isCaseEmpty(toPosition))
@@ -254,8 +257,12 @@ void CheckersAction::completeSpecificQueenActions(
                     break;
             if (redundant) break;
 
-            nextVisited.push_back(next);
+            if (candidates.size() < manager->MAX_QUEEN_BRANCHING)
+                candidates.push_back(next);
         }
+
+        for (auto candidate : candidates)
+            nextVisited.push_back(candidate);       
     }
 }
 
@@ -271,9 +278,6 @@ std::vector<CheckersAction> CheckersAction::getSpecificActions(
     int depth = 0;
 
     do {
-        if (!isPawn)
-            Cli::debug("depth : " + std::to_string(depth));
-        
         depth++;
         visited = nextVisited;
         nextVisited.clear();
@@ -295,7 +299,7 @@ std::vector<CheckersAction> CheckersAction::getSpecificActions(
                     nextVisited,
                     path
                 );
-    } while(!nextVisited.empty() && depth < 20);
+    } while(!nextVisited.empty() && (isPawn || (depth <= manager->MAX_QUEEN_DEPTH)));
 
     if (depth == 1)
         return std::vector<CheckersAction>{};
@@ -346,12 +350,19 @@ std::vector<CheckersAction> CheckersAction::getActions(
 
     if (maxCapture > 0) { 
         // if player can capture, he's forced to capture
-        
+        Cli::debug("authorized :");
         std::vector<CheckersAction> actions{};
         for (auto capture : captures)
-            if ((int)capture.jumps.size() == maxCapture)
+            if (
+                ((int)capture.jumps.size() == maxCapture) ||
+                
+                state.board.getCell(capture.jumps[0]).isQueen() 
+                // if queen we only require along axis
+            ) {
+                Cli::debug("\t" + Cli::toString(capture.jumps));
                 actions.push_back(capture);
-        
+            }
+
         return actions;
     }
 
@@ -368,8 +379,6 @@ bool CheckersAction::hasRemainingActions(
 {
     return !CheckersAction::getActions(manager, state).empty();    
 }
-
-
 
 inline bool iff(bool const a, bool const b) {
     return (a && b) || (!a && !b);
@@ -391,6 +400,11 @@ bool CheckersAction::isValidQueenMove(const CheckersState & state) const {
     for (auto action : actions)
         if (this->actionEquivalence(state, action))
             return true;
+
+    // There might be not detected capture
+    
+    // TODO
+    
 
     return false;
 }
