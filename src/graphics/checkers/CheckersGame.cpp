@@ -215,12 +215,14 @@ void CheckersGame::handleCheckerBoard() {
         cacheAction
     };
 
-    CellPieceType playerColor = manager.getCurrentPlayer().id == 0 ? CellPieceType::WhitePawn : CellPieceType::BlackPawn;
+    CellPieceType playerPawn = manager.getCurrentPlayer().id == 0 ? CellPieceType::WhitePawn : CellPieceType::BlackPawn;
+    CellPieceType playerKing = manager.getCurrentPlayer().id == 0 ? CellPieceType::WhiteKing : CellPieceType::BlackKing;
+    
     bool const validAction = manager.canPlayAction(action);
     bool const isFirstSelection = (action.jumps.size() == 1);
     bool const isFirstSelectionCorrect = isFirstSelection &&
-        manager.getBoard().getCell(action.jumps[0])
-        .pieceType == playerColor;
+        ( manager.getBoard().getCell(action.jumps[0]).pieceType == playerPawn 
+        || manager.getBoard().getCell(action.jumps[0]).pieceType == playerKing);
         
     if (!(validAction || isFirstSelectionCorrect)) {
         Cli::warning("Invalid move");
