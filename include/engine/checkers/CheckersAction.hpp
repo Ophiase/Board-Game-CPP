@@ -92,4 +92,10 @@ class CheckersAction : public Action<CheckersManager, Board> {
         */
         CheckersState apply(CheckersState) const override;
         std::string toString() const override;
+
+        /*
+            Doe 2 actions have the same effect on the board?
+        */
+        bool actionEquivalence(CheckersState, const CheckersAction &other) const;
+
 };

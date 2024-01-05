@@ -48,6 +48,11 @@ bool CheckersAction::equivalentCellPath(
     return true;
 }
 
+bool CheckersAction::actionEquivalence(
+    CheckersState, const CheckersAction &other) const {
+    return equivalentCellPath(jumps, other.jumps);
+}
+
 std::vector<CheckersAction> CheckersAction::getPawnMoves(
     const CheckersManager *manager, const CheckersState & state) 
 {
@@ -136,7 +141,7 @@ void CheckersAction::completeSpecificPawnActions(
     
     for (auto offset : jumpOffsets) {
         auto toPosition = currentPosition + offset;
-        auto between = currentPosition + offset/2;
+        auto between = currentPosition + (offset / 2);
 
         if (!board->isCaseInBoard(toPosition))
             continue;
@@ -146,11 +151,12 @@ void CheckersAction::completeSpecificPawnActions(
             continue;
         
         if (
-            !board->isCaseEmpty(between) || alreadyCaptured.has(between))
+            board->isCaseEmpty(between) || alreadyCaptured.has(between))
             continue;
 
         if (board->getCell(between).owner() == state.player)
             continue;
+
 
         CellPath next = currentPath;
         next.push_back(toPosition);

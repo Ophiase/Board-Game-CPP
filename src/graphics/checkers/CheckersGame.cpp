@@ -108,9 +108,8 @@ void CheckersGame::cancelAction() {
         return;
     }
 
-    if (manager.step() < manager.players.size()) {
-        Cli::warning("Cannot undo first action!");
-        setMessage("Cannot undo first action!");
+    if (manager.step() == 0) {
+        Cli::warning("Nothing to undo!");
         return;
     }
 
