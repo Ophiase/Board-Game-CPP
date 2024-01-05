@@ -23,7 +23,10 @@ std::vector<CheckersAction> CheckersAction::getPawnMoves(
 
     for (int x = 0; x < dimension; x++)
     for (int y = 0; y < dimension; y++)
-    if (board->getCell(x, y).owner() == board->player)
+    if (
+        board->getCell(x, y).owner() == board->player &&
+        board->getCell(x, y).isPawn()
+    )
     for (auto offset : directOffsets) {
         CellPosition jump{x+offset.x, y+offset.y};
 
@@ -32,8 +35,6 @@ std::vector<CheckersAction> CheckersAction::getPawnMoves(
                 manager, state.player, state.step, CellPath{
                     CellPosition{x, y}, jump 
                 } });
-        
-
     }
 
     return actions;
@@ -42,10 +43,31 @@ std::vector<CheckersAction> CheckersAction::getPawnMoves(
 std::vector<CheckersAction> CheckersAction::getQueenMoves(
     const CheckersManager * manager, CheckersState state) 
 {
-    (void)manager;
-    (void)state;
+    const int dimension = (int)state.board.getDimension();
+    const Board *board = &state.board;
+    std::vector<CheckersAction> actions{};
 
-    throw NotImplemented();
+    for (int x = 0; x < dimension; x++)
+    for (int y = 0; y < dimension; y++)
+    if (
+        board->getCell(x, y).owner() == board->player &&
+        board->getCell(x, y).isQueen()
+    )
+    for (int x2 = 0; x2 < dimension; x2++)
+    for (int y2 = 0; y2 < dimension; y2++) 
+    if (
+        (x = x2) || (y == y2) ||
+        (std::abs(x-x2)) == (std::abs(y-y2))
+    ) {
+        CellPosition jump{x2, y2};
+        if (board->isCaseInBoard(jump) && board->getCell(jump).isNone())
+            actions.push_back(CheckersAction{
+                manager, state.player, state.step, CellPath{
+                    CellPosition{x, y}, jump 
+                } });
+    }
+
+    return actions;
 }
 
 std::vector<CheckersAction> CheckersAction::getPawnCaptures(
