@@ -1,7 +1,8 @@
 #include "engine/checkers/CheckersAction.hpp"
 #include "engine/checkers/CheckersManager.hpp"
+#include "engine/loot/Combination.hpp"
 
-std::vector<CellPosition> const CheckersAction::authorizedOffsets = {
+std::vector<CellPosition> const CheckersAction::allPawnOffsets = {
     {2, 2}, {2, -2}, {-2, 2}, {-2, -2},
 	{1, 1}, {1, -1}, {-1, 1}, {-1, -1}
 };
@@ -13,6 +14,39 @@ std::vector<CellPosition> const CheckersAction::directOffsets = {
 std::vector<CellPosition> const CheckersAction::jumpOffsets = {
     {2, 2}, {2, -2}, {-2, 2}, {-2, -2},
 };
+
+/*
+    Cellpath need to represents a succession of jumps
+    ie. more than 1 position.
+
+    We can just check if :
+        First position and last positions are equals
+        and in between positions are shared.
+        (it's a specific property of checkers)
+*/
+bool CheckersAction::equivalentCellPath(
+    const CellPath & path1, const CellPath & path2 
+) {
+    if (path1[0] != path2[0]) 
+        return false;
+    if (path1[path1.size()-1] != path2[path2.size()-1])
+        return false;
+    if (path1.size() != path2.size())
+        return false;
+
+    // check if every positions visited by first path, 
+    // is also visited by the second one
+    for (auto p : path1) {
+        bool has = false;
+        for (auto p2 : path2)
+            if ((has = (p == p2)))
+                break;
+        if (!has)
+            return false;
+    }
+
+    return true;
+}
 
 std::vector<CheckersAction> CheckersAction::getPawnMoves(
     const CheckersManager *manager, const CheckersState & state) 
@@ -74,8 +108,8 @@ void CheckersAction::completeSpecificPawnActions(
     const CheckersManager * manager, 
     const CheckersState & state,
 
-    CellPath & visited,
-    CellPath & nextVisited,
+    std::vector<CellPath> & visited,
+    std::vector<CellPath> & nextVisited,
     CellPath currentPath
 ) {
     (void)manager;
@@ -186,7 +220,7 @@ bool CheckersAction::hasRemainingActions(
         if (state.board.getCell(x, y).pieceType == playerPawn)
             pawns.push_back(CellPosition{x, y});
 
-    for (auto pawn : pawns) for (auto offset : CheckersAction::authorizedOffsets) {
+    for (auto pawn : pawns) for (auto offset : CheckersAction::allPawnOffsets) {
 		if (offset.x == 2 || offset.y == -2) {
 			CellPosition between = pawn + (offset)/2;
 			CellPosition afterJump = pawn + offset;

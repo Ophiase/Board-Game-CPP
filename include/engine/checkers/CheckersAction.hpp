@@ -14,13 +14,16 @@ class CheckersManager;
 
 class CheckersAction : public Action<CheckersManager, Board> {
 	private:
+        static bool equivalentCellPath(
+            const CellPath &, const CellPath & 
+        );
 
         static void completeSpecificPawnActions(
             const CheckersManager * manager, 
             const CheckersState &,
 
-            CellPath & visited,
-            CellPath & nextVisited,
+            std::vector<CellPath> & visited,
+            std::vector<CellPath> & nextVisited,
             CellPath currentPath
         );
 
@@ -45,7 +48,7 @@ class CheckersAction : public Action<CheckersManager, Board> {
         bool isValidPawnMove(const CheckersState &) const;
         bool isValidQueenMove(const CheckersState &) const;
     public:
-        static const std::vector<CellPosition> authorizedOffsets;
+        static const std::vector<CellPosition> allPawnOffsets;
         static const std::vector<CellPosition> directOffsets;
         static const std::vector<CellPosition> jumpOffsets;
         
