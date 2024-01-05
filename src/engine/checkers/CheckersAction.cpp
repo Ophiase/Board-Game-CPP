@@ -7,13 +7,19 @@ std::vector<CellPosition> const CheckersAction::allPawnOffsets = {
 	{1, 1}, {1, -1}, {-1, 1}, {-1, -1}
 };
 
-std::vector<CellPosition> const CheckersAction::directOffsets = {
+std::vector<CellPosition> const CheckersAction::directPawnOffsets = {
 	{1, 1}, {1, -1}, {-1, 1}, {-1, -1}
 };
 
-std::vector<CellPosition> const CheckersAction::jumpOffsets = {
+std::vector<CellPosition> const CheckersAction::jumpPawnOffsets = {
     {2, 2}, {2, -2}, {-2, 2}, {-2, -2},
 };
+
+std::vector<CellPosition> const CheckersAction::directQueenOffsets = {
+	{0, 1}, {1, 0}, {0, -1}, {-1, 0}, 
+    {1, 1}, {1, -1}, {-1, 1}, {-1, -1}
+};
+
 
 CellPosition CheckersAction::normalizeJumpOffset(CellPosition offset) {
     int x = offset.x > 0 ? 1 : (offset.x < 0 ? -1 : 0);
@@ -66,30 +72,22 @@ std::vector<CheckersAction> CheckersAction::getPawnMoves(
     const Board *board = &state.board;
     std::vector<CheckersAction> actions{};
 
-    Cli::debug("looking for moves : " + std::to_string(board->player));
-    Cli::debug(board->toString());
-
     for (int x = 0; x < dimension; x++)
     for (int y = 0; y < dimension; y++) 
     if (
         (board->getCell(x, y).owner() == board->player) &&
         board->getCell(x, y).isPawn()
     )
-    for (auto offset : directOffsets) {
+    for (auto offset : directPawnOffsets) {
         CellPosition axiom{x, y};
         CellPosition jump{x+offset.x, y+offset.y};
-        Cli::debug(Cli::toString(axiom) + " : " + Cli::toString(jump));
-
         if (board->isCaseInBoard(jump) && board->getCell(jump).isNone()) {
             actions.push_back(CheckersAction{
                 manager, state.player, state.step, CellPath{
                     CellPosition{x, y}, jump 
                 } });
-            Cli::debug(actions[actions.size()-1].toString());
         }
     }
-
-    Cli::debug("finished to search moves");
 
     return actions;
 }
@@ -107,18 +105,14 @@ std::vector<CheckersAction> CheckersAction::getQueenMoves(
         board->getCell(x, y).owner() == board->player &&
         board->getCell(x, y).isQueen()
     )
-    for (int x2 = 0; x2 < dimension; x2++)
-    for (int y2 = 0; y2 < dimension; y2++) 
-    if (
-        (x = x2) || (y == y2) ||
-        (std::abs(x-x2)) == (std::abs(y-y2))
-    ) {
-        CellPosition jump{x2, y2};
-        if (board->isCaseInBoard(jump) && board->getCell(jump).isNone())
+    for (auto offset : directQueenOffsets) {
+        CellPosition from{x, y};
+        CellPosition to = from + offset;
+        while (board->isCaseInBoard(to) && board->getCell(to).isNone()) {
             actions.push_back(CheckersAction{
-                manager, state.player, state.step, CellPath{
-                    CellPosition{x, y}, jump 
-                } });
+                manager, state.player, state.step, CellPath{from, to} });
+            to += offset;
+        }
     }
 
     return actions;
@@ -130,10 +124,13 @@ Combination CheckersAction::toCaptured(CheckersState state) const {
 
     if (state.board.getCell(init).isPawn()) {
         // faster implementation in pawn case 
-        
+
         for (uint i = 1; i < jumps.size(); i++) {
             auto current = jumps[i-1];
             auto next = jumps[i];
+
+            if (current == next) break;
+
             auto mid = (current + next) / 2;
             captured.push_back(mid);
         }
@@ -173,7 +170,7 @@ void CheckersAction::completeSpecificPawnActions(
     Combination alreadyCaptured = CheckersAction{
         manager, state.player, state.step, currentPath}.toCaptured(state);
     
-    for (auto offset : jumpOffsets) {
+    for (auto offset : jumpPawnOffsets) {
         auto toPosition = currentPosition + offset;
         auto between = currentPosition + (offset / 2);
 
@@ -220,41 +217,42 @@ void CheckersAction::completeSpecificQueenActions(
 
     Combination alreadyCaptured = CheckersAction{
         manager, state.player, state.step, currentPath}.toCaptured(state);
-    
-    Cli::warning("Queen actions not implemented");
-    return;
-    
-    throw NotImplemented();
 
-    for (auto offset : jumpOffsets) {
+    for (auto offset : directQueenOffsets) {
+        Cli::debug("offset: " + Cli::toString(offset));
         auto toPosition = currentPosition + offset;
-        auto between = currentPosition + (offset / 2);
-
-        if (!board->isCaseInBoard(toPosition))
-            continue;
-
-        if ( (toPosition != initPosition) && 
-            !board->isCaseEmpty(toPosition) )
-            continue;
         
-        if (
-            board->isCaseEmpty(between) || alreadyCaptured.has(between))
-            continue;
+        Combination capturing{};
+        while (board->isCaseInBoard(toPosition+offset)) {
+            auto between = toPosition;
+            toPosition += offset;
+            if (between == initPosition)
+                continue;
 
-        if (board->getCell(between).owner() == state.player)
-            continue;
+            if (!state.board.isCaseEmpty(between)) {
+                if (state.board.getCell(between).owner() == state.player)
+                    break;
+                else
+                    capturing.push_back(between);
+            }
 
+            if (!state.board.isCaseEmpty(toPosition))
+                continue;
 
-        CellPath next = currentPath;
-        next.push_back(toPosition);
+            if (capturing.empty())
+                continue;
 
-        bool redundant = false;
-        for (auto cmp : visited)
-            if ((redundant = equivalentCellPath(cmp, next)))
-                break;
-        if (redundant) break;
+            CellPath next = currentPath;
+            next.push_back(toPosition);
 
-        nextVisited.push_back(next);
+            bool redundant = false;
+            for (auto cmp : visited)
+                if ((redundant = equivalentCellPath(cmp, next)))
+                    break;
+            if (redundant) break;
+
+            nextVisited.push_back(next);
+        }
     }
 }
 
@@ -334,8 +332,6 @@ std::vector<CheckersAction> CheckersAction::getCaptures(
 std::vector<CheckersAction> CheckersAction::getActions(
     const CheckersManager *manager, CheckersState state) 
 {
-    Cli::debug("Search actions");
-
     auto captures = getCaptures(manager, state);
 
     int maxCapture = 0;
@@ -354,8 +350,6 @@ std::vector<CheckersAction> CheckersAction::getActions(
         return actions;
     }
 
-    Cli::debug("No Captures");
-
     auto moves = getPawnMoves(manager, state);
     auto queenMoves = getQueenMoves(manager, state);
     for (auto queenMove : queenMoves)
@@ -364,47 +358,13 @@ std::vector<CheckersAction> CheckersAction::getActions(
     return moves;
 }
 
-/*
-    Is there any authorized/correct action ?
-*/
 bool CheckersAction::hasRemainingActions(
-    const CheckersManager *manager, CheckersState state) {
+    const CheckersManager *manager, CheckersState state) 
+{
+    return !CheckersAction::getActions(manager, state).empty();    
+}
 
-	CellPieceType playerPawn = state.player == 0 ? CellPieceType::WhitePawn : CellPieceType::BlackPawn;
-    //CellPieceType rivalPawn = state.player == 0 ? CellPieceType::BlackPawn : CellPieceType::WhitePawn;
-     
-    /* initialisation of the party */
-    if (state.step < manager->players.size())
-        return true;
-    
-    std::vector<CheckersAction> result;
-    std::vector<CellPosition> pawns;
-    for (int x = 0; x < 10; x++) for (int y = 0; y < 10; y++)
-        if (state.board.getCell(x, y).pieceType == playerPawn)
-            pawns.push_back(CellPosition{x, y});
 
-    for (auto pawn : pawns) for (auto offset : CheckersAction::allPawnOffsets) {
-		if (offset.x == 2 || offset.y == -2) {
-			CellPosition between = pawn + (offset)/2;
-			CellPosition afterJump = pawn + offset;
-			
-			if (!state.board.isCaseInBoard(between) || !state.board.isCaseInBoard(afterJump))
-				continue;
-		
-			if (!(state.board.isCaseEmpty(between) || state.board.getCell(between).pieceType == playerPawn) &&
-				state.board.isCaseEmpty(afterJump))
-				return true;
-		} else if (offset.x == 1 || offset.y == -1) {
-			CellPosition afterJump = pawn + offset;
-			if (!state.board.isCaseInBoard(afterJump))
-				continue;
-			if (state.board.isCaseEmpty(afterJump))
-				return true;
-		}
-    }
-
-    return false;
-};
 
 inline bool iff(bool const a, bool const b) {
     return (a && b) || (!a && !b);
@@ -412,14 +372,11 @@ inline bool iff(bool const a, bool const b) {
 
 // TODO OPTIMIZE
 bool CheckersAction::isValidPawnMove(const CheckersState & state) const {
-    Cli::debug("check pawn action : " + this->toString());
     auto actions = CheckersAction::getActions(this->manager, state);
-    for (auto action : actions) {
-        Cli::debug("\tvs : " + action.toString());
+    for (auto action : actions)
         if (this->actionEquivalence(state, action))
             return true;
-    }
-    Cli::debug("not checked");
+
     return false;
 }
 
@@ -468,6 +425,13 @@ CheckersState CheckersAction::apply(
     if (first != last) {
         cells[last.y][last.x] = board->getCell(first).pieceType;
         cells[first.y][first.x] = CellPieceType::NoneCell;
+        
+        if (this->author == WhitePlayer) {
+            if (last.y == 0)
+                cells[last.y][last.x] = CellPieceType::WhiteQueen;
+        } else 
+            if (last.y == ((int)board->getDimension() - 1))
+                cells[last.y][last.x] = CellPieceType::BlackQueen;
     }
 
     // misc

@@ -66,6 +66,7 @@ void ResourcesLoader::initializeTextures() {
 
         make_tuple(Arrow, "entity/arrow_bis"),
         make_tuple(Selection, "entity/circle_selection"),
+        make_tuple(Selectable, "entity/selectable")
     };
 
     for (const auto& association : associations) {

@@ -57,8 +57,10 @@ class CheckersAction : public Action<CheckersManager, Board> {
         static CellPosition normalizeJumpOffset(CellPosition);
     public:
         static const std::vector<CellPosition> allPawnOffsets;
-        static const std::vector<CellPosition> directOffsets;
-        static const std::vector<CellPosition> jumpOffsets;
+        static const std::vector<CellPosition> directPawnOffsets;
+        static const std::vector<CellPosition> jumpPawnOffsets;
+        static const std::vector<CellPosition> directQueenOffsets;
+        
         
         const CellPath jumps;
 

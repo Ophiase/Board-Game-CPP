@@ -49,7 +49,8 @@ namespace Texture {
         KingWhite,
 
         Arrow,
-        Selection
+        Selection,
+        Selectable
     };
 }
 namespace Font {
