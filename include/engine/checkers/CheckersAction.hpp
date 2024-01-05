@@ -14,20 +14,36 @@ class CheckersManager;
 
 class CheckersAction : public Action<CheckersManager, Board> {
 	private:
-        static std::vector<CheckersAction> getPawnMoves(
-            const CheckersManager * manager, CheckersState);
 
-        static std::vector<CheckersAction> getQueenMoves(
-            const CheckersManager * manager, CheckersState);
+        static void completeSpecificPawnActions(
+            const CheckersManager * manager, 
+            const CheckersState &,
+
+            CellPath & visited,
+            CellPath & nextVisited,
+            CellPath currentPath
+        );
+
+        static std::vector<CheckersAction> getSpecificPawnActions(
+            const CheckersManager * manager, 
+            const CheckersState&,
+            CellPosition axiom);
 
         static std::vector<CheckersAction> getPawnCaptures(
-            const CheckersManager * manager, CheckersState);
+            const CheckersManager * manager, const CheckersState&);
 
         static std::vector<CheckersAction> getQueenCaptures(
-            const CheckersManager * manager, CheckersState);
+            const CheckersManager * manager, const CheckersState&);
 
-        bool isValidPawnMove(CheckersState) const;
-        bool isValidQueenMove(CheckersState) const;
+        static std::vector<CheckersAction> getPawnMoves(
+            const CheckersManager * manager, const CheckersState&);
+
+        static std::vector<CheckersAction> getQueenMoves(
+            const CheckersManager * manager, const CheckersState&);
+
+
+        bool isValidPawnMove(const CheckersState &) const;
+        bool isValidQueenMove(const CheckersState &) const;
     public:
         static const std::vector<CellPosition> authorizedOffsets;
         static const std::vector<CellPosition> directOffsets;

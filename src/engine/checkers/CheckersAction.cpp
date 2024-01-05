@@ -15,7 +15,7 @@ std::vector<CellPosition> const CheckersAction::jumpOffsets = {
 };
 
 std::vector<CheckersAction> CheckersAction::getPawnMoves(
-    const CheckersManager * manager, CheckersState state) 
+    const CheckersManager *manager, const CheckersState & state) 
 {
     const int dimension = (int)state.board.getDimension();
     const Board *board = &state.board;
@@ -41,7 +41,7 @@ std::vector<CheckersAction> CheckersAction::getPawnMoves(
 }
 
 std::vector<CheckersAction> CheckersAction::getQueenMoves(
-    const CheckersManager * manager, CheckersState state) 
+    const CheckersManager * manager, const CheckersState & state) 
 {
     const int dimension = (int)state.board.getDimension();
     const Board *board = &state.board;
@@ -70,17 +70,61 @@ std::vector<CheckersAction> CheckersAction::getQueenMoves(
     return actions;
 }
 
-std::vector<CheckersAction> CheckersAction::getPawnCaptures(
-    const CheckersManager * manager, CheckersState state) 
-{
+void CheckersAction::completeSpecificPawnActions(
+    const CheckersManager * manager, 
+    const CheckersState & state,
+
+    CellPath & visited,
+    CellPath & nextVisited,
+    CellPath currentPath
+) {
     (void)manager;
     (void)state;
+    (void)visited;
+    (void)nextVisited;
+    (void)currentPath;
 
     throw NotImplemented();
 }
 
+std::vector<CheckersAction> CheckersAction::getSpecificPawnActions(
+    const CheckersManager *manager, const CheckersState & state, CellPosition axiom
+) {
+    (void)manager;
+    (void)state;
+    (void)axiom;
+
+    std::vector<CheckersAction> actions{};
+    
+    throw NotImplemented();
+}
+
+std::vector<CheckersAction> CheckersAction::getPawnCaptures(
+    const CheckersManager *manager, const CheckersState & state) 
+{
+    const int dimension = (int)state.board.getDimension();
+    const Board *board = &state.board;
+    std::vector<CheckersAction> actions{};
+
+    for (int x = 0; x < dimension; x++)
+    for (int y = 0; y < dimension; y++)
+    if (
+        board->getCell(x, y).owner() == board->player &&
+        board->getCell(x, y).isPawn()
+    ) {
+        auto actionsToAdd = getSpecificPawnActions(
+            manager,
+            state,
+            CellPosition{x, y});
+        for (auto action : actionsToAdd)
+            actions.push_back(action);
+    }
+    
+    return actions;
+}
+
 std::vector<CheckersAction> CheckersAction::getQueenCaptures(
-    const CheckersManager * manager, CheckersState state) 
+    const CheckersManager *manager, const CheckersState & state) 
 {
     (void)manager;
     (void)state;
@@ -170,7 +214,7 @@ inline bool iff(bool const a, bool const b) {
 };
 
 // TODO OPTIMIZE
-bool CheckersAction::isValidPawnMove(CheckersState state) const {
+bool CheckersAction::isValidPawnMove(const CheckersState & state) const {
     auto actions = CheckersAction::getActions(this->manager, state);
     for (auto action : actions)
         if (this->actionEquivalence(state, action))
@@ -180,7 +224,7 @@ bool CheckersAction::isValidPawnMove(CheckersState state) const {
 }
 
 // TODO OPTIMIZE
-bool CheckersAction::isValidQueenMove(CheckersState state) const {
+bool CheckersAction::isValidQueenMove(const CheckersState & state) const {
     auto actions = CheckersAction::getActions(this->manager, state);
     for (auto action : actions)
         if (this->actionEquivalence(state, action))
