@@ -15,6 +15,12 @@ std::vector<CellPosition> const CheckersAction::jumpOffsets = {
     {2, 2}, {2, -2}, {-2, 2}, {-2, -2},
 };
 
+CellPosition CheckersAction::normalizeJumpOffset(CellPosition offset) {
+    int x = offset.x > 0 ? 1 : (offset.x < 0 ? -1 : 0);
+    int y = offset.y > 0 ? 1 : (offset.y < 0 ? -1 : 0);
+    return CellPosition{x, y};
+}
+
 /*
     Cellpath need to represents a succession of jumps
     ie. more than 1 position.
@@ -120,32 +126,39 @@ std::vector<CheckersAction> CheckersAction::getQueenMoves(
 
 Combination CheckersAction::toCaptured(CheckersState state) const {
     Combination captured;
-    
     CellPosition init = jumps[0];
+
     if (state.board.getCell(init).isPawn()) {
+        // faster implementation in pawn case 
+        
         for (uint i = 1; i < jumps.size(); i++) {
             auto current = jumps[i-1];
             auto next = jumps[i];
             auto mid = (current + next) / 2;
             captured.push_back(mid);
         }
-    } else {
-        for (uint i = 1; i < jumps.size(); i++) {
-            auto current = jumps[i-1];
-            auto next = jumps[i];
 
-            (void)current;
-            (void)next;
+        return captured;
+    } 
 
-            throw NotImplemented();
+    for (uint i = 1; i < jumps.size(); i++) {
+        auto current = jumps[i-1];
+        auto next = jumps[i];
+
+        auto offset = normalizeJumpOffset(next-current);
+        current += offset;
+        while (current != next) {
+            if (!state.board.getCell(current).isNone())
+                captured.push_back(current);
+            current += offset;
         }
     }
-    
+
     return captured;
 };
 
 void CheckersAction::completeSpecificPawnActions(
-    const CheckersManager *, 
+    const CheckersManager *manager, 
     const CheckersState & state,
 
     std::vector<CellPath> & visited,
@@ -157,13 +170,8 @@ void CheckersAction::completeSpecificPawnActions(
     auto initPosition = currentPath[0];
     auto currentPosition = currentPath[currentPath.size()-1]; 
 
-    Combination alreadyCaptured;
-    for (uint i = 1; i < currentPath.size(); i++) {
-        auto current = currentPath[i-1];
-        auto next = currentPath[i];
-        auto mid = (current + next) / 2;
-        alreadyCaptured.push_back(mid);
-    }
+    Combination alreadyCaptured = CheckersAction{
+        manager, state.player, state.step, currentPath}.toCaptured(state);
     
     for (auto offset : jumpOffsets) {
         auto toPosition = currentPosition + offset;
@@ -197,13 +205,67 @@ void CheckersAction::completeSpecificPawnActions(
     }
 }
 
-std::vector<CheckersAction> CheckersAction::getSpecificPawnActions(
+void CheckersAction::completeSpecificQueenActions(
+    const CheckersManager *manager, 
+    const CheckersState & state,
+
+    std::vector<CellPath> & visited,
+    std::vector<CellPath> & nextVisited,
+    CellPath currentPath
+) {
+
+    auto *board = &state.board;
+    auto initPosition = currentPath[0];
+    auto currentPosition = currentPath[currentPath.size()-1]; 
+
+    Combination alreadyCaptured = CheckersAction{
+        manager, state.player, state.step, currentPath}.toCaptured(state);
+    
+    Cli::warning("Queen actions not implemented");
+    return;
+    
+    throw NotImplemented();
+
+    for (auto offset : jumpOffsets) {
+        auto toPosition = currentPosition + offset;
+        auto between = currentPosition + (offset / 2);
+
+        if (!board->isCaseInBoard(toPosition))
+            continue;
+
+        if ( (toPosition != initPosition) && 
+            !board->isCaseEmpty(toPosition) )
+            continue;
+        
+        if (
+            board->isCaseEmpty(between) || alreadyCaptured.has(between))
+            continue;
+
+        if (board->getCell(between).owner() == state.player)
+            continue;
+
+
+        CellPath next = currentPath;
+        next.push_back(toPosition);
+
+        bool redundant = false;
+        for (auto cmp : visited)
+            if ((redundant = equivalentCellPath(cmp, next)))
+                break;
+        if (redundant) break;
+
+        nextVisited.push_back(next);
+    }
+}
+
+
+std::vector<CheckersAction> CheckersAction::getSpecificActions(
     const CheckersManager *manager, const CheckersState & state, CellPosition axiom
 ) {
-    Cli::debug("\tSearch on " + Cli::toString(axiom));
-
     std::vector<CellPath> visited{};
     std::vector<CellPath> nextVisited{CellPath{axiom}};
+
+    const bool isPawn = state.board.getCell(axiom).isPawn();
 
     int depth = 0;
 
@@ -213,21 +275,30 @@ std::vector<CheckersAction> CheckersAction::getSpecificPawnActions(
         nextVisited.clear();
 
         for (auto path : visited)
-            completeSpecificPawnActions(
-                manager, state, 
-                
-                visited,
-                nextVisited,
-                path
-            );
+            if (isPawn)
+                completeSpecificPawnActions(
+                    manager, state, 
+                    
+                    visited,
+                    nextVisited,
+                    path
+                );
+            else
+                completeSpecificQueenActions(
+                    manager, state, 
+                    
+                    visited,
+                    nextVisited,
+                    path
+                );
+
     } while(!nextVisited.empty());
 
     if (depth == 1)
         return std::vector<CheckersAction>{};
     
-    Cli::debug("\t\t Found !");
-
     std::vector<CheckersAction> actions{};
+
     for (auto path : visited)
         actions.push_back(CheckersAction{
             manager, state.player, state.step, path
@@ -236,7 +307,8 @@ std::vector<CheckersAction> CheckersAction::getSpecificPawnActions(
     return actions;
 }
 
-std::vector<CheckersAction> CheckersAction::getPawnCaptures(
+
+std::vector<CheckersAction> CheckersAction::getCaptures(
     const CheckersManager *manager, const CheckersState & state) 
 {
     const int dimension = (int)state.board.getDimension();
@@ -245,14 +317,13 @@ std::vector<CheckersAction> CheckersAction::getPawnCaptures(
 
     for (int x = 0; x < dimension; x++)
     for (int y = 0; y < dimension; y++)
-    if (
-        (board->getCell(x, y).owner() == board->player) &&
-        board->getCell(x, y).isPawn()
-    ) {
-        auto actionsToAdd = getSpecificPawnActions(
+    if (board->getCell(x, y).owner() == board->player) {
+        
+        auto actionsToAdd = getSpecificActions(
             manager,
             state,
             CellPosition{x, y});
+        
         for (auto action : actionsToAdd)
             actions.push_back(action);
     }
@@ -260,43 +331,23 @@ std::vector<CheckersAction> CheckersAction::getPawnCaptures(
     return actions;
 }
 
-std::vector<CheckersAction> CheckersAction::getQueenCaptures(
-    const CheckersManager *manager, const CheckersState & state) 
-{
-    (void)manager;
-    (void)state;
-
-    Cli::warning("Queen action not supported yet!");
-    return std::vector<CheckersAction>{};
-
-    throw NotImplemented();
-}
-
 std::vector<CheckersAction> CheckersAction::getActions(
     const CheckersManager *manager, CheckersState state) 
 {
     Cli::debug("Search actions");
 
-    auto pawnCaptures = getPawnCaptures(manager, state);
-    auto queenCaptures = getQueenCaptures(manager, state);
-
-    Cli::debug("Looking at found captures");
+    auto captures = getCaptures(manager, state);
 
     int maxCapture = 0;
 
-    for (auto capture : pawnCaptures)
-        maxCapture = std::max(maxCapture, (int)capture.jumps.size());
-    for (auto capture : queenCaptures)
+    for (auto capture : captures)
         maxCapture = std::max(maxCapture, (int)capture.jumps.size());
 
     if (maxCapture > 0) { 
         // if player can capture, he's forced to capture
         
         std::vector<CheckersAction> actions{};
-        for (auto capture : pawnCaptures)
-            if ((int)capture.jumps.size() == maxCapture)
-                actions.push_back(capture);
-        for (auto capture : queenCaptures)
+        for (auto capture : captures)
             if ((int)capture.jumps.size() == maxCapture)
                 actions.push_back(capture);
         
