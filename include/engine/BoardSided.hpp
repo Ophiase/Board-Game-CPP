@@ -21,8 +21,8 @@ class BoardSided : public Board {
     public:
         BoardSided(int dimension);
         
-        bool operator==(BoardSided) const;
-        bool operator!=(BoardSided) const;
+        bool operator==(const BoardSided &) const;
+        bool operator!=(const BoardSided &) const;
 
         // ---------------------------------------------------
         

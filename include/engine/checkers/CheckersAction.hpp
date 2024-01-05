@@ -14,7 +14,8 @@ class CheckersManager;
 
 class CheckersAction : public Action<CheckersManager, Board> {
 	private:
-        
+        bool isValidPawnMove(CheckersState) const;
+        bool isValidQueenMove(CheckersState) const;
     public:
         static const std::vector<CellPosition> authorizedOffsets;
         const CellPath jumps;
@@ -34,6 +35,12 @@ class CheckersAction : public Action<CheckersManager, Board> {
 
         // ----------------------------------------------- 
         // OVERRIDES
+
+        /*
+            All possibles action from current configuration (up to isomorphism).
+        */
+        static std::vector<CheckersAction> getActions(
+            const CheckersManager * manager, CheckersState);
 
         /*
             Is there any authorized/correct action ?

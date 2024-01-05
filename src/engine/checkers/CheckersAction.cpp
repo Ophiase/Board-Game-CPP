@@ -6,6 +6,15 @@ std::vector<CellPosition> const CheckersAction::authorizedOffsets = {
 	{1, 1}, {1, -1}, {-1, 1}, {-1, -1}
 };
 
+std::vector<CheckersAction> CheckersAction::getActions(
+    const CheckersManager *manager, CheckersState state) 
+{
+    (void)manager;
+    (void)state;
+
+    throw NotImplemented();
+}
+
 /*
     Is there any authorized/correct action ?
 */
@@ -52,6 +61,26 @@ inline bool iff(bool const a, bool const b) {
     return (a && b) || (!a && !b);
 };
 
+// TODO OPTIMIZE
+bool CheckersAction::isValidPawnMove(CheckersState state) const {
+    auto actions = CheckersAction::getActions(this->manager, state);
+    for (auto action : actions)
+        if (this->actionEquivalence(state, action))
+            return true;
+
+    return false;
+}
+
+// TODO OPTIMIZE
+bool CheckersAction::isValidQueenMove(CheckersState state) const {
+    auto actions = CheckersAction::getActions(this->manager, state);
+    for (auto action : actions)
+        if (this->actionEquivalence(state, action))
+            return true;
+
+    return false;
+}
+
 bool CheckersAction::isValid(CheckersState state) const { 
 	if (jumps.size() == 0 || jumps.size() == 1) 
         return false;
@@ -59,48 +88,13 @@ bool CheckersAction::isValid(CheckersState state) const {
     if (!state.board.isCaseInBoard(jumps[0]))
         return false;
 
-    CellPieceType playerPawn = state.player == 0 ? CellPieceType::WhitePawn : CellPieceType::BlackPawn;
-    CellPieceType rivalPawn = state.player == 0 ? CellPieceType::BlackPawn : CellPieceType::WhitePawn;
-    CellPieceType playerKing = state.player == 0 ? CellPieceType::WhiteKing : CellPieceType::BlackKing;
-    //CellPieceType rivalKing = state.player == 0 ? CellPieceType::BlackKing : CellPieceType::WhiteKing;
+    if (state.board.getCell(jumps[0]).isPawn())
+        return isValidPawnMove(state);
 
-    if (!(state.board.getCell(jumps[0]) == playerPawn || state.board.getCell(jumps[0]) == playerKing))
-        return false;
-    
-    if (jumps.size() == 2) {
-        if (!state.board.isCaseInBoard(jumps[1]))
-            return false;
-        CellPosition lastPosition = jumps[0];
-        CellPosition currentPosition = jumps[1];
-        CellPosition offset = currentPosition - lastPosition;
-        if (offset == CellPosition(1,1) || offset == CellPosition(1,-1) || offset == CellPosition(-1,1) || offset == CellPosition(-1,-1)) {
-            if (state.board.isCaseEmpty(currentPosition))
-                return true;
-            return false;
-        } else if (offset == CellPosition(2,2) || offset == CellPosition(2,-2) || offset == CellPosition(-2,2) || offset == CellPosition(-2,-2)) {
-            CellPosition between = (lastPosition+currentPosition) / 2;
-            if (!state.board.isCaseInBoard(between))
-                return false;
-            if (!(state.board.getCell(between).pieceType == rivalPawn) || !state.board.isCaseEmpty(currentPosition))
-                return false;
-            return true;
-        }
-    }
+    if (state.board.getCell(jumps[0]).isQueen())
+        return isValidPawnMove(state);
 
-    for (long unsigned int i = 0 ; i < jumps.size() - 1 ; i++) {
-        CellPosition lastPosition = jumps[i];
-        CellPosition currentPosition = jumps[i+1];
-        CellPosition offset = currentPosition - lastPosition;
-        if (! (offset == CellPosition(2,2) || offset == CellPosition(2,-2) || offset == CellPosition(-2,2) || offset == CellPosition(-2,-2)))
-            return false;
-        CellPosition between = lastPosition + (offset)/2;
-        if (!state.board.isCaseInBoard(currentPosition) || !state.board.isCaseInBoard(between))
-            return false;
-        if (!(state.board.getCell(between).pieceType == rivalPawn))
-            return false;
-    }
-
-    return true;
+    return false;
 }
 
 void CheckersAction::removePointsFromScore(Board board, int & score) const {
@@ -168,10 +162,8 @@ CheckersState CheckersAction::apply(
         state.step+1, nextBoard.player
         };
 
-    if (manager->isFinished(tempNextState)) {
-        this->removePointsFromScore(nextBoard, scores[authorIndex]);   
-        
-    }
+    if (manager->isFinished(tempNextState))
+        this->removePointsFromScore(nextBoard, scores[authorIndex]);
 
     CheckersState nextState{
         nextBoard, scores, 
