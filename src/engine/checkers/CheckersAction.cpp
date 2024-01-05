@@ -55,21 +55,30 @@ std::vector<CheckersAction> CheckersAction::getPawnMoves(
     const Board *board = &state.board;
     std::vector<CheckersAction> actions{};
 
+    Cli::debug("looking for moves : " + std::to_string(board->player));
+    Cli::debug(board->toString());
+
     for (int x = 0; x < dimension; x++)
-    for (int y = 0; y < dimension; y++)
+    for (int y = 0; y < dimension; y++) 
     if (
-        board->getCell(x, y).owner() == board->player &&
+        (board->getCell(x, y).owner() == board->player) &&
         board->getCell(x, y).isPawn()
     )
     for (auto offset : directOffsets) {
+        CellPosition axiom{x, y};
         CellPosition jump{x+offset.x, y+offset.y};
+        Cli::debug(Cli::toString(axiom) + " : " + Cli::toString(jump));
 
-        if (board->isCaseInBoard(jump) && board->getCell(jump).isNone())
+        if (board->isCaseInBoard(jump) && board->getCell(jump).isNone()) {
             actions.push_back(CheckersAction{
                 manager, state.player, state.step, CellPath{
                     CellPosition{x, y}, jump 
                 } });
+            Cli::debug(actions[actions.size()-1].toString());
+        }
     }
+
+    Cli::debug("finished to search moves");
 
     return actions;
 }
@@ -136,7 +145,11 @@ void CheckersAction::completeSpecificPawnActions(
             !board->isCaseEmpty(toPosition) )
             continue;
         
-        if (!board->isCaseEmpty(between) || alreadyCaptured.has(between))
+        if (
+            !board->isCaseEmpty(between) || alreadyCaptured.has(between))
+            continue;
+
+        if (board->getCell(between).owner() == state.player)
             continue;
 
         CellPath next = currentPath;
@@ -155,6 +168,8 @@ void CheckersAction::completeSpecificPawnActions(
 std::vector<CheckersAction> CheckersAction::getSpecificPawnActions(
     const CheckersManager *manager, const CheckersState & state, CellPosition axiom
 ) {
+    Cli::debug("\tSearch on " + Cli::toString(axiom));
+
     std::vector<CellPath> visited{};
     std::vector<CellPath> nextVisited{CellPath{axiom}};
 
@@ -163,7 +178,7 @@ std::vector<CheckersAction> CheckersAction::getSpecificPawnActions(
     do {
         depth++;
         visited = nextVisited;
-        nextVisited.empty();
+        nextVisited.clear();
 
         for (auto path : visited)
             completeSpecificPawnActions(
@@ -177,6 +192,8 @@ std::vector<CheckersAction> CheckersAction::getSpecificPawnActions(
 
     if (depth == 1)
         return std::vector<CheckersAction>{};
+    
+    Cli::debug("\t\t Found !");
 
     std::vector<CheckersAction> actions{};
     for (auto path : visited)
@@ -197,7 +214,7 @@ std::vector<CheckersAction> CheckersAction::getPawnCaptures(
     for (int x = 0; x < dimension; x++)
     for (int y = 0; y < dimension; y++)
     if (
-        board->getCell(x, y).owner() == board->player &&
+        (board->getCell(x, y).owner() == board->player) &&
         board->getCell(x, y).isPawn()
     ) {
         auto actionsToAdd = getSpecificPawnActions(
@@ -217,14 +234,21 @@ std::vector<CheckersAction> CheckersAction::getQueenCaptures(
     (void)manager;
     (void)state;
 
+    Cli::warning("Queen action not supported yet!");
+    return std::vector<CheckersAction>{};
+
     throw NotImplemented();
 }
 
 std::vector<CheckersAction> CheckersAction::getActions(
     const CheckersManager *manager, CheckersState state) 
 {
+    Cli::debug("Search actions");
+
     auto pawnCaptures = getPawnCaptures(manager, state);
     auto queenCaptures = getQueenCaptures(manager, state);
+
+    Cli::debug("Looking at found captures");
 
     int maxCapture = 0;
 
@@ -247,8 +271,10 @@ std::vector<CheckersAction> CheckersAction::getActions(
         return actions;
     }
 
-    auto moves = getPawnCaptures(manager, state);
-    auto queenMoves = getQueenCaptures(manager, state);
+    Cli::debug("No Captures");
+
+    auto moves = getPawnMoves(manager, state);
+    auto queenMoves = getQueenMoves(manager, state);
     for (auto queenMove : queenMoves)
         moves.push_back(queenMove);
 
@@ -303,11 +329,14 @@ inline bool iff(bool const a, bool const b) {
 
 // TODO OPTIMIZE
 bool CheckersAction::isValidPawnMove(const CheckersState & state) const {
+    Cli::debug("check pawn action : " + this->toString());
     auto actions = CheckersAction::getActions(this->manager, state);
-    for (auto action : actions)
+    for (auto action : actions) {
+        Cli::debug("\tvs : " + action.toString());
         if (this->actionEquivalence(state, action))
             return true;
-
+    }
+    Cli::debug("not checked");
     return false;
 }
 
@@ -332,7 +361,7 @@ bool CheckersAction::isValid(CheckersState state) const {
         return isValidPawnMove(state);
 
     if (state.board.getCell(jumps[0]).isQueen())
-        return isValidPawnMove(state);
+        return isValidQueenMove(state);
 
     return false;
 }

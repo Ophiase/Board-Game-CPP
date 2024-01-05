@@ -18,15 +18,15 @@ class CheckersGame : public Game {
         void cancelAction() override;
         void playAction() override;
 
-        //void AIinit() override;
-        //void AIturn() override;
+        void AIinit() override;
+        void AIturn() override;
 
         bool handleMouse(sf::Event);
         bool handleKeyboard(sf::Event);
         void handleCheckerBoard();
         
     public:
-        CheckersGame(Launcher *launcher, int nPlayers = 2, int nBots = 0);
+        CheckersGame(Launcher *launcher, bool againstBot=false);
         ~CheckersGame();
 
         void draw() override;
