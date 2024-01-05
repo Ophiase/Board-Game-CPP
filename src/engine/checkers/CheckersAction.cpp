@@ -105,32 +105,86 @@ std::vector<CheckersAction> CheckersAction::getQueenMoves(
 }
 
 void CheckersAction::completeSpecificPawnActions(
-    const CheckersManager * manager, 
+    const CheckersManager *, 
     const CheckersState & state,
 
     std::vector<CellPath> & visited,
     std::vector<CellPath> & nextVisited,
     CellPath currentPath
 ) {
-    (void)manager;
-    (void)state;
-    (void)visited;
-    (void)nextVisited;
-    (void)currentPath;
 
-    throw NotImplemented();
+    auto *board = &state.board;
+    auto initPosition = currentPath[0];
+    auto currentPosition = currentPath[currentPath.size()-1]; 
+
+    Combination alreadyCaptured;
+    for (uint i = 1; i < currentPath.size(); i++) {
+        auto current = currentPath[i-1];
+        auto next = currentPath[i];
+        auto mid = (current + next) / 2;
+        alreadyCaptured.push_back(mid);
+    }
+    
+    for (auto offset : jumpOffsets) {
+        auto toPosition = currentPosition + offset;
+        auto between = currentPosition + offset/2;
+
+        if (!board->isCaseInBoard(toPosition))
+            continue;
+
+        if ( (toPosition != initPosition) && 
+            !board->isCaseEmpty(toPosition) )
+            continue;
+        
+        if (!board->isCaseEmpty(between) || alreadyCaptured.has(between))
+            continue;
+
+        CellPath next = currentPath;
+        next.push_back(toPosition);
+
+        bool redundant = false;
+        for (auto cmp : visited)
+            if ((redundant = equivalentCellPath(cmp, next)))
+                break;
+        if (redundant) break;
+
+        nextVisited.push_back(next);
+    }
 }
 
 std::vector<CheckersAction> CheckersAction::getSpecificPawnActions(
     const CheckersManager *manager, const CheckersState & state, CellPosition axiom
 ) {
-    (void)manager;
-    (void)state;
-    (void)axiom;
+    std::vector<CellPath> visited{};
+    std::vector<CellPath> nextVisited{CellPath{axiom}};
+
+    int depth = 0;
+
+    do {
+        depth++;
+        visited = nextVisited;
+        nextVisited.empty();
+
+        for (auto path : visited)
+            completeSpecificPawnActions(
+                manager, state, 
+                
+                visited,
+                nextVisited,
+                path
+            );
+    } while(!nextVisited.empty());
+
+    if (depth == 1)
+        return std::vector<CheckersAction>{};
 
     std::vector<CheckersAction> actions{};
-    
-    throw NotImplemented();
+    for (auto path : visited)
+        actions.push_back(CheckersAction{
+            manager, state.player, state.step, path
+        });
+
+    return actions;
 }
 
 std::vector<CheckersAction> CheckersAction::getPawnCaptures(
