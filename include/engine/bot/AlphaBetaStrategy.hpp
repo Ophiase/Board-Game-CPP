@@ -5,6 +5,7 @@
 #include <limits>
 #include <algorithm>
 #include <tuple>
+#include <memory>
 
 /*
     Alpha Beta Pruning (optimization of minmax algorithm).
@@ -49,20 +50,15 @@ template <class ActionType, class BoardType, class ManagerType>
 ActionType AlphaBetaStrategy<ActionType, BoardType, ManagerType>::play(
     GameState<BoardType> state
 ) {
-    auto result = std::get<0>(alphaBetaAlgorithm(state), state.player);
-    ActionType action = *result;
-    delete result;
-    return action;
+    return *std::unique_ptr<ActionType>(
+        std::get<0>(alphaBetaAlgorithm(state), state.player)
+    );
 };
 
 /*
     There is no std::optional in c++11, 
     so this function cannot returns <nullopt, score>.
-
-    The consequence is that we cannot call this function
-    for the last recursion, and need to handle this before the call.
-
-    Another solution would be to allocate the Action to return on 
+    Instead we use a pointer of ActionType.
 */
 template <class ActionType, class BoardType, class ManagerType>
 std::tuple<ActionType*, int> AlphaBetaStrategy<ActionType, BoardType, ManagerType>
@@ -110,7 +106,7 @@ std::tuple<ActionType*, int> AlphaBetaStrategy<ActionType, BoardType, ManagerTyp
     }
 
     ActionType *action = (depth == 0) ?
-        action = new ActionType{actions[actionIndex]} :
+        new ActionType{actions[actionIndex]} :
         nullptr;
 
     return std::make_tuple(action, value);

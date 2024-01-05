@@ -5,6 +5,9 @@
 
 class Player {
     public:
+        /*
+            Should be the index of the player in the manager.
+        */
         const PlayerId id;
         const std::string name;
         const bool isAI;

@@ -11,7 +11,7 @@
     PlaceHolder, game defined.
 */
 template <class ManagerType, class BoardType>
-class Action {  
+class Action {
     private:
     public:
         const ManagerType *manager;
