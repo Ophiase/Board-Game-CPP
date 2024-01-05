@@ -118,6 +118,32 @@ std::vector<CheckersAction> CheckersAction::getQueenMoves(
     return actions;
 }
 
+Combination CheckersAction::toCaptured(CheckersState state) const {
+    Combination captured;
+    
+    CellPosition init = jumps[0];
+    if (state.board.getCell(init).isPawn()) {
+        for (uint i = 1; i < jumps.size(); i++) {
+            auto current = jumps[i-1];
+            auto next = jumps[i];
+            auto mid = (current + next) / 2;
+            captured.push_back(mid);
+        }
+    } else {
+        for (uint i = 1; i < jumps.size(); i++) {
+            auto current = jumps[i-1];
+            auto next = jumps[i];
+
+            (void)current;
+            (void)next;
+
+            throw NotImplemented();
+        }
+    }
+    
+    return captured;
+};
+
 void CheckersAction::completeSpecificPawnActions(
     const CheckersManager *, 
     const CheckersState & state,
@@ -372,74 +398,39 @@ bool CheckersAction::isValid(CheckersState state) const {
     return false;
 }
 
-void CheckersAction::removePointsFromScore(Board board, int & score) const {
-    for (int x = 0; x < 10; x++) for (int y = 0; y < 10; y++)
-        switch (board.getCell(x, y).pieceType) {
-            case CellPieceType::WhitePawn : 
-                score -= this->manager->WHITE_BONUS; break;
-            case CellPieceType::BlackPawn : 
-                score -= this->manager->BLACK_BONUS; break;
-            case CellPieceType::NoneCell :
-                break;
-            default : throw NotImplemented();
-        }
-}
-
 CheckersState CheckersAction::apply(
     CheckersState state) const 
 {
-    auto board = state.board;
+    auto *board = &state.board;
     auto scores = state.scores;
-    auto cells = board.cellPieces;
+    auto cells = board->cellPieces;
 
-    int moveScore = 0;
-    CellPieceType playerPawn = state.player == 0 ? CellPieceType::WhitePawn : CellPieceType::BlackPawn;
-    
-    cells[jumps[0].y][jumps[0].x] = CellPiece(CellPieceType::NoneCell);
-    if (jumps.size() == 2) {
-        CellPosition lastPosition = jumps[0];
-        CellPosition currentPosition = jumps[1];
-        CellPosition offset = currentPosition - lastPosition;
-        if (offset == CellPosition(1,1) || offset == CellPosition(1,-1) || offset == CellPosition(-1,1) || offset == CellPosition(-1,-1)) {
-            cells[currentPosition.y][currentPosition.x] = CellPiece(playerPawn);
-            moveScore += 1;
-        } else if (offset == CellPosition(2,2) || offset == CellPosition(2,-2) || offset == CellPosition(-2,2) || offset == CellPosition(-2,-2)) {
-            CellPosition between = (lastPosition+currentPosition) / 2;
-            cells[between.y][between.x] = CellPiece(CellPieceType::NoneCell);
-            cells[currentPosition.y][currentPosition.x] = CellPiece(playerPawn);
-            moveScore += 1;
-        }
-    } else {
-        for (long unsigned int i = 0 ; i < jumps.size() - 1 ; i++) {
-            CellPosition lastPosition = jumps[i];
-            CellPosition currentPosition = jumps[i+1];
-            CellPosition offset = currentPosition - lastPosition;
-            CellPosition between = lastPosition + (offset)/2;
-            cells[between.y][between.x] = CellPiece(CellPieceType::NoneCell);
-            cells[currentPosition.y][currentPosition.x] = CellPiece(playerPawn);
-            moveScore += 1;
-        }
+    // compute next cells
+
+    Combination captureds = this->toCaptured(state);
+    for (auto captured : captureds)
+        cells[captured.y][captured.x] = CellPieceType::NoneCell;
+
+    CellPosition first = jumps[0];
+    CellPosition last = jumps[jumps.size() - 1];
+
+    if (first != last) {
+        cells[last.y][last.x] = board->getCell(first).pieceType;
+        cells[first.y][first.x] = CellPieceType::NoneCell;
     }
+
+    // misc
 
     int nPlayers = manager->players.size();
     int authorIndex = manager->getPlayerIndex(author);
-
     PlayerId nextPlayer = (
         manager->players[(authorIndex + 1) % nPlayers]
         ).id;
     
-    scores[authorIndex] += moveScore;
+    scores[authorIndex] += captureds.size();
     
     Board nextBoard{cells, nextPlayer};
     
-    CheckersState tempNextState{
-        nextBoard, scores, 
-        state.step+1, nextBoard.player
-        };
-
-    if (manager->isFinished(tempNextState))
-        this->removePointsFromScore(nextBoard, scores[authorIndex]);
-
     CheckersState nextState{
         nextBoard, scores, 
         state.step+1, nextBoard.player

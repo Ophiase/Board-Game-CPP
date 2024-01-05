@@ -6,7 +6,7 @@
 #include "engine/type/CellPosition.hpp"
 #include "engine/Board.hpp"
 #include "CheckersState.hpp"
-
+#include "engine/loot/Combination.hpp"
 
 using CellPath = std::vector<CellPosition>;
 
@@ -47,6 +47,9 @@ class CheckersAction : public Action<CheckersManager, Board> {
 
         bool isValidPawnMove(const CheckersState &) const;
         bool isValidQueenMove(const CheckersState &) const;
+        
+        // ???
+        void removePointsFromScore(Board board, int & score) const;
     public:
         static const std::vector<CellPosition> allPawnOffsets;
         static const std::vector<CellPosition> directOffsets;
@@ -65,7 +68,7 @@ class CheckersAction : public Action<CheckersManager, Board> {
         CheckersAction(const CheckersAction & other) :
         Action<CheckersManager, Board>{other}, jumps{other.jumps} {};
 
-        void removePointsFromScore(Board board, int & score) const;
+        Combination toCaptured(CheckersState) const;
 
         // ----------------------------------------------- 
         // OVERRIDES

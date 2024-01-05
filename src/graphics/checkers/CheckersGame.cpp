@@ -178,27 +178,29 @@ void CheckersGame::updateBoardContent (Board board) {
 
     // ARROWS
 
-    float const arrowSpace = (float)(this->checkBoardTexture.getSize().x / 10); 
-    sf::RectangleShape arrow{sf::Vector2f{
-        arrowSpace, arrowSpace
-    }};
+    /*
+        float const arrowSpace = (float)(this->checkBoardTexture.getSize().x / 10); 
+        sf::RectangleShape arrow{sf::Vector2f{
+            arrowSpace, arrowSpace
+        }};
 
-    arrow.setOrigin(sf::Vector2f{arrowSpace/2, arrowSpace/2});
-    arrow.scale(sf::Vector2f{1.8, 1.8});
-    
-    arrow.setTexture(ResourcesLoader::getTexture(Texture::Arrow));
-    for (uint i = 1; i < cacheAction.size(); i++) {
-        CellPosition position = (cacheAction[i] + cacheAction[i-1]) / 2;
-        CellPosition diff = (cacheAction[i] - cacheAction[i-1]);
+        arrow.setOrigin(sf::Vector2f{arrowSpace/2, arrowSpace/2});
+        arrow.scale(sf::Vector2f{1.8, 1.8});
+        
+        arrow.setTexture(ResourcesLoader::getTexture(Texture::Arrow));
+        for (uint i = 1; i < cacheAction.size(); i++) {
+            CellPosition position = (cacheAction[i] + cacheAction[i-1]) / 2;
+            CellPosition diff = (cacheAction[i] - cacheAction[i-1]);
 
-        float const px = (arrowSpace * (position.x + 0.5));
-        float const py = (arrowSpace * (position.y + 0.5));
-        float const rotation = diffToRotationCheck(diff);
+            float const px = (arrowSpace * (position.x + 0.5));
+            float const py = (arrowSpace * (position.y + 0.5));
+            float const rotation = diffToRotationCheck(diff);
 
-        arrow.setPosition(px, py);
-        arrow.setRotation(rotation);
-        checkBoardTexture.draw(arrow);
-    }
+            arrow.setPosition(px, py);
+            arrow.setRotation(rotation);
+            checkBoardTexture.draw(arrow);
+        }
+    */
 }
 
 // --------------------------------------------------
