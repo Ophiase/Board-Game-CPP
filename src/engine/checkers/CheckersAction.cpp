@@ -6,13 +6,99 @@ std::vector<CellPosition> const CheckersAction::authorizedOffsets = {
 	{1, 1}, {1, -1}, {-1, 1}, {-1, -1}
 };
 
-std::vector<CheckersAction> CheckersAction::getActions(
-    const CheckersManager *manager, CheckersState state) 
+std::vector<CellPosition> const CheckersAction::directOffsets = {
+	{1, 1}, {1, -1}, {-1, 1}, {-1, -1}
+};
+
+std::vector<CellPosition> const CheckersAction::jumpOffsets = {
+    {2, 2}, {2, -2}, {-2, 2}, {-2, -2},
+};
+
+std::vector<CheckersAction> CheckersAction::getPawnMoves(
+    const CheckersManager * manager, CheckersState state) 
+{
+    const int dimension = (int)state.board.getDimension();
+    const Board *board = &state.board;
+    std::vector<CheckersAction> actions{};
+
+    for (int x = 0; x < dimension; x++)
+    for (int y = 0; y < dimension; y++)
+    if (board->getCell(x, y).owner() == board->player)
+    for (auto offset : directOffsets) {
+        CellPosition jump{x+offset.x, y+offset.y};
+
+        if (board->isCaseInBoard(jump) && board->getCell(jump).isNone())
+            actions.push_back(CheckersAction{
+                manager, state.player, state.step, CellPath{
+                    CellPosition{x, y}, jump 
+                } });
+        
+
+    }
+
+    return actions;
+}
+
+std::vector<CheckersAction> CheckersAction::getQueenMoves(
+    const CheckersManager * manager, CheckersState state) 
 {
     (void)manager;
     (void)state;
 
     throw NotImplemented();
+}
+
+std::vector<CheckersAction> CheckersAction::getPawnCaptures(
+    const CheckersManager * manager, CheckersState state) 
+{
+    (void)manager;
+    (void)state;
+
+    throw NotImplemented();
+}
+
+std::vector<CheckersAction> CheckersAction::getQueenCaptures(
+    const CheckersManager * manager, CheckersState state) 
+{
+    (void)manager;
+    (void)state;
+
+    throw NotImplemented();
+}
+
+std::vector<CheckersAction> CheckersAction::getActions(
+    const CheckersManager *manager, CheckersState state) 
+{
+    auto pawnCaptures = getPawnCaptures(manager, state);
+    auto queenCaptures = getQueenCaptures(manager, state);
+
+    int maxCapture = 0;
+
+    for (auto capture : pawnCaptures)
+        maxCapture = std::max(maxCapture, (int)capture.jumps.size());
+    for (auto capture : queenCaptures)
+        maxCapture = std::max(maxCapture, (int)capture.jumps.size());
+
+    if (maxCapture > 0) { 
+        // if player can capture, he's forced to capture
+        
+        std::vector<CheckersAction> actions{};
+        for (auto capture : pawnCaptures)
+            if ((int)capture.jumps.size() == maxCapture)
+                actions.push_back(capture);
+        for (auto capture : queenCaptures)
+            if ((int)capture.jumps.size() == maxCapture)
+                actions.push_back(capture);
+        
+        return actions;
+    }
+
+    auto moves = getPawnCaptures(manager, state);
+    auto queenMoves = getQueenCaptures(manager, state);
+    for (auto queenMove : queenMoves)
+        moves.push_back(queenMove);
+
+    return moves;
 }
 
 /*

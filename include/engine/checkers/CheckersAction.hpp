@@ -14,10 +14,25 @@ class CheckersManager;
 
 class CheckersAction : public Action<CheckersManager, Board> {
 	private:
+        static std::vector<CheckersAction> getPawnMoves(
+            const CheckersManager * manager, CheckersState);
+
+        static std::vector<CheckersAction> getQueenMoves(
+            const CheckersManager * manager, CheckersState);
+
+        static std::vector<CheckersAction> getPawnCaptures(
+            const CheckersManager * manager, CheckersState);
+
+        static std::vector<CheckersAction> getQueenCaptures(
+            const CheckersManager * manager, CheckersState);
+
         bool isValidPawnMove(CheckersState) const;
         bool isValidQueenMove(CheckersState) const;
     public:
         static const std::vector<CellPosition> authorizedOffsets;
+        static const std::vector<CellPosition> directOffsets;
+        static const std::vector<CellPosition> jumpOffsets;
+        
         const CellPath jumps;
 
         // -----------------------------------------------
@@ -29,7 +44,7 @@ class CheckersAction : public Action<CheckersManager, Board> {
         jumps{jumps} {};
         
         CheckersAction(const CheckersAction & other) :
-        Action{other}, jumps{other.jumps} {};
+        Action<CheckersManager, Board>{other}, jumps{other.jumps} {};
 
         void removePointsFromScore(Board board, int & score) const;
 
