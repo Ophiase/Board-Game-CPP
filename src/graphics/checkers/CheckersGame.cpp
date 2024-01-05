@@ -18,7 +18,7 @@ Game{launcher, "Checkers", 1.0f}, manager{nPlayers, nBots} {
     //this->AIinit();
     this->startTurn();
 
-    // interactive = ! manager.getCurrentPlayer().isAI;
+    interactive = ! manager.getCurrentPlayer().isAI;
     // if (!interactive)
     //     AIturn();
 };
@@ -46,6 +46,7 @@ void CheckersGame::startTurn() {
 
     this->interactive = true;
     this->isFinished = true;
+
 
     auto winners = this->manager.getWinners();
     if (winners.size() == 1) {            

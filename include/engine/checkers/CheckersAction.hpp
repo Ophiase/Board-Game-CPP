@@ -14,7 +14,8 @@ class CheckersManager;
 
 class CheckersAction : public Action<CheckersManager, Board> {
 	private:
-        
+        CheckersState applyPawn(CheckersState) const;
+        CheckersState applyKing(CheckersState) const;
     public:
         static const std::vector<CellPosition> authorizedOffsets;
         const CellPath jumps;
