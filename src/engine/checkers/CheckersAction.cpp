@@ -125,12 +125,15 @@ Combination CheckersAction::toCaptured(CheckersState state) const {
     if (state.board.getCell(init).isPawn()) {
         // faster implementation in pawn case 
 
+        if (jumps.size() == 2 && (
+                (std::abs(jumps[0].x - jumps[1].x) == 1) || 
+                (std::abs(jumps[0].y - jumps[1].y) == 1)
+        ))
+            return captured;
+
         for (uint i = 1; i < jumps.size(); i++) {
             auto current = jumps[i-1];
             auto next = jumps[i];
-
-            if (current == next) break;
-
             auto mid = (current + next) / 2;
             captured.push_back(mid);
         }
@@ -268,6 +271,9 @@ std::vector<CheckersAction> CheckersAction::getSpecificActions(
     int depth = 0;
 
     do {
+        if (!isPawn)
+            Cli::debug("depth : " + std::to_string(depth));
+        
         depth++;
         visited = nextVisited;
         nextVisited.clear();
@@ -289,8 +295,7 @@ std::vector<CheckersAction> CheckersAction::getSpecificActions(
                     nextVisited,
                     path
                 );
-
-    } while(!nextVisited.empty());
+    } while(!nextVisited.empty() && depth < 20);
 
     if (depth == 1)
         return std::vector<CheckersAction>{};
