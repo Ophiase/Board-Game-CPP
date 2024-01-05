@@ -53,6 +53,12 @@ void ResourcesLoader::initializeTextures() {
         make_tuple(PawnWhite, "entity/pawn_white"),
         make_tuple(PawnWhiteBis, "entity/pawn_white_bis"),
 
+        make_tuple(QueenWhite, "entity/queen_white"),
+        make_tuple(QueenBlack, "entity/queen_black"),
+
+        make_tuple(KingWhite, "entity/king_white"),
+        make_tuple(KingBlack, "entity/king_black"),
+
         make_tuple(PawnRed, "entity/pawn_red_bis"),
         make_tuple(PawnGreen, "entity/pawn_green"),
         make_tuple(PawnYellow, "entity/pawn_yellow_bis"),
@@ -244,8 +250,13 @@ Texture::SourceTexture ResourcesLoader::toSourceTexture(CellPiece piece) {
     switch(piece.pieceType) {
         case CellPieceType::BlackPawn : return Texture::PawnBlack; 
         case CellPieceType::WhitePawn : return Texture::PawnWhite; 
-        case CellPieceType::BlackKing : throw NotImplemented(); 
-        case CellPieceType::WhiteKing : throw NotImplemented();
+        
+        case CellPieceType::BlackQueen : return Texture::QueenBlack; 
+        case CellPieceType::WhiteQueen : return Texture::QueenWhite;
+
+        case CellPieceType::BlackKing : return Texture::KingBlack; 
+        case CellPieceType::WhiteKing : return Texture::KingWhite;
+
         case CellPieceType::YellowPawn : return Texture::PawnYellow;
         case CellPieceType::RedPawn : return Texture::PawnRed;
 
