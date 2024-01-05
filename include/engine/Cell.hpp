@@ -18,6 +18,10 @@ class CellPiece : public Piece {
         
         bool isNone() const;
         PlayerId owner() const;
+        bool isQueen() const;
+        bool isKing() const;
+        /* we assume that a non empty piece is either a queen, a king or a pawn */
+        bool isPawn() const;
 
         bool operator==(CellPiece other) const;
         bool operator==(CellPieceType other) const;

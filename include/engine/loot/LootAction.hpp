@@ -55,6 +55,12 @@ class LootAction : public Action<LootManager, Board> {
         Action<LootManager, Board>{manager, author, step}, 
         jumps{jumps} {};
 
+        LootAction(
+            const LootManager * manager, LootState state, 
+            CellPath jumps) :
+        Action<LootManager, Board>{manager, state.player, state.step}, 
+        jumps{jumps} {};
+
         LootAction(const LootAction & other) :
         Action{other},  jumps{other.jumps} {};
 

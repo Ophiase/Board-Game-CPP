@@ -29,13 +29,13 @@ SidePiece BoardSided::getCell(SidePosition v) const {
     return verticalSidePieces[v.sideVector.y][v.sideVector.x];
 }
 
-bool BoardSided::operator==(BoardSided other) const {
+bool BoardSided::operator==(const BoardSided & other) const {
     return Board::operator==(other) && 
         (this->horizontalSidePieces == other.horizontalSidePieces) &&
         (this->verticalSidePieces   == other.verticalSidePieces);
 }
 
-bool BoardSided::operator!=(BoardSided other) const {
+bool BoardSided::operator!=(const BoardSided & other) const {
     return (*this) != other;
 }
 

@@ -2,7 +2,10 @@
 
 enum class CellPieceType {
     NoneCell,
+    
     BlackPawn, WhitePawn, 
-    BlackKing, WhiteKing, 
+    BlackKing, WhiteKing,
+    BlackQueen, WhiteQueen,
+
     YellowPawn, RedPawn
 };
