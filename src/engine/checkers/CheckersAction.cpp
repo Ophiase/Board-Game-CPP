@@ -257,7 +257,7 @@ void CheckersAction::completeSpecificQueenActions(
                     break;
             if (redundant) break;
 
-            if (candidates.size() < manager->MAX_QUEEN_BRANCHING)
+            if (candidates.size() < (uint)manager->MAX_QUEEN_BRANCHING)
                 candidates.push_back(next);
         }
 
@@ -404,7 +404,7 @@ bool CheckersAction::isValidQueenMove(const CheckersState & state) const {
     // There might be not detected capture
     
     // TODO
-    
+
 
     return false;
 }
