@@ -6,7 +6,7 @@
 #include "engine/type/CellPosition.hpp"
 #include "engine/BoardSided.hpp"
 #include "BullState.hpp"
-#include "engine/loot/CellPath.hpp"
+#include "engine/type/CellPath.hpp"
 
 
 using SidePath = std::vector<SidePosition>;

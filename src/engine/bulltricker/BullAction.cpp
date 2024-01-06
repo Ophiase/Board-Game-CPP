@@ -1,6 +1,6 @@
 #include "engine/bulltricker/BullAction.hpp"
 #include "engine/bulltricker/BullManager.hpp"
-#include "engine/loot/Combination.hpp"
+#include "engine/Combination.hpp"
 
 bool BullAction::hasRemainingActions(const BullManager *, BullState state) {
 	CellPieceType playerPawn = state.player == 0 ? CellPieceType::WhitePawn : CellPieceType::BlackPawn;
