@@ -5,10 +5,14 @@
 
 class BoardSided : public Board {
     public :
+        using Board::isCellEven;
+        using Board::isCaseInBoard;
+        using Board::isCaseEmpty;
+        using Board::getCell;
+
         const std::vector<std::vector<SidePiece>> horizontalSidePieces;
-        const std::vector<std::vector<SidePiece>> verticalSidePieces;        
-    public:
-        BoardSided(int dimension);
+        const std::vector<std::vector<SidePiece>> verticalSidePieces;
+    
         BoardSided(
             std::vector<std::vector<CellPiece>> cellPieces, 
             std::vector<std::vector<SidePiece>> horizontalSidePieces,
