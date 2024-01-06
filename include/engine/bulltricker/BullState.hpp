@@ -3,4 +3,4 @@
 #include "engine/GameState.hpp"
 #include "engine/BoardSided.hpp"
 
-using BullState = GameState<Board>;
+using BullState = GameState<BoardSided>;

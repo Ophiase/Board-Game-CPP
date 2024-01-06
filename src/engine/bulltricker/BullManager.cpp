@@ -1,8 +1,8 @@
 #include "engine/bulltricker/BullManager.hpp"
 #include "utils/NotImplemented.hpp"
 
-BullManager::BullManager(bool againstBot = false) : 
-    Manager<BullAction, Board>{makePlayers(againstBot)} 
+BullManager::BullManager(bool againstBot) : 
+    Manager<BullAction, BoardSided>{makePlayers(againstBot)} 
 {
     states.push_back(BullState(
         initialBoard(), 
@@ -12,35 +12,34 @@ BullManager::BullManager(bool againstBot = false) :
 
 std::vector<Player> BullManager::makePlayers(bool againstBot) 
 {
-	int nPlayers = againstBot ? 1 : 2;
-	int nBots = againstBot ? 1 : 0;
+	srand(time(NULL));
+    int whichBot = rand() % 2;
 
-    std::vector<Player> output;
-    std::vector<int> outputIndices = {0, 1};
-    std::random_shuffle(outputIndices.begin(), outputIndices.end());
+    std::vector<Player> players{
+        Player{
+            WhitePlayer,
+            (againstBot && whichBot == 0) ?
+            "White Bot" : "White Player",
+            (againstBot && whichBot == 0)
+        },
+        Player{
+            BlackPlayer,
+            (againstBot && whichBot == 1) ?
+            "Black Bot" : "Black Player",
+            (againstBot && whichBot == 1)
+        }
+    };
 
-    for (int i = 0; i < 2; i++) {
-        int id = outputIndices[i];
-        std::string playerName = (i < nPlayers) ? "Player_" : "Bot_";
-        bool isBot = (i >= nPlayers);
+    std::string playersStr;
+    for (const auto& player : players)
+        playersStr += " - " + player.name + "\n";
 
-        output.push_back( Player {id, playerName + std::to_string(i), isBot});
-    }
+    Cli::info("Players are: \n" + playersStr);
 
-    std::vector<Player> shuffledOutput;
-    for (auto i : outputIndices)
-        shuffledOutput.push_back(output[i]);
-
-    std::string players;
-    for (const auto& player : shuffledOutput)
-        players += " - " + player.name + "\n";
-
-    Cli::info("Players are: \n" + players);
-
-    return shuffledOutput;
+    return players;
 }
 
-Board BullManager::initialBoard() {
+BoardSided BullManager::initialBoard() {
     std::vector<std::vector<CellPiece>> cellPieces{
         7, std::vector<CellPiece>(7)
     };
@@ -55,10 +54,16 @@ Board BullManager::initialBoard() {
     cellPieces[3][6] = CellPiece(CellPieceType::WhiteKing);
 
     for (int i = 0; i < 7; i++) {
-        horizontalSidePieces[0][i] = SidePiece(SidePieceType::BlackSidePawn);
-        horizontalSidePieces[6][i] = SidePiece(SidePieceType::WhiteSidePawn);
+        horizontalSidePieces[i][1] = SidePiece(SidePieceType::BlackSidePawn);
+        horizontalSidePieces[i][6] = SidePiece(SidePieceType::WhiteSidePawn);
     }
-    return BoardSided(7);
+    for (int i = 0; i < 8; i++) {
+        verticalSidePieces[i][0] = SidePiece(SidePieceType::BlackSideQueen);
+        verticalSidePieces[i][6] = SidePiece(SidePieceType::WhiteSideQueen);
+        verticalSidePieces[i][1] = SidePiece(SidePieceType::BlackSidePawn);
+        verticalSidePieces[i][5] = SidePiece(SidePieceType::WhiteSidePawn);
+    }
+    return BoardSided(cellPieces, horizontalSidePieces, verticalSidePieces,0);
 };
 
 bool BullManager::canPlayAction(BullState state) const {

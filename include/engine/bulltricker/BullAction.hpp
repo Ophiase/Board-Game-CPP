@@ -30,8 +30,6 @@ class BullAction : public Action<BullManager, BoardSided> {
         BullAction(const BullAction & other) :
         Action{other}, jumps{other.jumps} {};
 
-        void removePointsFromScore(Board board, int & score) const;
-
         // ----------------------------------------------- 
         // OVERRIDES
 
@@ -50,5 +48,6 @@ class BullAction : public Action<BullManager, BoardSided> {
             If action is not valid, throw an error.
         */
         BullState apply(BullState) const override;
+
         std::string toString() const override;
 };

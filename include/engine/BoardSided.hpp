@@ -6,9 +6,9 @@
 class BoardSided : public Board {
     public :
         const std::vector<std::vector<SidePiece>> horizontalSidePieces;
-        const std::vector<std::vector<SidePiece>> verticalSidePieces;
-    protected :
-        // Sub class const init
+        const std::vector<std::vector<SidePiece>> verticalSidePieces;        
+    public:
+        BoardSided(int dimension);
         BoardSided(
             std::vector<std::vector<CellPiece>> cellPieces, 
             std::vector<std::vector<SidePiece>> horizontalSidePieces,
@@ -18,8 +18,6 @@ class BoardSided : public Board {
                 horizontalSidePieces{horizontalSidePieces},
                 verticalSidePieces{verticalSidePieces} 
                 {};
-    public:
-        BoardSided(int dimension);
         
         bool operator==(const BoardSided &) const;
         bool operator!=(const BoardSided &) const;

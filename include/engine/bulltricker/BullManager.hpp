@@ -8,9 +8,9 @@
 /*
     Proportion of each type of pawn could be a paramater.
 */
-class BullManager : public Manager<BullAction, Board> {
+class BullManager : public Manager<BullAction, BoardSided> {
     private:
-        Board initialBoard() override;
+        BoardSided initialBoard() override;
     public:
         using Manager::canPlayAction;
 
