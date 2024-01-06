@@ -20,8 +20,20 @@ Game supported :
 
 ## Demo
 
-Not implemented yet!
+### Loot
+- Select the number of real players and bot before the party
+    - <img height=200 src="resources/demo/loot_menu.png">
+- Select a yellow pawn and then click on all the case you want to jump
+    - <img height=200 src="resources/demo/loot_begin.png">
+- Game is finished when there isn't any action left.
+    - <img height=200 src="resources/demo/loot_end.png">
 
+### Checkers
+
+- Choose if you want to play against a bot or a player 
+    - <img height=100 src="resources/demo/checkers_menu.png">
+- On each turn, the pieces that you can use are marked (in yellow)
+    - <img height=200 src="resources/demo/checkers_begin.png">
 
 ## Setup
 ### Installation
