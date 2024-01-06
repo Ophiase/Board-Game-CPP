@@ -15,9 +15,17 @@ class BullManager;
 
 class BullAction : public Action<BullManager, BoardSided> {
 	private:
+        bool isValidQueenAction(const BullState &) const;
+        bool isValidPawnAction(const BullState &) const;
+        bool isValidWhitePawnAction(const BullState &) const;
+        bool isValidBlackPawnAction(const BullState &) const;
+        bool isValidKingAction(const BullState &) const;
+        std::vector<CellPosition> getSurroundingCells(const BullState &, CellPosition pos) const;
 
     public:
-        static const std::vector<CellPosition> authorizedOffsets;
+        static const std::vector<CellPosition> authorizedKingOffsets;
+        static const std::vector<CellPosition>surroundingCellsOffsets;
+
         const CellPath jumps;
 
 
