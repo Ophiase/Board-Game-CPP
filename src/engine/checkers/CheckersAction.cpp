@@ -350,18 +350,13 @@ std::vector<CheckersAction> CheckersAction::getActions(
 
     if (maxCapture > 0) { 
         // if player can capture, he's forced to capture
-        Cli::debug("authorized :");
         std::vector<CheckersAction> actions{};
         for (auto capture : captures)
             if (
-                ((int)capture.jumps.size() == maxCapture) ||
-                
-                state.board.getCell(capture.jumps[0]).isQueen() 
-                // if queen we only require along axis
-            ) {
-                Cli::debug("\t" + Cli::toString(capture.jumps));
+                ((int)capture.jumps.size() == maxCapture)
+                // state.board.getCell(capture.jumps[0]).isQueen() 
+            )
                 actions.push_back(capture);
-            }
 
         return actions;
     }
@@ -380,13 +375,65 @@ bool CheckersAction::hasRemainingActions(
     return !CheckersAction::getActions(manager, state).empty();    
 }
 
-inline bool iff(bool const a, bool const b) {
-    return (a && b) || (!a && !b);
-};
+/*
+    Check if a sequence of jumps inside the board, 
+    starting with a queen is a valid capture.
+*/
+bool CheckersAction::isValidQueenCapture(const CheckersState & state) const {
+    const auto *board = &state.board;
+    for (uint i = 1; i < jumps.size(); i++) {
+        auto current = jumps[i-1]; 
+        auto next = jumps[i];
 
-// TODO OPTIMIZE
-bool CheckersAction::isValidPawnMove(const CheckersState & state) const {
-    auto actions = CheckersAction::getActions(this->manager, state);
+        if (!board->isCaseEmpty(next) && (next != jumps[0]))
+            return false;
+
+        auto dir = normalizeJumpOffset(next-current);
+
+        // check there are no own piece capture 
+        auto position = current+dir;
+        while (position != next) {
+            auto between = position;
+            position += dir;
+
+            if (board->getCell(between).owner() == this->author)
+                return false;
+        }
+
+        // check if it took all the piece it can in the direction
+        bool potential_capture = false;
+        while (board->isCaseInBoard(position+dir)) {
+            position += dir;
+            if (board->getCell(position).owner() == this->author)
+                break;
+
+            if (board->getCell(position).isNone()) {
+                if (potential_capture)
+                    return false;
+                else
+                    continue;
+            }
+            
+            if (board->getCell(position).owner() != this->author)
+                potential_capture = true;
+        }
+    }
+
+    return true;
+}
+
+bool CheckersAction::isValidQueenAction(const CheckersState & state) const {
+    /* 
+        The number of queen's capture is very high. So getActions limit the
+        number of queen's capture computed. We need to verify
+        separatly that a queen's capture is valid.
+    */
+
+    if (isValidQueenCapture(state))
+        return true;
+
+    // We then verify if it's a queen's move.
+    auto actions = CheckersAction::getQueenMoves(this->manager, state);
     for (auto action : actions)
         if (this->actionEquivalence(state, action))
             return true;
@@ -394,17 +441,11 @@ bool CheckersAction::isValidPawnMove(const CheckersState & state) const {
     return false;
 }
 
-// TODO OPTIMIZE
-bool CheckersAction::isValidQueenMove(const CheckersState & state) const {
+bool CheckersAction::isValidPawnAction(const CheckersState & state) const {
     auto actions = CheckersAction::getActions(this->manager, state);
     for (auto action : actions)
         if (this->actionEquivalence(state, action))
             return true;
-
-    // There might be not detected capture
-    
-    // TODO
-
 
     return false;
 }
@@ -413,14 +454,18 @@ bool CheckersAction::isValid(CheckersState state) const {
 	if (jumps.size() == 0 || jumps.size() == 1) 
         return false;
 
-    if (!state.board.isCaseInBoard(jumps[0]))
+    for (auto jump : this->jumps)
+        if (!state.board.isCaseInBoard(jump))
+            return false;
+
+    if (state.board.getCell(jumps[0]).owner() != this->author)
         return false;
 
     if (state.board.getCell(jumps[0]).isPawn())
-        return isValidPawnMove(state);
+        return isValidPawnAction(state);
 
     if (state.board.getCell(jumps[0]).isQueen())
-        return isValidQueenMove(state);
+        return isValidQueenAction(state);
 
     return false;
 }

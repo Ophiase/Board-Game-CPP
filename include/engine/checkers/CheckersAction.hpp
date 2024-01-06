@@ -51,8 +51,9 @@ class CheckersAction : public Action<CheckersManager, Board> {
             const CheckersManager * manager, const CheckersState&);
 
 
-        bool isValidPawnMove(const CheckersState &) const;
-        bool isValidQueenMove(const CheckersState &) const;
+        bool isValidQueenCapture(const CheckersState &) const;
+        bool isValidQueenAction(const CheckersState &) const;
+        bool isValidPawnAction(const CheckersState &) const;
         
         static CellPosition normalizeJumpOffset(CellPosition);
     public:
@@ -60,7 +61,6 @@ class CheckersAction : public Action<CheckersManager, Board> {
         static const std::vector<CellPosition> directPawnOffsets;
         static const std::vector<CellPosition> jumpPawnOffsets;
         static const std::vector<CellPosition> directQueenOffsets;
-        
         
         const CellPath jumps;
 
