@@ -61,7 +61,10 @@ bool CheckersAction::equivalentCellPath(
 }
 
 bool CheckersAction::actionEquivalence(
-    CheckersState, const CheckersAction &other) const {
+    CheckersState, const CheckersAction &other) const 
+{
+    if (this->surrend && other.surrend) return true;
+
     return equivalentCellPath(jumps, other.jumps);
 }
 
@@ -451,6 +454,10 @@ bool CheckersAction::isValidPawnAction(const CheckersState & state) const {
 }
 
 bool CheckersAction::isValid(CheckersState state) const { 
+    if (this->surrend) {
+        return true;
+    }
+
 	if (jumps.size() == 0 || jumps.size() == 1) 
         return false;
 
@@ -525,5 +532,7 @@ CheckersState CheckersAction::apply(
 }
 
 std::string CheckersAction::toString() const {
+    if (this->surrend)
+        return "[Surrend]";
     return Cli::toString(jumps);
 };

@@ -165,16 +165,17 @@ void Menu::checkersOptionInit() {
     }};
 
     playButtonBot->setSizeY(0.05);
-    playButtonBot->center(sf::Vector2f{0.5, 0.40});
+    playButtonBot->center(sf::Vector2f{0.5, 0.50});
     checkersOption.addObjectToDelete(playButtonBot);
 
     TextButton *playButton = new TextButton{
-    &checkersOption, "Start Checkers",
+    &checkersOption, "Start Checkers (vs player)",
     [this](sf::Event) -> void {
         this->successor = new CheckersGame(
             this->getLauncher(), false);
     }};
 
+    playButton->setSizeY(0.05);
     playButton->center(sf::Vector2f{0.5, 0.60});
     checkersOption.addObjectToDelete(playButton);
 }

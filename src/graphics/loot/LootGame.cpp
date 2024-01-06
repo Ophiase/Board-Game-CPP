@@ -28,14 +28,14 @@ LootGame::~LootGame() {
 };
 
 void LootGame::startTurn() {
+    this->isFinished = manager.isFinished();
+    
     this->cacheAction.clear();
     this->updateBoardContent(manager.getBoard());
     this->setCurrentPlayer(manager.getCurrentPlayer().name);
     this->setScores(manager.getScores());
 
     if (!manager.isFinished()) {
-        this->isFinished = false;
-        
         Cli::info(
             "\n" + Cli::separation() +
             "\n\tTurn : " + std::to_string(manager.getState().step) +
@@ -48,20 +48,19 @@ void LootGame::startTurn() {
     }
 
     this->interactive = true;
-    this->isFinished = true;
 
     auto winners = this->manager.getWinners();
     if (winners.size() == 1) {            
         this->setMessage("Winner is : " + winners[0].name);
-        Cli::info("Winner is : " + winners[0].name);
+        Cli::info("\nWinner is : " + winners[0].name + "\n");
         return;
     }
 
-    std::string winnersString = "Winner are :";
+    std::string winnersString = "Winners are :";
     for (auto winner : winners)
         winnersString += " " + winner.name;
     this->setMessage(winnersString);
-    Cli::info(winnersString);
+    Cli::info("\n"+winnersString+"\n");
     this->draw();
 }
 
