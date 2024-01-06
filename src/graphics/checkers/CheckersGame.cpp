@@ -262,7 +262,7 @@ void CheckersGame::handleCheckerBoard() {
     */
     //Cli::debug("Cached Action : " + Cli::toString(cacheAction));   
     
-    this->setMessage("Select another cell or play.");
+    this->setMessage("Select another cell or confirm.");
     this->updateBoardContent(manager.getBoard());
 }
 
