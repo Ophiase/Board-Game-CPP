@@ -68,11 +68,17 @@ class CheckersAction : public Action<CheckersManager, Board> {
         // -----------------------------------------------
 
         CheckersAction(
-            const CheckersManager * manager, PlayerId author, uint step, 
+            const CheckersManager *manager, PlayerId author, uint step, 
             CellPath jumps) :
         Action<CheckersManager, Board>{manager, author, step}, 
         jumps{jumps} {};
-        
+
+        /* surrender constructor */
+        CheckersAction(
+            const CheckersManager *manager, PlayerId author, uint step) :
+        Action<CheckersManager, Board>{manager, author, step}, 
+        surrend{true} {};
+
         CheckersAction(const CheckersAction & other) :
         Action<CheckersManager, Board>{other}, jumps{other.jumps} {};
 

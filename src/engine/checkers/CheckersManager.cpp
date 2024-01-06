@@ -71,5 +71,9 @@ Board CheckersManager::initialBoard() {
 };
 
 bool CheckersManager::canPlayAction(CheckersState state) const {
+    if (state == this->getState())
+        if (this->getLastAction().surrend)
+            return false;
+
     return CheckersAction::hasRemainingActions(this, state);
 }

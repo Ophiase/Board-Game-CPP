@@ -6,7 +6,7 @@
 CheckersGame::CheckersGame(Launcher *launcher, bool againstBot) :
 Game{launcher, "Checkers", 1.0f}, manager{againstBot} {
     {
-        auto nPlayers = new Text{this,
+        auto *nPlayers = new Text{this,
             std::to_string(this->manager.players.size()) +
             " players"
         };
@@ -14,6 +14,24 @@ Game{launcher, "Checkers", 1.0f}, manager{againstBot} {
         nPlayers->setSizeY(0.04);
         nPlayers->center(sf::Vector2f{0.27, 0.05});
         this->addObjectToDelete(nPlayers);
+    }
+
+    {
+        TextButton *surrendButton = new TextButton{this,
+            "Surrend",
+            [this](sf::Event) -> void {
+                Cli::debug("hello?");
+                this->applyAction(CheckersAction{
+                    &this->manager, 
+                    this->manager.getCurrentPlayerIndex(), 
+                    this->manager.step()
+                    });
+            }
+        };
+
+        surrendButton->setSizeY(0.05);
+        surrendButton->center(sf::Vector2f{0.6, 0.5});
+        this->addObjectToDelete(surrendButton);
     }
 
     this->AIinit();
