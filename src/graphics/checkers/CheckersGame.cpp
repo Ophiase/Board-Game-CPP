@@ -215,7 +215,6 @@ void CheckersGame::updateBoardContent (Board board) {
         checkBoardTexture.draw(select);
     }
     
-
     // SELECTION
 
     float const circleSpace = (float)(this->checkBoardTexture.getSize().x / 10); 

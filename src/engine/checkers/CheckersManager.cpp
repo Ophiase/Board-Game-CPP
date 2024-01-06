@@ -45,27 +45,15 @@ Board CheckersManager::initialBoard() {
         10, std::vector<CellPiece>(10)
     };
 
-    for (int i = 0; i < 4; i++){
-		for (int j = 0; j < 10; j++) {
-			if (i % 2 == 0 && j % 2 == 1) {
-				cellPieces[i][j] = CellPiece(CellPieceType::BlackPawn);
-			}
-			else if (i % 2 == 1 && j % 2 == 0) {
-				cellPieces[i][j] = CellPiece(CellPieceType::BlackPawn);
-			}
-		}
-	}
-
-	for (int i = 6; i < 10; i++) {
-		for (int j = 0; j < 10; j++) {
-			if (i % 2 == 0 && j % 2 == 1) {
-				cellPieces[i][j] = CellPiece(CellPieceType::WhitePawn);
-			}
-			else if (i % 2 == 1 && j % 2 == 0) {
-				cellPieces[i][j] = CellPiece(CellPieceType::WhitePawn);
-			}
-		}
-	}
+    for (int y = 0; y < 10; y++)
+    for (int x = 0; x < 10; x++) {
+        if (((x+y) & 1) == 1) {
+            if (y < 4)
+                cellPieces[y][x] = CellPiece(CellPieceType::BlackPawn);
+            else if (y >= 6)
+                cellPieces[y][x] = CellPiece(CellPieceType::WhitePawn);
+        }
+    }
 
     return Board(cellPieces, 0);
 };

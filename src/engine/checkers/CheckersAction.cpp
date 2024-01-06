@@ -395,13 +395,19 @@ bool CheckersAction::isValidQueenCapture(const CheckersState & state) const {
 
         // check there are no own piece capture 
         auto position = current+dir;
+        bool haveCapture = false;
         while (position != next) {
             auto between = position;
             position += dir;
 
             if (board->getCell(between).owner() == this->author)
                 return false;
+            if (!board->getCell(between).isNone())
+                haveCapture = true;
         }
+
+        if (!haveCapture)
+            return false;
 
         // check if it took all the piece it can in the direction
         bool potential_capture = false;
@@ -436,7 +442,7 @@ bool CheckersAction::isValidQueenAction(const CheckersState & state) const {
         return true;
 
     // We then verify if it's a queen's move.
-    auto actions = CheckersAction::getQueenMoves(this->manager, state);
+    auto actions = CheckersAction::getActions(this->manager, state);
     for (auto action : actions)
         if (this->actionEquivalence(state, action))
             return true;
