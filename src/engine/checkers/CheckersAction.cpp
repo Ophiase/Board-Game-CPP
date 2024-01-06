@@ -61,7 +61,10 @@ bool CheckersAction::equivalentCellPath(
 }
 
 bool CheckersAction::actionEquivalence(
-    CheckersState, const CheckersAction &other) const {
+    CheckersState, const CheckersAction &other) const 
+{
+    if (this->surrend && other.surrend) return true;
+
     return equivalentCellPath(jumps, other.jumps);
 }
 
@@ -372,7 +375,7 @@ std::vector<CheckersAction> CheckersAction::getActions(
 bool CheckersAction::hasRemainingActions(
     const CheckersManager *manager, CheckersState state) 
 {
-    return !CheckersAction::getActions(manager, state).empty();    
+    return !CheckersAction::getActions(manager, state).empty();
 }
 
 /*
@@ -451,6 +454,10 @@ bool CheckersAction::isValidPawnAction(const CheckersState & state) const {
 }
 
 bool CheckersAction::isValid(CheckersState state) const { 
+    if (this->surrend) {
+        return true;
+    }
+
 	if (jumps.size() == 0 || jumps.size() == 1) 
         return false;
 
@@ -477,25 +484,31 @@ CheckersState CheckersAction::apply(
     auto scores = state.scores;
     auto cells = board->cellPieces;
 
+    int bonus = 0;
+
     // compute next cells
 
-    Combination captureds = this->toCaptured(state);
-    for (auto captured : captureds)
-        cells[captured.y][captured.x] = CellPieceType::NoneCell;
+    if (!this->surrend) {
+        Combination captureds = this->toCaptured(state);
+        for (auto captured : captureds)
+            cells[captured.y][captured.x] = CellPieceType::NoneCell;
 
-    CellPosition first = jumps[0];
-    CellPosition last = jumps[jumps.size() - 1];
+        CellPosition first = jumps[0];
+        CellPosition last = jumps[jumps.size() - 1];
 
-    if (first != last) {
-        cells[last.y][last.x] = board->getCell(first).pieceType;
-        cells[first.y][first.x] = CellPieceType::NoneCell;
-        
-        if (this->author == WhitePlayer) {
-            if (last.y == 0)
-                cells[last.y][last.x] = CellPieceType::WhiteQueen;
-        } else 
-            if (last.y == ((int)board->getDimension() - 1))
-                cells[last.y][last.x] = CellPieceType::BlackQueen;
+        if (first != last) {
+            cells[last.y][last.x] = board->getCell(first).pieceType;
+            cells[first.y][first.x] = CellPieceType::NoneCell;
+            
+            if (this->author == WhitePlayer) {
+                if (last.y == 0)
+                    cells[last.y][last.x] = CellPieceType::WhiteQueen;
+            } else 
+                if (last.y == ((int)board->getDimension() - 1))
+                    cells[last.y][last.x] = CellPieceType::BlackQueen;
+        }
+
+        bonus = captureds.size();
     }
 
     // misc
@@ -506,7 +519,7 @@ CheckersState CheckersAction::apply(
         manager->players[(authorIndex + 1) % nPlayers]
         ).id;
     
-    scores[authorIndex] += captureds.size();
+    scores[authorIndex] += bonus;
     
     Board nextBoard{cells, nextPlayer};
     
@@ -519,5 +532,7 @@ CheckersState CheckersAction::apply(
 }
 
 std::string CheckersAction::toString() const {
+    if (this->surrend)
+        return "[Surrend]";
     return Cli::toString(jumps);
 };

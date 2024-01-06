@@ -185,8 +185,10 @@ GameState<BoardType> Manager<ActionType, BoardType>::evaluateAction(
 
 template <class ActionType, class BoardType>
 void Manager<ActionType, BoardType>::applyAction(ActionType action) {
-    if (!canPlayAction(action) || isFinished()) {
+    if (!this->canPlayAction(action) || isFinished()) {
         Cli::error("Cannot play this Action");
+        Cli::error("Can play action ? " + std::to_string(this->canPlayAction(action)));
+        Cli::error("Is Finished ? " + std::to_string(this->isFinished()));
         Cli::error("Action : " + action.toString());
         Cli::error("On Board :\n" + this->getBoard().toString());
 

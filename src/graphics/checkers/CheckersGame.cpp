@@ -6,7 +6,7 @@
 CheckersGame::CheckersGame(Launcher *launcher, bool againstBot) :
 Game{launcher, "Checkers", 1.0f}, manager{againstBot} {
     {
-        auto nPlayers = new Text{this,
+        auto *nPlayers = new Text{this,
             std::to_string(this->manager.players.size()) +
             " players"
         };
@@ -16,10 +16,34 @@ Game{launcher, "Checkers", 1.0f}, manager{againstBot} {
         this->addObjectToDelete(nPlayers);
     }
 
-    this->AIinit();
-    this->startTurn();
+    {
+        TextButton *surrendButton = new TextButton{this,
+            "Surrend",
+            [this](sf::Event) -> void {
+                if (this->isFinished)
+                    return;
 
+                auto surrend = CheckersAction{
+                    &this->manager, 
+                    this->manager.getCurrentPlayerIndex(), 
+                    this->manager.step()
+                    };
+
+                this->applyAction(surrend);
+            }
+        };
+
+        surrendButton->setSizeY(0.05);
+        surrendButton->center(sf::Vector2f{0.8, 0.55});
+        this->addObjectToDelete(surrendButton);
+    }
+
+
+    this->AIinit();
+    
     interactive = !manager.getCurrentPlayer().isAI;
+    this->startTurn();
+    
     if (!interactive)
          AIturn();
 };
@@ -30,14 +54,14 @@ CheckersGame::~CheckersGame() {
 };
 
 void CheckersGame::startTurn() {
+    this->isFinished = manager.isFinished();
+    
     this->cacheAction.clear();
     this->updateBoardContent(manager.getBoard());
     this->setCurrentPlayer(manager.getCurrentPlayer().name);
     this->setScores(manager.getScores());
 
     if (!manager.isFinished()) {
-        this->isFinished = false;
-        
         Cli::info(
             "\n" + Cli::separation() +
             "\n\tTurn : " + std::to_string(manager.getState().step) +
@@ -51,12 +75,11 @@ void CheckersGame::startTurn() {
     }
 
     this->interactive = true;
-    this->isFinished = true;
 
     auto winners = this->manager.getWinners();
     if (winners.size() == 1) {            
         this->setMessage("Winner is : " + winners[0].name);
-        Cli::info("Winner is : " + winners[0].name);
+        Cli::info("\nWinner is : " + winners[0].name + "\n");
         return;
     }
 
@@ -64,7 +87,7 @@ void CheckersGame::startTurn() {
     for (auto winner : winners)
         winnersString += " " + winner.name;
     this->setMessage(winnersString);
-    Cli::info(winnersString);
+    Cli::info("\n"+winnersString+"\n");
     this->draw();
 }
 
@@ -76,11 +99,10 @@ void CheckersGame::applyAction(CheckersAction action) {
         Cli::toString(action.jumps));
 
     this->manager.applyAction(action);
-    this->startTurn();
-
-    if (isFinished) return;
-
     interactive = !manager.getCurrentPlayer().isAI;
+    this->startTurn();
+    if (isFinished) return;
+    
     if (!interactive)
         AIturn();
 }
@@ -167,7 +189,10 @@ float diffToRotationCheck(sf::Vector2i diff) {
 
 void CheckersGame::updateBoardContent (Board board) {
     Game::updateBoardContent(board);
+    
     //if (cacheAction.empty()) return;
+
+    if (!this->interactive || this->isFinished) return;
 
     // SELECTABLE
     auto actions = CheckersAction::getActions(&this->manager, this->manager.getState());
