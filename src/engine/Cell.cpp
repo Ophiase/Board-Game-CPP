@@ -5,14 +5,40 @@ bool CellPiece::isNone () const {
     return this->pieceType == CellPieceType::NoneCell;
 }
 
+bool CellPiece::isKing() const {
+    switch(this->pieceType) {
+        case CellPieceType::BlackKing :
+        case CellPieceType::WhiteKing :
+            return true;
+        default :
+            return false;
+    }
+}
+
+bool CellPiece::isQueen() const {
+    switch(this->pieceType) {
+        case CellPieceType::BlackQueen :
+        case CellPieceType::WhiteQueen :
+            return true;
+        default :
+            return false;
+    }
+}
+
+bool CellPiece::isPawn() const {
+    return !isNone() && !isKing() && !isQueen();
+}
+
 PlayerId CellPiece::owner() const {
     switch(this->pieceType) {
         case CellPieceType::BlackPawn : 
         case CellPieceType::BlackKing :
+        case CellPieceType::BlackQueen :
             return BlackPlayer;
 
         case CellPieceType::WhitePawn : 
-        case CellPieceType::WhiteKing:
+        case CellPieceType::WhiteKing :
+        case CellPieceType::WhiteQueen :
             return WhitePlayer;
         
         default :

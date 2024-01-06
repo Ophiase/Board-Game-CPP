@@ -17,4 +17,12 @@ class GameState {
             BoardType board, ScoreList scores, 
             uint step = 0, PlayerId player = 0) :
         board{board}, scores{scores}, step{step}, player{player} {};
+
+        bool operator==(const GameState& other) const {
+            return this->board == other.board;
+        }
+
+        bool operator!=(const GameState& other) const {
+            return !(*this == other);
+        }
 };

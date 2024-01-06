@@ -29,12 +29,12 @@ class Action {
         /*
             Is action authorized/correct.
         */
-        virtual bool isValid(GameState<BoardType> gameState) const = 0;
+        virtual bool isValid(GameState<BoardType>) const = 0;
         
         /*
             If action is not valid, throw an error.
         */
-        virtual GameState<BoardType> apply(GameState<BoardType> gameState) const = 0;
+        virtual GameState<BoardType> apply(GameState<BoardType>) const = 0;
         
         /*
             Doe 2 actions have the same effect on the board?

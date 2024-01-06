@@ -1,44 +1,42 @@
 #include "engine/checkers/CheckersManager.hpp"
 #include "utils/NotImplemented.hpp"
 
-CheckersManager::CheckersManager(const int nPlayers, const int nBots) : 
-    Manager<CheckersAction, Board>{makePlayers(nPlayers, nBots)} 
+CheckersManager::CheckersManager(bool againstBot) : 
+    Manager<CheckersAction, Board>{makePlayers(againstBot)} 
 {
     states.push_back(CheckersState(
         initialBoard(), 
-        ScoreList(nPlayers + nBots, 0)
+        ScoreList(2, 0)
         ));
 };
 
-std::vector<Player> CheckersManager::makePlayers(const int nPlayers, const int nBots) 
+std::vector<Player> CheckersManager::makePlayers(bool againstBot) 
 {
-    if (!((nPlayers == 2 && nBots == 0) || (nPlayers == 1 && nBots == 1)))
-        throw NotImplemented("Only configurations with 2 players or 1 player and 1 bot are supported");
+    srand(time(NULL));
+    int whichBot = rand() % 2;
 
-    std::vector<Player> output;
-    std::vector<int> outputIndices = {0, 1};
-    std::random_shuffle(outputIndices.begin(), outputIndices.end());
+    std::vector<Player> players{
+        Player{
+            WhitePlayer,
+            (againstBot && whichBot == 0) ?
+            "White Bot" : "White Player",
+            (againstBot && whichBot == 0)
+        },
+        Player{
+            BlackPlayer,
+            (againstBot && whichBot == 1) ?
+            "Black Bot" : "Black Player",
+            (againstBot && whichBot == 1)
+        }
+    };
 
-    for (int i = 0; i < 2; i++) {
-        int id = outputIndices[i];
-        std::string playerName = (i < nPlayers) ? "Player_" : "Bot_";
-        bool isBot = (i >= nPlayers);
+    std::string playersStr;
+    for (const auto& player : players)
+        playersStr += " - " + player.name + "\n";
 
-        output.push_back( Player {id, playerName + std::to_string(i), isBot});
-    }
+    Cli::info("Players are: \n" + playersStr);
 
-    std::vector<Player> shuffledOutput;
-    for (auto i : outputIndices)
-        shuffledOutput.push_back(output[i]);
-
-
-    std::string players;
-    for (const auto& player : shuffledOutput)
-        players += " - " + player.name + "\n";
-
-    Cli::info("Players are: \n" + players);
-
-    return shuffledOutput;
+    return players;
 }
 
 

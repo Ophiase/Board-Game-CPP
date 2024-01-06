@@ -30,12 +30,12 @@ CellPiece Board::getCell(int x, int y) const {
     return cellPieces[y][x];
 }
 
-bool Board::operator==(Board other) const {
+bool Board::operator==(const Board & other) const {
     return (this->player == other.player) && 
         (this->cellPieces == other.cellPieces);
 };
 
-bool Board::operator!=(Board other) const {
+bool Board::operator!=(const Board & other) const {
     return (*this) != other;
 };
 

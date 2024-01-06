@@ -22,8 +22,8 @@ class Board {
         Board(const Board &board) : 
             Board{board.cellPieces, board.player} {};
 
-        virtual bool operator==(Board) const;
-        virtual bool operator!=(Board) const;
+        virtual bool operator==(const Board &) const;
+        virtual bool operator!=(const Board &) const;
 
         // ---------------------------------------------------
         

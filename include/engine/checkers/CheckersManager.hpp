@@ -20,9 +20,8 @@ class CheckersManager : public Manager<CheckersAction, Board> {
         const int WHITE_BONUS = 1;
         const int BLACK_BONUS = 1;
 
-        static std::vector<Player> makePlayers(
-            int nPlayers = 2, int nBots = 0);
-        CheckersManager(int nPlayers = 2, int nBots = 0);
+        static std::vector<Player> makePlayers(bool againstBot = false);
+        CheckersManager(bool againstBot = false);
 
         bool canPlayAction(CheckersState) const override;
 };
