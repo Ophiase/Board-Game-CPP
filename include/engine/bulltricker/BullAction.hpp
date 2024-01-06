@@ -34,6 +34,12 @@ class BullAction : public Action<BullManager, BoardSided> {
         // OVERRIDES
 
         /*
+            All possibles action from current configuration (up to isomorphism).
+        */
+        static std::vector<BullAction> getActions(
+            const BullManager * manager, BullState);
+
+        /*
             Is there any authorized/correct action ?
         */
         static bool hasRemainingActions(

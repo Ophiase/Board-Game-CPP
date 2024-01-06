@@ -15,7 +15,23 @@ bool BullAction::hasRemainingActions(const BullManager *, BullState state) {
 }
 
 bool BullAction::isValid(BullState state) const {
-	return false;
+	if (jumps.size() == 0 || jumps.size() == 1) 
+        return false;
+
+    for (auto jump : this->jumps)
+        if (!state.board.isCaseInBoard(jump))
+            return false;
+
+    if (state.board.getCell(jumps[0]).owner() != this->author)
+        return false;
+
+    if (state.board.getCell(jumps[0]).isPawn())
+        return isValidPawnAction(state);
+
+    if (state.board.getCell(jumps[0]).isQueen())
+        return isValidQueenAction(state);
+
+    return false;
 }
 
 BullState BullAction::apply(BullState state) const {
