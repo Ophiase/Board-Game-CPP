@@ -35,6 +35,17 @@ std::string Cli::formatInt(int number, size_t k) {
     return std::string(zerosToAdd, '0') + numberStr;
 }
 
+std::string Cli::separation(int n) {
+    if (n == 15)
+        return "---------------";
+    
+    // todo use memset over an array instead
+    std::string s = ""; 
+    for (int i = 0; i < n; i++)
+        s += '-';
+    return s;
+}
+
 std::string Cli::toString(sf::FloatRect rect) {
     return "[" +
         std::to_string(rect.left) + ", " +

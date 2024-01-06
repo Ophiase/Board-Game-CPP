@@ -157,10 +157,22 @@ void Menu::lootOptionInit() {
 // Checker Options
 
 void Menu::checkersOptionInit() {
+    TextButton *playButtonBot = new TextButton{
+    &checkersOption, "Start Checkers (vs bot)",
+    [this](sf::Event) -> void {
+        this->successor = new CheckersGame(
+            this->getLauncher(), true);
+    }};
+
+    playButtonBot->setSizeY(0.05);
+    playButtonBot->center(sf::Vector2f{0.5, 0.40});
+    checkersOption.addObjectToDelete(playButtonBot);
+
     TextButton *playButton = new TextButton{
     &checkersOption, "Start Checkers",
     [this](sf::Event) -> void {
-        this->successor = new CheckersGame(this->getLauncher());
+        this->successor = new CheckersGame(
+            this->getLauncher(), false);
     }};
 
     playButton->center(sf::Vector2f{0.5, 0.60});

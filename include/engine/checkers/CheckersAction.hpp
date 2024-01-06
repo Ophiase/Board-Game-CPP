@@ -27,15 +27,21 @@ class CheckersAction : public Action<CheckersManager, Board> {
             CellPath currentPath
         );
 
-        static std::vector<CheckersAction> getSpecificPawnActions(
+        static void completeSpecificQueenActions(
+            const CheckersManager * manager, 
+            const CheckersState &,
+
+            std::vector<CellPath> & visited,
+            std::vector<CellPath> & nextVisited,
+            CellPath currentPath
+        );
+
+        static std::vector<CheckersAction> getSpecificActions(
             const CheckersManager * manager, 
             const CheckersState&,
             CellPosition axiom);
 
-        static std::vector<CheckersAction> getPawnCaptures(
-            const CheckersManager * manager, const CheckersState&);
-
-        static std::vector<CheckersAction> getQueenCaptures(
+        static std::vector<CheckersAction> getCaptures(
             const CheckersManager * manager, const CheckersState&);
 
         static std::vector<CheckersAction> getPawnMoves(
@@ -45,15 +51,16 @@ class CheckersAction : public Action<CheckersManager, Board> {
             const CheckersManager * manager, const CheckersState&);
 
 
-        bool isValidPawnMove(const CheckersState &) const;
-        bool isValidQueenMove(const CheckersState &) const;
+        bool isValidQueenCapture(const CheckersState &) const;
+        bool isValidQueenAction(const CheckersState &) const;
+        bool isValidPawnAction(const CheckersState &) const;
         
-        // ???
-        void removePointsFromScore(Board board, int & score) const;
+        static CellPosition normalizeJumpOffset(CellPosition);
     public:
         static const std::vector<CellPosition> allPawnOffsets;
-        static const std::vector<CellPosition> directOffsets;
-        static const std::vector<CellPosition> jumpOffsets;
+        static const std::vector<CellPosition> directPawnOffsets;
+        static const std::vector<CellPosition> jumpPawnOffsets;
+        static const std::vector<CellPosition> directQueenOffsets;
         
         const CellPath jumps;
 

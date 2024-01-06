@@ -53,6 +53,8 @@ class Action {
 
             every class that implements Action, should have its own
             version of getActions.
+
+            This is not a "real method"
         */
         static std::vector<Action> getActions(
             const ManagerType *manager, GameState<BoardType>);
@@ -62,6 +64,8 @@ class Action {
 
             every class that implements Action, should have its own
             version of hasRemainingActions.
+
+            This is not a "real method"
         */
         static bool hasRemainingActions(
             const ManagerType *manager, GameState<BoardType>);
@@ -76,8 +80,10 @@ template <class ManagerType, class BoardType>
 std::vector<Action<ManagerType, BoardType>> 
 Action<ManagerType, BoardType>::getActions(
     const ManagerType *, GameState<BoardType>) {
+
     throw NotImplemented();
 }
+
 
 template <class ManagerType, class BoardType>
 bool Action<ManagerType, BoardType>::hasRemainingActions(

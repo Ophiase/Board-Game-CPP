@@ -1,6 +1,7 @@
 #include "graphics/checkers/CheckersGame.hpp"
 #include "graphics/Launcher.hpp"
 #include "graphics/loot/LootGame.hpp"
+#include "engine/bot/AlphaBetaStrategy.hpp"
 
 CheckersGame::CheckersGame(Launcher *launcher, bool againstBot) :
 Game{launcher, "Checkers", 1.0f}, manager{againstBot} {
@@ -18,7 +19,7 @@ Game{launcher, "Checkers", 1.0f}, manager{againstBot} {
     this->AIinit();
     this->startTurn();
 
-    interactive = ! manager.getCurrentPlayer().isAI;
+    interactive = !manager.getCurrentPlayer().isAI;
     if (!interactive)
          AIturn();
 };
@@ -37,7 +38,12 @@ void CheckersGame::startTurn() {
     if (!manager.isFinished()) {
         this->isFinished = false;
         
-        Cli::info("Current player : " + manager.getCurrentPlayer().name);
+        Cli::info(
+            "\n" + Cli::separation() +
+            "\n\tTurn : " + std::to_string(manager.getState().step) +
+            "\n\tCurrent player : " + manager.getCurrentPlayer().name +
+            "\n"
+            );
 		std::string playerColor = manager.getCurrentPlayer().id == 0 ? "white" : "black";
         this->setMessage("Select a " + playerColor + " pawn.");
         this->draw();
@@ -122,24 +128,27 @@ void CheckersGame::cancelAction() {
 }
 
 void CheckersGame::AIinit() {
-     for (auto player : this->manager.players)
-         if (player.isAI)
-             this->bots.push_back(
-                 new Bot<CheckersAction, Board, CheckersManager>{
-                     &this->manager, player.id
-             });
+    for (auto player : this->manager.players)
+        if (player.isAI) {
+            //auto *strategy = 
+            //new AlphaBetaStrategy<CheckersAction, Board, CheckersManager>{&this->manager, 5};
+
+            this->bots.push_back(
+                new Bot<CheckersAction, Board, CheckersManager>{
+                    &this->manager, player.id, nullptr
+            });
+        }
  }
 
  void CheckersGame::AIturn() {
-     this->setMessage(this->manager.getCurrentPlayer().name + 
-         "'s turn !");
+     this->setMessage(this->manager.getCurrentPlayer().name + "'s turn !");
      this->draw();
 
      Bot<CheckersAction, Board, CheckersManager> *bot;
      for (auto *x : bots)
          if (x->botId == this->manager.getCurrentPlayer().id)
             bot = x;
-
+    
      CheckersAction action = bot->play(this->manager.getState());
 
      applyAction(action);
@@ -158,7 +167,29 @@ float diffToRotationCheck(sf::Vector2i diff) {
 
 void CheckersGame::updateBoardContent (Board board) {
     Game::updateBoardContent(board);
-    if (cacheAction.empty()) return;
+    //if (cacheAction.empty()) return;
+
+    // SELECTABLE
+    auto actions = CheckersAction::getActions(&this->manager, this->manager.getState());
+    Combination initPositions{};
+    for (auto action : actions)
+        if (!initPositions.has(action.jumps[0]))
+            initPositions.push_back(action.jumps[0]);
+
+
+    float const selectSpace = (float)(this->checkBoardTexture.getSize().x / 10); 
+    sf::RectangleShape select{sf::Vector2f{
+        selectSpace, selectSpace
+    }};
+    
+    select.setTexture(ResourcesLoader::getTexture(Texture::Selectable));
+    for (auto position : initPositions) {
+        float const px = (selectSpace * position.x);
+        float const py = (selectSpace * position.y);
+        select.setPosition(px, py);
+        checkBoardTexture.draw(select);
+    }
+    
 
     // SELECTION
 
