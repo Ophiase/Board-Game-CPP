@@ -2,7 +2,7 @@
 
 #include "engine/Board.hpp"
 #include "engine/Manager.hpp"
-#include "Combination.hpp"
+#include "engine/Combination.hpp"
 #include "CapturePath.hpp"
 #include "LootAction.hpp"
 #include "LootState.hpp"

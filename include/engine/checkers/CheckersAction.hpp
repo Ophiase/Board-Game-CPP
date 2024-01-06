@@ -6,7 +6,7 @@
 #include "engine/type/CellPosition.hpp"
 #include "engine/Board.hpp"
 #include "CheckersState.hpp"
-#include "engine/loot/Combination.hpp"
+#include "engine/Combination.hpp"
 
 using CellPath = std::vector<CellPosition>;
 
@@ -63,6 +63,7 @@ class CheckersAction : public Action<CheckersManager, Board> {
         static const std::vector<CellPosition> directQueenOffsets;
         
         const CellPath jumps;
+        const bool surrend{false};
 
         // -----------------------------------------------
 

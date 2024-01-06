@@ -6,7 +6,7 @@
 #include "engine/type/CellPosition.hpp"
 #include "engine/Board.hpp"
 #include "CapturePath.hpp"
-#include "Combination.hpp"
+#include "engine/Combination.hpp"
 #include "LootState.hpp"
 
 using CellPath = std::vector<CellPosition>;

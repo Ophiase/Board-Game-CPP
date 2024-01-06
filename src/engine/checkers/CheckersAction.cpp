@@ -1,6 +1,6 @@
 #include "engine/checkers/CheckersAction.hpp"
 #include "engine/checkers/CheckersManager.hpp"
-#include "engine/loot/Combination.hpp"
+#include "engine/Combination.hpp"
 
 std::vector<CellPosition> const CheckersAction::allPawnOffsets = {
     {2, 2}, {2, -2}, {-2, 2}, {-2, -2},
