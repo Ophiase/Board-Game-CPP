@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Combination.hpp"
-#include "CellPath.hpp"
+#include "engine/Combination.hpp"
+#include "engine/type/CellPath.hpp"
 
 class CapturePath {
     private:
@@ -9,7 +9,6 @@ class CapturePath {
         bool findCapturePath(
             CellPath &cache, CellPosition capture, Board const & board, 
             Combination _visiteds = Combination{}) const;
-
     public:
         Combination captures;
         Combination visiteds;
