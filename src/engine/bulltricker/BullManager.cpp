@@ -41,6 +41,23 @@ std::vector<Player> BullManager::makePlayers(bool againstBot)
 }
 
 Board BullManager::initialBoard() {
+    std::vector<std::vector<CellPiece>> cellPieces{
+        7, std::vector<CellPiece>(7)
+    };
+    std::vector<std::vector<SidePiece>> horizontalSidePieces{
+        7, std::vector<SidePiece>(8)
+    };
+    std::vector<std::vector<SidePiece>> verticalSidePieces{
+        8, std::vector<SidePiece>(7)
+    };
+
+    cellPieces[3][0] = CellPiece(CellPieceType::BlackKing);
+    cellPieces[3][6] = CellPiece(CellPieceType::WhiteKing);
+
+    for (int i = 0; i < 7; i++) {
+        horizontalSidePieces[0][i] = SidePiece(SidePieceType::BlackSidePawn);
+        horizontalSidePieces[6][i] = SidePiece(SidePieceType::WhiteSidePawn);
+    }
     return BoardSided(7);
 };
 
