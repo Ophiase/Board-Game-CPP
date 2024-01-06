@@ -16,6 +16,7 @@ class Cli {
         static void debug(std::string message);
 
         static std::string formatInt(int number, size_t k);
+        static std::string separation(int n = 15);
         
         static std::string toString(sf::FloatRect rect);
         static std::string toString(sf::Vector2f vect);

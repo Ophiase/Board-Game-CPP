@@ -14,6 +14,13 @@ class CheckersManager : public Manager<CheckersAction, Board> {
     public:
         using Manager::canPlayAction;
 
+        /* 
+            It's necessary to impose limits when computing
+            all the actions that a queen can performs
+        */
+        const int MAX_QUEEN_DEPTH = 3;
+        const int MAX_QUEEN_BRANCHING = 2; // TODO
+
         const int TOTAL_WHITE_PAWN = 20;
         const int TOTAL_BLACK_PAWN = 20;
 

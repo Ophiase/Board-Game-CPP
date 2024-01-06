@@ -38,7 +38,7 @@ AlphaBetaStrategy<ActionType, BoardType, ManagerType>
     Strategy<ActionType, BoardType, ManagerType>(manager), 
     maxDepth{maxDepth} 
 {
-    if (this->manager.players.size() != 2)
+    if (this->manager->players.size() != 2)
         throw std::invalid_argument("AlphaBeta require 1v1 zero sum game.");
     
     if (maxDepth < 1)
@@ -51,7 +51,7 @@ ActionType AlphaBetaStrategy<ActionType, BoardType, ManagerType>::play(
     GameState<BoardType> state
 ) {
     return *std::unique_ptr<ActionType>(
-        std::get<0>(alphaBetaAlgorithm(state), state.player)
+        std::get<0>(alphaBetaAlgorithm(state, state.player))
     );
 };
 
@@ -63,11 +63,11 @@ ActionType AlphaBetaStrategy<ActionType, BoardType, ManagerType>::play(
 template <class ActionType, class BoardType, class ManagerType>
 std::tuple<ActionType*, int> AlphaBetaStrategy<ActionType, BoardType, ManagerType>
 ::alphaBetaAlgorithm(
-    GameState<BoardType> state,  PlayerId scoreId,
+    GameState<BoardType> state, PlayerId scoreId,
     int alpha, int beta, uint depth
 ) const {
     if ((this->manager->isFinished(state)) || (depth == maxDepth))
-        return state.scores[scoreId];
+        return std::make_tuple(nullptr, state.scores[scoreId]);
 
     bool maximize = depth & 0;
 
@@ -76,15 +76,16 @@ std::tuple<ActionType*, int> AlphaBetaStrategy<ActionType, BoardType, ManagerTyp
     if (actions.size() == 0) // safe check
         throw std::invalid_argument("No action availibles");
     
-    int actionIndex = 0;
+    uint actionIndex = 0;
     int value = 0;
 
     if (maximize) {
         value = std::numeric_limits<int>::min();
-        for (int i = 0; i < actions.size(); i++) {
+        for (uint i = 0; i < actions.size(); i++) {
             auto currentAction = actions[i];
             GameState<BoardType> nextState = currentAction.apply(state);
-            int nextScore = alphaBetaAlgorithm(nextState, scoreId, alpha, beta, depth+1);
+            int nextScore = std::get<1>(
+                alphaBetaAlgorithm(nextState, scoreId, alpha, beta, depth+1));
             if (value > beta) break;
             if (value > nextScore) continue;
             
@@ -93,10 +94,12 @@ std::tuple<ActionType*, int> AlphaBetaStrategy<ActionType, BoardType, ManagerTyp
         }
     } else {
         value = std::numeric_limits<int>::max();
-        for (int i = 0; i < actions.size(); i++) {
+        for (uint i = 0; i < actions.size(); i++) {
             auto currentAction = actions[i];
             GameState<BoardType> nextState = currentAction.apply(state);
-            int nextScore = alphaBetaAlgorithm(nextState, scoreId, alpha, beta, depth+1);
+            int nextScore = std::get<1>(
+                alphaBetaAlgorithm(nextState, scoreId, alpha, beta, depth+1));
+
             if (value < alpha) break;
             if (value < nextScore) continue;
             

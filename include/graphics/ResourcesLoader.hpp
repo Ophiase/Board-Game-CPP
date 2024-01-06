@@ -42,8 +42,15 @@ namespace Texture {
         PawnYellow,
         PawnBlue,
 
+        QueenBlack,
+        QueenWhite,
+
+        KingBlack,
+        KingWhite,
+
         Arrow,
-        Selection
+        Selection,
+        Selectable
     };
 }
 namespace Font {
