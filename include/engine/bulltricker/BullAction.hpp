@@ -6,18 +6,20 @@
 #include "engine/type/CellPosition.hpp"
 #include "engine/BoardSided.hpp"
 #include "BullState.hpp"
+#include "engine/loot/CellPath.hpp"
 
 
-using CellPath = std::vector<CellPosition>;
+using SidePath = std::vector<SidePosition>;
 
 class BullManager;
 
 class BullAction : public Action<BullManager, BoardSided> {
 	private:
-        
+
     public:
         static const std::vector<CellPosition> authorizedOffsets;
         const CellPath jumps;
+
 
         // -----------------------------------------------
 
