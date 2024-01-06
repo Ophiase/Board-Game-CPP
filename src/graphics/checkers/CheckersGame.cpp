@@ -38,7 +38,12 @@ void CheckersGame::startTurn() {
     if (!manager.isFinished()) {
         this->isFinished = false;
         
-        Cli::info("Current player : " + manager.getCurrentPlayer().name);
+        Cli::info(
+            "\n" + Cli::separation() +
+            "\n\tTurn : " + std::to_string(manager.getState().step) +
+            "\n\tCurrent player : " + manager.getCurrentPlayer().name +
+            "\n"
+            );
 		std::string playerColor = manager.getCurrentPlayer().id == 0 ? "white" : "black";
         this->setMessage("Select a " + playerColor + " pawn.");
         this->draw();

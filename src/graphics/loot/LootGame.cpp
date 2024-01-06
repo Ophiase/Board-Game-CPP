@@ -36,7 +36,12 @@ void LootGame::startTurn() {
     if (!manager.isFinished()) {
         this->isFinished = false;
         
-        Cli::info("Current player : " + manager.getCurrentPlayer().name);
+        Cli::info(
+            "\n" + Cli::separation() +
+            "\n\tTurn : " + std::to_string(manager.getState().step) +
+            "\n\tCurrent player : " + manager.getCurrentPlayer().name +
+            "\n"
+            );
         this->setMessage("Select a yellow pawn.");
         this->draw();
         return;
