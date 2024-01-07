@@ -210,8 +210,6 @@ void Game::updateBoardSidedContent(BoardSided board) {
     const sf::Vector2f origin{cx, cy};
     piece.setOrigin(origin);
 
-    const float ratio = ((checkerBoardSize - pieceWidth)/BOARD_DIMENSION);
-    
     // vertical
     for (int x = 0; x < BOARD_DIMENSION+1; x++)
     for (int y = 0; y < BOARD_DIMENSION; y++) {
@@ -219,7 +217,8 @@ void Game::updateBoardSidedContent(BoardSided board) {
 
         if (!cell.isNone()) {
             const sf::Vector2f position{
-                ratio*x + cx,
+                checkerBoardSize * Geometry::adjustSidedPiece(
+                    x, BOARD_DIMENSION, cx/checkerBoardSize),
                 (sideSpace * y) + (sideSpace/2)
             };
 
@@ -240,7 +239,8 @@ void Game::updateBoardSidedContent(BoardSided board) {
         if (!cell.isNone()) {
             const sf::Vector2f position{
                 (sideSpace * x) + (sideSpace/2),
-                ratio*y + cx
+                checkerBoardSize * Geometry::adjustSidedPiece(
+                    y, BOARD_DIMENSION, cx/checkerBoardSize)
             };
 
             piece.setPosition(position);
