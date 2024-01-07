@@ -38,13 +38,11 @@ Game{launcher, "BullTricker", 0.7f}, manager{againstBot} {
         this->addObjectToDelete(surrendButton);
     }
 
-    this->updateBoardSidedContent(this->manager.getBoard());
-    return; // require finished manager
-
     this->AIinit();
     
     interactive = !manager.getCurrentPlayer().isAI;
     this->startTurn();
+    return;
     
     if (!interactive)
          AIturn();
@@ -59,7 +57,7 @@ void BullTrickerGame::startTurn() {
     this->isFinished = manager.isFinished();
     
     this->cacheAction.clear();
-    this->updateBoardContent(manager.getBoard());
+    this->updateBoardSidedContent(manager.getBoard());
     this->setCurrentPlayer(manager.getCurrentPlayer().name);
     this->setScores(manager.getScores());
 
@@ -139,7 +137,7 @@ void BullTrickerGame::cancelAction() {
     if (!cacheAction.empty()) {
         Cli::debug("Cleared Action");
         cacheAction.clear();
-        this->updateBoardContent(manager.getBoard());
+        this->updateBoardSidedContent(manager.getBoard());
         return;
     }
 
@@ -157,7 +155,6 @@ void BullTrickerGame::cancelAction() {
 }
 
 void BullTrickerGame::AIinit() {
-    /*
     for (auto player : this->manager.players)
         if (player.isAI) {
             auto *strategy = 
@@ -168,7 +165,6 @@ void BullTrickerGame::AIinit() {
                     &this->manager, player.id, strategy
             });
         }
-    */
  }
 
  void BullTrickerGame::AIturn() {
@@ -199,10 +195,18 @@ void BullTrickerGame::updateBoardSidedContent (BoardSided board) {
 void BullTrickerGame::handleCheckerBoard() {
     if (!interactive || isFinished) return;
 
-    // TODO
+    if (mouseInsideCheckerBoard()) 
+        if (mouseOnCase(manager.getBoard(), true)) {
+            auto pos = getCellPosition(manager.getBoard());
+            Cli::debug("Clicked on case : " + Cli::toString(pos));
+        } else {
+            auto pos = getSidePosition(manager.getBoard());
+            Cli::debug("Click on side : " + Cli::toString(pos));
+        }
+
 
     this->setMessage("Select another cell or confirm.");
-    this->updateBoardContent(manager.getBoard());
+    this->updateBoardSidedContent(manager.getBoard());
 }
 
 bool BullTrickerGame::handleMouse(sf::Event) {
