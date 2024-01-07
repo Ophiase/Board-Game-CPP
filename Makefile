@@ -5,6 +5,7 @@ CC := g++
 
 CFLAGS := -g -Wall -Wextra 
 CFLAGS += -std=c++11 # std=c++17 necessary for std::optional
+CFLAGS += -Wno-misleading-indentation # don't work properly
 
 ifdef RELEASE
 else

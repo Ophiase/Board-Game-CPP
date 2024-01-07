@@ -274,9 +274,9 @@ Texture::SourceTexture ResourcesLoader::toSourceTexture(CellPiece piece) {
 Texture::SourceTexture ResourcesLoader::toSourceTexture(SidePiece piece) {
     switch(piece.pieceType) {
         case SidePieceType::BlackSidePawn : return Texture::SideBlack;
-        case SidePieceType::WhiteSidePawn : throw Texture::SideWhite;
-        case SidePieceType::BlackSideQueen : throw Texture::SideQueenBlack;
-        case SidePieceType::WhiteSideQueen : throw Texture::SideQueenWhite;
+        case SidePieceType::WhiteSidePawn : return Texture::SideWhite;
+        case SidePieceType::BlackSideQueen : return Texture::SideQueenBlack;
+        case SidePieceType::WhiteSideQueen : return Texture::SideQueenWhite;
 
         default:
             throw std::invalid_argument("Invalid piece type.");

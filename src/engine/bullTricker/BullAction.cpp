@@ -1,5 +1,5 @@
-#include "engine/bulltricker/BullAction.hpp"
-#include "engine/bulltricker/BullManager.hpp"
+#include "engine/bullTricker/BullAction.hpp"
+#include "engine/bullTricker/BullManager.hpp"
 #include "engine/Combination.hpp"
 
 const std::vector<CellPosition> BullAction::authorizedKingOffsets = {
@@ -25,6 +25,11 @@ bool BullAction::hasRemainingActions(const BullManager *, BullState state) {
 	CellPieceType playerQueen = state.player == 0 ? CellPieceType::WhiteQueen : CellPieceType::BlackQueen;
 	CellPieceType playerKing = state.player == 0 ? CellPieceType::WhiteKing : CellPieceType::BlackKing;
 
+	(void)playerPawn;
+	(void)playerQueen;
+	(void)playerKing;
+
+	throw NotImplemented();
 	
 
 
@@ -38,20 +43,22 @@ bool BullAction::isValidPawnAction(const BullState & state) const {
 }
 
 bool BullAction::isValidWhitePawnAction(const BullState &) const {
-	return false;
+	throw NotImplemented();
 }
 
 bool BullAction::isValidBlackPawnAction(const BullState &) const {
-	return false;
+	throw NotImplemented();
 }
 
 
-bool BullAction::isValidQueenAction(const BullState & state) const {
-	return false;
+bool BullAction::isValidQueenAction(const BullState &) const {
+	throw NotImplemented();
 }
 
 bool BullAction::isValidKingAction(const BullState & state) const {
 	CellPieceType rivalKing = state.player == 0 ? CellPieceType::BlackKing : CellPieceType::WhiteKing;
+	(void)rivalKing;
+	
 	std::vector<CellPosition> surroundingCells = getSurroundingCells(state, jumps[1]);
 
 	if (jumps.size() != 2)
@@ -67,6 +74,8 @@ bool BullAction::isValidKingAction(const BullState & state) const {
 	if (!nextPos.isNone())
 		return false;
 	CellPiece currentPos = state.board.getCell(jumps[0]);
+	(void)currentPos;
+
 	CellPosition offset = jumps[1] - jumps[0];
 	if (std::find(authorizedKingOffsets.begin(), authorizedKingOffsets.end(), offset) == authorizedKingOffsets.end())
 		return false;

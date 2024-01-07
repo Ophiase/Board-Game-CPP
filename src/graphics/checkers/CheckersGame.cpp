@@ -1,6 +1,5 @@
 #include "graphics/checkers/CheckersGame.hpp"
 #include "graphics/Launcher.hpp"
-#include "graphics/loot/LootGame.hpp"
 #include "engine/bot/AlphaBetaStrategy.hpp"
 
 CheckersGame::CheckersGame(Launcher *launcher, bool againstBot) :
