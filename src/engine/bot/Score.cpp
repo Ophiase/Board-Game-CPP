@@ -1,5 +1,7 @@
 #include "engine/bot/Score.hpp"
 #include <stdlib.h>
+typedef unsigned int uint;
+
 
 float Score::scoreToRelativeScorePosition(ScoreList scores, int userScore) {
     const uint all = scores.size();

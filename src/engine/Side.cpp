@@ -18,6 +18,26 @@ PlayerId SidePiece::owner() const {
     }
 }
 
+bool SidePiece::isPawn() const {
+    switch(this->pieceType) {
+        case SidePieceType::BlackSidePawn : 
+        case SidePieceType::WhiteSidePawn :
+            return true;
+        default :
+            return false;
+    }
+}
+
+bool SidePiece::isQueen() const {
+    switch(this->pieceType) {
+        case SidePieceType::BlackSideQueen :
+        case SidePieceType::WhiteSideQueen :
+            return true;
+        default :
+            return false;
+    }
+}
+
 bool SidePiece::operator==(SidePiece other) const {
     return this->pieceType == other.pieceType;
 }

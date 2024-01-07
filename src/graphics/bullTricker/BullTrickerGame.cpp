@@ -96,9 +96,14 @@ void BullTrickerGame::startTurn() {
 // --------------------------------------------------
 
 void BullTrickerGame::applyAction(BullAction action) {
-    Cli::info(
-        "Action : " + manager.getCurrentPlayer().name + " : " + 
-        Cli::toString(action.jumps) +"\n");
+    if (action.isSidePath)
+        Cli::info(
+            "Action : " + manager.getCurrentPlayer().name + " : " + 
+            Cli::toString(action.sideJumps) +"\n");
+    else
+        Cli::info(
+            "Action : " + manager.getCurrentPlayer().name + " : " + 
+            Cli::toString(action.cellJumps) +"\n");
 
     this->manager.applyAction(action);
     interactive = !manager.getCurrentPlayer().isAI;

@@ -24,6 +24,11 @@ class BullManager : public Manager<BullAction, BoardSided> {
         const int WHITE_BONUS = 1;
         const int BLACK_BONUS = 1;
 
+        const int H_WIDTH = 7;
+        const int H_LENGTH = 8;
+        const int V_WIDTH = 8;
+        const int V_LENGTH = 7;
+
         static std::vector<Player> makePlayers(bool againstBot = false);
         BullManager(bool againstBot = false);
 
