@@ -46,6 +46,10 @@ PlayerId CellPiece::owner() const {
     }
 }
 
+bool CellPiece::isOwner(PlayerId id) const {
+    return id == this->owner();
+}
+
 std::string CellPiece::toString() const {
     return "[" + std::to_string((int)this->pieceType) + "]";
 }
