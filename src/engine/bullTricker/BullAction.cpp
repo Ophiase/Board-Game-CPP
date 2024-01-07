@@ -20,7 +20,63 @@ std::vector<CellPosition> BullAction::getSurroundingCells(const BullState & stat
 	return surroundingCells;
 }
 
+bool BullAction::isSurrounded(const BullManager * manager, BullState state, CellPosition pos) {
+	std::vector<SidePiece> pieces;
+	int nbPlayerPieces = 0;
+	int nbRivalPieces = 0;
+
+	pieces.push_back(state.board.verticalSidePieces[pos.y][pos.x + 1]);
+	pieces.push_back(state.board.horizontalSidePieces[pos.y + 1][pos.x]);
+	pieces.push_back(state.board.verticalSidePieces[pos.y][pos.x]);
+	pieces.push_back(state.board.horizontalSidePieces[pos.y][pos.x]);
+
+	for (auto piece: pieces) {
+		if (piece.owner() == state.player)
+			nbPlayerPieces++;
+		else if (piece.pieceType != SidePieceType::NoneSide)
+			nbRivalPieces++;
+	}
+	if (nbPlayerPieces + nbRivalPieces < 4)
+		return false;
+	if (nbRivalPieces == 0)
+		return false;
+	return true;
+}
+
 bool BullAction::hasRemainingActions(const BullManager * manager, BullState state) {
+
+	//Check if a mate has been made
+	CellPosition playerKing;
+	CellPosition opponentKing;
+	for (int x = 0; x < 7; x++)
+	for (int y = 0; y < 7; y++)
+		if (state.board.getCell(x, y).owner() == NonePlayer)
+			continue;
+		else if (state.board.getCell(x, y).owner() == state.player)
+			playerKing = CellPosition{x, y};
+		else
+			opponentKing = CellPosition{x, y};
+	if (isSurrounded(manager, state, playerKing) || isSurrounded(manager, state, opponentKing))
+		return false;
+
+	//Check if the two players still have enough pieces
+	int playerSidePieces = 0;
+	int rivalSidePieces = 0;	
+	for (int x = 0; x < 7; x++){
+		for (int y = 0; y < 8; y++){
+			if (state.board.horizontalSidePieces[y][x].owner() == state.player)
+				playerSidePieces++;
+			else if (state.board.horizontalSidePieces[y][x].pieceType != SidePieceType::NoneSide)
+				rivalSidePieces++;
+			if (state.board.verticalSidePieces[x][y].owner() == state.player)
+				playerSidePieces++;
+			else if (state.board.verticalSidePieces[x][y].pieceType != SidePieceType::NoneSide)
+				rivalSidePieces++;
+		}
+	}
+	if (playerSidePieces <= 3 && rivalSidePieces <= 3)
+		return false;
+		
 	return !BullAction::getActions(manager, state).empty();
 }
 
