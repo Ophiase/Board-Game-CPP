@@ -13,12 +13,35 @@ class BullManager;
 
 class BullAction : public Action<BullManager, BoardSided> {
 	private:
+        static std::vector<BullAction> getPawnMoves(
+            const BullManager * manager, const BullState&);
+
+        static std::vector<BullAction> getQueenMoves(
+            const BullManager * manager, const BullState&);
+            
+        bool isValidQueenCapture(const BullState &) const;
         bool isValidQueenAction(const BullState &) const;
         bool isValidPawnAction(const BullState &) const;
-        bool isValidWhitePawnAction(const BullState &) const;
-        bool isValidBlackPawnAction(const BullState &) const;
         bool isValidKingAction(const BullState &) const;
         static std::vector<CellPosition> getSurroundingCells(const BullState &, CellPosition pos);
+
+        static void completeSpecificPawnActions(
+            const BullManager * manager, 
+            const BullState &,
+
+            std::vector<SidePath> & visited,
+            std::vector<SidePath> & nextVisited,
+            SidePath currentPath
+        );
+
+        static void completeSpecificQueenActions(
+            const BullManager * manager, 
+            const BullState &,
+
+            std::vector<SidePath> & visited,
+            std::vector<SidePath> & nextVisited,
+            SidePath currentPath
+        );
 
         static void completeSpecificKingActions(
             const BullManager * manager, 
@@ -37,6 +60,9 @@ class BullAction : public Action<BullManager, BoardSided> {
             const BullManager * manager, 
             const BullState&,
             SidePosition axiom);
+
+        static std::vector<BullAction> getCaptures(
+            const BullManager * manager, const BullState&);
 
     public:
         static const std::vector<CellPosition> authorizedKingOffsets;
