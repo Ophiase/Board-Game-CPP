@@ -18,6 +18,10 @@ PlayerId SidePiece::owner() const {
     }
 }
 
+bool SidePiece::isOwner(PlayerId id) const {
+    return id == this->owner();
+}
+
 bool SidePiece::isPawn() const {
     switch(this->pieceType) {
         case SidePieceType::BlackSidePawn : 

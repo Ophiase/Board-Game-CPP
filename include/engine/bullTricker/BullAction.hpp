@@ -13,56 +13,68 @@ class BullManager;
 
 class BullAction : public Action<BullManager, BoardSided> {
 	private:
+
+        static std::vector<CellPosition> getSurroundingCells(const BullState &, CellPosition pos);
+
         static std::vector<BullAction> getPawnMoves(
             const BullManager * manager, const BullState&);
 
         static std::vector<BullAction> getQueenMoves(
             const BullManager * manager, const BullState&);
 
-        bool isValidQueenCapture(const BullState &) const;
-        bool isValidQueenAction(const BullState &) const;
-        bool isValidPawnAction(const BullState &) const;
-        bool isValidKingAction(const BullState &) const;
-        static std::vector<CellPosition> getSurroundingCells(const BullState &, CellPosition pos);
-
-        static void completeSpecificPawnActions(
-            const BullManager * manager, 
-            const BullState &,
-
-            std::vector<SidePath> & visited,
-            std::vector<SidePath> & nextVisited,
-            SidePath currentPath
+        static void getQueenStraightMove(
+            const BullManager *manager, const BullState & state,
+            SidePosition position, std::vector<BullAction> & actions,
+            const SideVector dir
         );
 
-        static void completeSpecificQueenActions(
-            const BullManager * manager, 
-            const BullState &,
-
-            std::vector<SidePath> & visited,
-            std::vector<SidePath> & nextVisited,
-            SidePath currentPath
+        static void getPawnCaptures(
+            const BullManager *manager, const BullState & state,
+            SidePosition position, std::vector<BullAction> & actions
         );
 
-        static void completeSpecificKingActions(
-            const BullManager * manager, 
-            const BullState &,
-
-            std::vector<CellPath> & visited,
-            std::vector<CellPath> & nextVisited,
-            CellPath currentPath
+        static void getQueenCaptures(
+            const BullManager *manager, const BullState & state,
+            SidePosition position, std::vector<BullAction> & actions,
+            const SideVector dir
         );
-        static std::vector<BullAction> getSpecificActions(
-            const BullManager * manager, 
-            const BullState&,
-            CellPosition axiom);
 
-        static std::vector<BullAction> getSpecificActions(
-            const BullManager * manager, 
-            const BullState&,
-            SidePosition axiom);
+
+        static std::vector<SidePosition> getPawnHorizontalSpecificMoves(
+            SideVector position, bool isWhite, bool initPosition);
+
+        static std::vector<SidePosition> getPawnVerticalSpecificMoves(
+            SideVector position, bool isWhite);
+
+        static void getPawnHorizontalMoves(
+            const BullManager *manager, const BullState & state,
+            SidePosition position, std::vector<BullAction> & actions
+        );
+
+        static void getPawnVerticalMoves(
+            const BullManager *manager, const BullState & state,
+            SidePosition position, std::vector<BullAction> & actions
+        );
+
+        static void getQueenHorizontalMoves(
+            const BullManager *manager, const BullState & state,
+            SidePosition position, std::vector<BullAction> & actions
+        );
+
+        static void getQueenVerticalMoves(
+            const BullManager *manager, const BullState & state,
+            SidePosition position, std::vector<BullAction> & actions
+        );
+
+        static void getKingMoves(
+            const BullManager *manager, const BullState & state,
+            CellPosition position, std::vector<BullAction> & actions
+        );
+
+        static std::vector<BullAction> getMoves(const BullManager *, const BullState &);
 
         static std::vector<BullAction> getCaptures(
-            const BullManager * manager, const BullState&);
+            const BullManager *, const BullState&);
 
     public:
         static const std::vector<CellPosition> authorizedKingOffsets;

@@ -22,6 +22,8 @@ class SidePiece : public Piece {
         bool isQueen() const;
         /* we assume that a non empty piece is either a queen, a king or a pawn */
         bool isPawn() const;
+        
+        bool isOwner(PlayerId) const;
 
         bool operator==(SidePiece other) const;
         bool operator==(SidePieceType other) const;

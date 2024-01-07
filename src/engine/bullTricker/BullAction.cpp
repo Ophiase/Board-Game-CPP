@@ -10,17 +10,9 @@ const std::vector<CellPosition> BullAction::surroundingCellsOffsets = {
 	{1,0}, {0,1}, {-1,0}, {0,-1}, {1,1}, {-1,1}, {-1,-1}, {1,-1}
 };
 
-std::vector<CellPosition> BullAction::getSurroundingCells(const BullState & state, CellPosition pos) {
-	std::vector<CellPosition> surroundingCells;
-	for (CellPosition offset : surroundingCellsOffsets) {
-		CellPosition newPos = pos + offset;
-		if (state.board.isCaseInBoard(newPos))
-			surroundingCells.push_back(newPos);
-	}
-	return surroundingCells;
-}
+// -----------------------------------------------------------------------
 
-bool BullAction::isSurrounded(const BullManager * manager, BullState state, CellPosition pos) {
+bool BullAction::isSurrounded(const BullManager*, BullState state, CellPosition pos) {
 	std::vector<SidePiece> pieces;
 	int nbPlayerPieces = 0;
 	int nbRivalPieces = 0;
@@ -43,7 +35,7 @@ bool BullAction::isSurrounded(const BullManager * manager, BullState state, Cell
 	return true;
 }
 
-bool BullAction::hasRemainingActions(const BullManager * manager, BullState state) {
+bool BullAction::hasRemainingActions(const BullManager *manager, BullState state) {
 
 	//Check if a mate has been made
 	CellPosition playerKing;
@@ -56,6 +48,7 @@ bool BullAction::hasRemainingActions(const BullManager * manager, BullState stat
 			playerKing = CellPosition{x, y};
 		else
 			opponentKing = CellPosition{x, y};
+
 	if (isSurrounded(manager, state, playerKing) || isSurrounded(manager, state, opponentKing))
 		return false;
 
@@ -80,303 +73,438 @@ bool BullAction::hasRemainingActions(const BullManager * manager, BullState stat
 	return !BullAction::getActions(manager, state).empty();
 }
 
-void BullAction::completeSpecificPawnActions(
-	const BullManager * manager, 
-	const BullState & state,
+// -----------------------------------------------------------------------
 
-	std::vector<SidePath> & visited,
-	std::vector<SidePath> & nextVisited,
-	SidePath currentPath
-){}
-
-void BullAction::completeSpecificQueenActions(
-	const BullManager * manager, 
-	const BullState & state,
-
-	std::vector<SidePath> & visited,
-	std::vector<SidePath> & nextVisited,
-	SidePath currentPath
-){}
-
-void BullAction::completeSpecificKingActions(
-    const BullManager *manager, 
-    const BullState & state,
-
-    std::vector<CellPath> & visited,
-    std::vector<CellPath> & nextVisited,
-    CellPath currentPath
+void BullAction::getQueenStraightMove(
+	const BullManager *manager, const BullState & state,
+	SidePosition position, std::vector<BullAction> & actions,
+	const SideVector dir
 ) {
-	(void)visited;
-	(void)manager;
-
 	auto *board = &state.board;
-    auto initPosition = currentPath[0];
 
-	for (auto offset : authorizedKingOffsets) {
-        auto toPosition = initPosition + offset;
-		if (!board->isCaseInBoard(toPosition))
-			continue;
+	SidePosition to = position;
 
-		std::vector<CellPosition> surroundingCells = getSurroundingCells(state, toPosition);
-		for (CellPosition pos : surroundingCells) {
-			CellPiece cell = state.board.getCell(pos);
-			if (cell.isKing() && cell.owner() != state.player)
-				continue;
-		}
-		if (offset == CellPosition{1, 0}) {
-			if (!state.board.verticalSidePieces[initPosition.x + 1][initPosition.y].isNone())
-				continue;
-		} else if (offset == CellPosition{0, 1}) {
-			if (!state.board.horizontalSidePieces[initPosition.x][initPosition.y + 1].isNone())
-				continue;
-		} else if (offset == CellPosition{-1, 0}) {
-			if (!state.board.verticalSidePieces[initPosition.x][initPosition.y].isNone())
-				continue;
-		} else if (offset == CellPosition{0, -1}) {
-			if (!state.board.horizontalSidePieces[initPosition.x][initPosition.y].isNone())
-				continue;
-		}
-
-		if (!board->getCell(toPosition).isNone())
-			continue;
-
-		CellPath next = currentPath;
-        next.push_back(toPosition);
-
-        nextVisited.push_back(next);
-	}
-}
-
-std::vector<BullAction> BullAction::getSpecificActions(
-	const BullManager * manager, const BullState& state, CellPosition axiom) 
-{
-	(void)axiom;
-	
-	std::vector<CellPath> visited{};
-    std::vector<CellPath> nextVisited{CellPath{axiom}};
-
-	int depth = 0;
-
-    do {
-        depth++;
-        visited = nextVisited;
-        nextVisited.clear();
-		for (auto path : visited)
-			completeSpecificKingActions(
-				manager, state, 
-				visited,
-				nextVisited,
-				path
-			);
-	} while (!nextVisited.empty() && depth < 2);
-	if (depth == 1)
-        return std::vector<BullAction>{};
-
-	std::vector<BullAction> actions{};
-
-	for (auto path : visited)
-        actions.push_back(BullAction{
-            manager, state.player, state.step, path
-        });
-
-    return actions;
-}
-
-std::vector<BullAction> BullAction::getSpecificActions(
-    const BullManager * manager, const BullState& state, SidePosition axiom) {
-	
-	std::vector<SidePath> visited{};
-    std::vector<SidePath> nextVisited{SidePath{axiom}};
-
-    const bool isPawn = state.board.getCell(axiom).isPawn();
-
-    int depth = 0;
-
-    do {
-        depth++;
-        visited = nextVisited;
-        nextVisited.clear();
-
-        for (auto path : visited)
-            if (isPawn)
-                completeSpecificPawnActions(
-                    manager, state, 
-                    
-                    visited,
-                    nextVisited,
-                    path
-                );
-            else
-                completeSpecificQueenActions(
-                    manager, state, 
-                    
-                    visited,
-                    nextVisited,
-                    path
-                );
-    } while(!nextVisited.empty() && (isPawn || (depth <= manager->MAX_QUEEN_DEPTH)));
-
-    if (depth == 1)
-        return std::vector<BullAction>{};
-    
-    std::vector<BullAction> actions{};
-
-    for (auto path : visited)
-        actions.push_back(BullAction{
-            manager, state.player, state.step, path
-        });
-
-    return actions;
-}
-
-std::vector<BullAction> BullAction::getPawnMoves(
-    const BullManager * manager, const BullState&) {
-	throw NotImplemented();
-}
-
-std::vector<BullAction> BullAction::getQueenMoves(
-    const BullManager * manager, const BullState&) {
-	throw NotImplemented();
-}
-
-std::vector<BullAction> BullAction::getCaptures(
-    const BullManager *manager, const BullState & state) 
-{
-	const int dimension = (int)state.board.getDimension();
-    const BoardSided *board = &state.board;
-    std::vector<BullAction> actions{};
-
-    for (int x = 0; x < dimension; x++)
-    for (int y = 0; y < dimension; y++)
-    if (board->getCell(x, y).owner() == board->player) {
-        
-        auto actionsToAdd = getSpecificActions(
-            manager,
-            state,
-            CellPosition{x, y});
-        
-        for (auto action : actionsToAdd)
-            actions.push_back(action);
-    }
-	for (int x = 0; x < 8; x++){
-		for (int y = 0; y < 7; y++){
-			if (board->verticalSidePieces[x][y].owner() == board->player) {
-				auto actionsToAdd = getSpecificActions(
-					manager,
-					state,
-					SidePosition({x, y},0));
-				for (auto action : actionsToAdd)
-					actions.push_back(action);
-			} if (board->horizontalSidePieces[y][x].owner() == board->player) {
-				auto actionsToAdd = getSpecificActions(
-					manager,
-					state,
-					SidePosition({y,x},1));
-				for (auto action : actionsToAdd)
-					actions.push_back(action);
+	to.sideVector += dir;
+	while (board->isCaseInBoard(to) && !board->getCell(to).isNone()) {
+		actions.push_back(BullAction{
+			manager, state.player, state.step+1, SidePath{
+				position, to
 			}
+		});
+		
+		to.sideVector += dir;
+	} 
+}
+
+
+void BullAction::getQueenHorizontalMoves(
+	const BullManager *manager, const BullState & state,
+	SidePosition position, std::vector<BullAction> & actions
+) {
+	getQueenStraightMove(manager, state, position, actions, SideVector{0, 1});
+	getQueenStraightMove(manager, state, position, actions, SideVector{0, -1});
+
+	std::vector<SidePosition> toTryList{
+		SidePosition{position.sideVector + SideVector{0, 0}, false},
+		SidePosition{position.sideVector + SideVector{1, 0}, false},
+		SidePosition{position.sideVector + SideVector{0, -1}, false},
+		SidePosition{position.sideVector + SideVector{1, -1}, false}
+	};
+
+	for (auto land : toTryList)
+		if (
+			state.board.isCaseInBoard(land) && 
+			state.board.getCell(land).isNone()
+		)
+			actions.push_back(BullAction{
+			manager, state.player, state.step+1, SidePath{
+				position, land
+			}
+		});
+}
+
+void BullAction::getQueenVerticalMoves(
+	const BullManager *manager, const BullState & state,
+	SidePosition position, std::vector<BullAction> & actions
+) {
+	getQueenStraightMove(manager, state, position, actions, SideVector{1, 0});
+	getQueenStraightMove(manager, state, position, actions, SideVector{-1, 0});
+
+	std::vector<SidePosition> toTryList{
+		SidePosition{position.sideVector + SideVector{ 0, 0}, true},
+		SidePosition{position.sideVector + SideVector{-1, 0}, true},
+		SidePosition{position.sideVector + SideVector{ 0, 1}, true},
+		SidePosition{position.sideVector + SideVector{-1, 1}, true}
+	};
+
+	for (auto land : toTryList)
+		if (
+			state.board.isCaseInBoard(land) && 
+			state.board.getCell(land).isNone()
+		)
+			actions.push_back(BullAction{
+			manager, state.player, state.step+1, SidePath{
+				position, land
+			}
+		});
+}
+
+void BullAction::getKingMoves(
+	const BullManager *manager, const BullState & state,
+	CellPosition position, std::vector<BullAction> & actions
+) {
+	PlayerId opponent = state.player == WhitePlayer ? 
+		BlackPlayer : WhitePlayer;
+
+	CellPosition opponentPosition;
+	for (opponentPosition.x = 0; opponentPosition.x < (int)state.board.getDimension(); opponentPosition.x++)
+	for (opponentPosition.y = 0; opponentPosition.y < (int)state.board.getDimension(); opponentPosition.y++)
+		if (state.board.getCell(opponentPosition).isOwner(opponent))
+			break;
+
+	std::vector<CellPosition> const toTryList{
+		position + CellPosition{0, 1},
+		position + CellPosition{0, -1},
+		position + CellPosition{1, 0},
+		position + CellPosition{-1, 0}
+	};
+
+	for (auto land : toTryList) {
+		if (!state.board.isCaseInBoard(land))
+			continue;
+
+		auto dist = position - opponentPosition;
+		if (std::abs(dist.x) < 2 || std::abs(dist.y) < 2)
+			continue;
+
+		auto diff = land - position;
+
+		SidePosition barrier{(SideVector)land, true};
+		if (diff == CellPosition{-1, 0})
+			barrier = SidePosition{(SideVector)land, false};
+		if (diff == CellPosition{0, 1})
+			barrier = SidePosition{(SideVector)land+ SideVector{0, 1}, true};
+		if (diff == CellPosition{1, 0})
+			barrier = SidePosition{(SideVector)land+ SideVector{1, 0}, false};
+
+		if (!state.board.getCell(barrier).isNone())
+			continue;
+
+		if (!state.board.getCell(land).isNone())
+			continue;
+		
+		actions.push_back(BullAction{
+			manager, state.player, state.step+1, CellPath{position, land}
+		});
+	}
+}
+
+
+std::vector<SidePosition> BullAction::getPawnHorizontalSpecificMoves(
+	SideVector position, bool isWhite, bool initPosition
+) {
+	std::vector<SidePosition> lands;
+
+	if (isWhite) {
+		if (initPosition)
+			lands.push_back(SidePosition{position + SideVector{0, -2}, true});
+
+		lands.push_back(SidePosition{position + SideVector{0, -1}, true});
+		lands.push_back(SidePosition{position + SideVector{0, -1}, false});
+		lands.push_back(SidePosition{position + SideVector{1, -1}, false});
+	} else {
+		if (initPosition)
+			lands.push_back(SidePosition{position + SideVector{0, 2}, true});
+
+		lands.push_back(SidePosition{position + SideVector{0, 1}, true});
+		lands.push_back(SidePosition{position, false});
+		lands.push_back(SidePosition{position + SideVector{1, 0}, false});
+	}
+
+	return lands;
+}
+
+std::vector<SidePosition> BullAction::getPawnVerticalSpecificMoves(
+	SideVector position, bool isWhite
+) {
+	std::vector<SidePosition> lands;
+
+	if (isWhite) {
+		lands.push_back(SidePosition{position + SideVector{0, -1}, false});
+		lands.push_back(SidePosition{position, true});
+		lands.push_back(SidePosition{position + SideVector{-1, 0}, true});
+	} else {
+		lands.push_back(SidePosition{position + SideVector{0, 1}, false});
+		lands.push_back(SidePosition{position + SideVector{0, 1}, true});
+		lands.push_back(SidePosition{position + SideVector{-1, 1}, true});
+	}
+
+	return lands;
+}
+
+/*
+	We assume no capture is possible when starting this function.
+*/
+void BullAction::getPawnHorizontalMoves(
+	const BullManager *manager, const BullState & state,
+	SidePosition position, std::vector<BullAction> & actions
+) {	
+	auto *board = &state.board;
+	bool isWhite = state.player == WhitePlayer;
+	bool initPosition = isWhite ? (position.sideVector.y == 6) : (position.sideVector.y == 1);
+	
+	auto moves = getPawnHorizontalSpecificMoves(
+		position.sideVector, isWhite, initPosition
+	);
+
+	for (auto move : moves)
+	if (board->isCaseInBoard(move) && board->isCaseEmpty(move))
+		actions.push_back(BullAction{
+			manager, state.player, state.step, SidePath{position, move}
+	});
+
+}
+
+void BullAction::getPawnVerticalMoves(
+	const BullManager *manager, const BullState & state,
+	SidePosition position, std::vector<BullAction> & actions
+) {	
+	auto *board = &state.board;
+	bool isWhite = state.player == WhitePlayer;
+
+
+	auto moves = getPawnVerticalSpecificMoves(
+		position.sideVector, isWhite
+	);
+
+	for (auto move : moves)
+	if (board->isCaseInBoard(move) && board->isCaseEmpty(move))
+		actions.push_back(BullAction{
+			manager, state.player, state.step, SidePath{position, move}
+		});
+}
+
+std::vector<BullAction> BullAction::getMoves(const BullManager *manager, const BullState & state) {
+	auto *board = &state.board;
+	std::vector<BullAction> actions;
+
+	// HORIZONTALS
+
+	for (int x = 0; x < (int)board->getDimension(); x++)
+	for (int y = 0; y <= (int)board->getDimension(); y++) {
+		SidePosition position{SideVector{x, y}, true};
+
+		if (board->getCell(position).isOwner(state.player)) {
+			if (board->getCell(position).isPawn())
+				getPawnHorizontalMoves(manager, state, position, actions);
+			else
+				getQueenVerticalMoves(manager, state, position, actions);
 		}
 	}
-    return actions;
-}
 
-std::vector<BullAction> BullAction::getActions(const BullManager * manager, BullState state) {
-	auto captures = getCaptures(manager, state);
+	// VERTICALS
 
-    int maxCapture = 0;
-    for (auto capture : captures)
-        maxCapture = std::max(
-			std::max(maxCapture, (int)capture.cellJumps.size()),
-			std::max(maxCapture, (int)capture.sideJumps.size())
-		);
+	for (int x = 0; x <= (int)board->getDimension(); x++)
+	for (int y = 0; y < (int)board->getDimension(); y++) {
+		SidePosition position{SideVector{x, y}, false};
 
-    if (maxCapture > 0) { 
-        // if player can capture, he's forced to capture
-        std::vector<BullAction> actions{};
-        for (auto capture : captures)
-            if (
-                ((int)capture.cellJumps.size() == maxCapture) ||
-				((int)capture.sideJumps.size() == maxCapture)
-                // state.board.getCell(capture.jumps[0]).isQueen() 
-            )
-                actions.push_back(capture);
+		if (board->getCell(position).isOwner(state.player)) {
+			if (board->getCell(position).isPawn())
+				getPawnVerticalMoves(manager, state, position, actions);
+			else
+				getQueenVerticalMoves(manager, state, position, actions);
 
-        return actions;
+		}
 	}
 
-    auto moves = getPawnMoves(manager, state);
-    auto queenMoves = getQueenMoves(manager, state);
-    for (auto queenMove : queenMoves)
-        moves.push_back(queenMove);
+	for (int x = 0; x < (int)board->getDimension(); x++)
+	for (int y = 0; y < (int)board->getDimension(); y++) {
+		CellPosition position{x, y};
+		if (board->getCell(position).isOwner(state.player))
+			getKingMoves(manager, state, position, actions);
+	}
 
-    return moves;
+	return actions;
 }
 
-bool BullAction::isValidQueenCapture(const BullState & state) const {
-	return false;
+/*
+	Pawn can only capture on y axis when they are horizontal.
+*/
+void BullAction::getPawnCaptures(
+	const BullManager *manager, const BullState & state,
+	SidePosition position, std::vector<BullAction> & actions
+) {
+	auto *board = &state.board;
+	bool isWhite = state.player == WhitePlayer;
+	PlayerId opponent = state.player == WhitePlayer ? 
+		BlackPlayer : WhitePlayer;
+		
+	const SideVector dir = isWhite ? 
+		SideVector{0, -1} : 
+		SideVector{0, 1};
+	const SideVector jump = 2*dir;
+
+	SidePath path{position};
+
+	auto between = SidePosition(position.sideVector + dir, true);
+	auto next = SidePosition(position.sideVector + jump, true);
+
+	while (
+		board->isCaseInBoard(next) &&
+		board->getCell(between).isOwner(opponent) &&
+		board->getCell(next).isNone()
+	) {
+		path.push_back(next);
+		between.sideVector += jump;
+		next.sideVector += jump;
+	}
+
+	if (path.size() > 1)
+		actions.push_back(BullAction{
+			manager, state.player, state.step+1, path
+		});
+}
+
+void BullAction::getQueenCaptures(
+	const BullManager *manager, const BullState & state,
+	SidePosition position, std::vector<BullAction> & actions,
+	const SideVector dir
+) {
+	auto *board = &state.board;
+	PlayerId opponent = state.player == WhitePlayer ? 
+		BlackPlayer : WhitePlayer;
+		
+	// find range (of jumpables positions)
+
+	SidePosition from = position;
+	SidePosition to = position;
+	SidePosition to_2 = position;
+	to.sideVector += dir;
+	to_2.sideVector += dir + dir;
+	
+	bool anyCapture = false;
+
+	if (board->getCell(to).isOwner(state.player))
+		return;
+
+	while (board->isCaseInBoard(to_2)) {
+		auto last = to;
+		to.sideVector += dir;
+		to_2.sideVector += dir;
+
+		if (board->getCell(to).isOwner(state.player))
+			break;
+
+		if (!anyCapture &&
+			board->getCell(to).isNone() && 
+			board->getCell(last).isOwner(opponent)) {
+				anyCapture = true;
+			}
+
+			from.sideVector = to.sideVector;
+	} 
+
+	if (!anyCapture)
+		return;
+
+	SidePosition candidate = from;
+	while (candidate.sideVector != to.sideVector) {
+		actions.push_back(BullAction{
+			manager, state.player, state.step+1, SidePath{
+				position, candidate
+			}
+		});
+		candidate.sideVector += dir;
+	}
+}
+
+/*
+	Captures must be maximal along axis
+*/
+std::vector<BullAction> BullAction::getCaptures(
+	const BullManager *manager, const BullState & state
+) {
+	auto *board = &state.board;
+	std::vector<BullAction> actions;
+
+	// HORIZONTALS
+
+	for (int x = 0; x < (int)board->getDimension(); x++)
+	for (int y = 0; y <= (int)board->getDimension(); y++) {
+		SidePosition position{SideVector{x, y}, true};
+
+		if (board->getCell(position).isOwner(state.player)) {
+			if (board->getCell(position).isPawn())
+				getPawnCaptures(manager, state, position, actions);
+			else {
+				getQueenCaptures(manager, state, position, actions, SideVector{0, 1});
+				getQueenCaptures(manager, state, position, actions, SideVector{0, -1});
+			}		
+		}
+	}
+
+	// VERTICALS
+
+	for (int x = 0; x <= (int)board->getDimension(); x++)
+	for (int y = 0; y < (int)board->getDimension(); y++) {
+		SidePosition position{SideVector{x, y}, false};
+
+		if (board->getCell(position).isOwner(state.player))
+		if (board->getCell(position).isQueen()) {
+			getQueenCaptures(manager, state, position, actions, SideVector{1, 0});
+			getQueenCaptures(manager, state, position, actions, SideVector{-1, 0});
+		}
+	}
+
+	return actions;
 }
 
 
-bool BullAction::isValidPawnAction(const BullState & state) const {
-	auto actions = BullAction::getActions(this->manager, state);
-    for (auto action : actions)
-        if (this->actionEquivalence(state, action))
-            return true;
-    return false;
+/*
+	If captures are availibles, forced to capture
+*/
+std::vector<BullAction> BullAction::getActions(const BullManager *manager, BullState state) {
+	auto captures = getCaptures(manager, state);
+    if (captures.size() > 0)
+        return captures;
+
+    return getMoves(manager, state);
 }
 
-bool BullAction::isValidQueenAction(const BullState & state) const {
-	/* 
-        The number of queen's capture is very high. So getActions limit the
-        number of queen's capture computed. We need to verify
-        separatly that a queen's capture is valid.
-    */
-
-    if (isValidQueenCapture(state))
-        return true;
-
-    // We then verify if it's a queen's move.
-    auto actions = BullAction::getActions(this->manager, state);
-    for (auto action : actions)
-        if (this->actionEquivalence(state, action))
-            return true;
-
-    return false;
-}
-
-bool BullAction::isValidKingAction(const BullState & state) const {
-	auto actions = BullAction::getActions(this->manager, state);
-    for (auto action : actions)
-        if (this->actionEquivalence(state, action))
-            return true;
-
-    return false;
-}
+// -----------------------------------------------------------------------
 
 bool BullAction::isValid(BullState state) const {
 	if (isSidePath) {
 		if (sideJumps.size() == 0 || sideJumps.size() == 1)
 			return false;
+
 		for (auto jump : this->sideJumps)
 			if (!state.board.isCaseInBoard(jump))
 				return false;
+
 		if (state.board.getCell(sideJumps[0]).owner() != this->author)
 			return false;
-		if (state.board.getCell(sideJumps[0]).isPawn())
-			return isValidPawnAction(state);
-		if (state.board.getCell(sideJumps[0]).isQueen())
-			return isValidQueenAction(state);
 	} else {
-		if (cellJumps.size() == 0 || cellJumps.size() == 1) 
+		if (cellJumps.size() != 2) 
 			return false;
 		for (auto jump : this->cellJumps)
 			if (!state.board.isCaseInBoard(jump))
 				return false;
 		if (state.board.getCell(cellJumps[0]).owner() != this->author)
 			return false;
-		if (state.board.getCell(cellJumps[0]).isKing())
-			return isValidKingAction(state);
+		if (!state.board.getCell(cellJumps[0]).isKing())
+			return false;
 	}
+
+	// be careful, action need to be "appliable" to use actionEquivalence
+		// ie. apply function don't throw an error
+	// valid => appliable but the the reciproc can be false
+
+	auto actions = BullAction::getActions(this->manager, state);
+    for (auto action : actions)
+        if (this->actionEquivalence(state, action))
+            return true;
+
 	return false;
 }
 
