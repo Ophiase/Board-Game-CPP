@@ -48,6 +48,12 @@ namespace Texture {
         KingBlack,
         KingWhite,
 
+        SideWhite,
+        SideBlack,
+
+        SideQueenWhite,
+        SideQueenBlack,
+
         Arrow,
         Selection,
         Selectable

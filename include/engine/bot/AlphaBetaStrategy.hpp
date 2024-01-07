@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <tuple>
 #include <memory>
+#include "engine/bot/Score.hpp"
 
 /*
     Alpha Beta Pruning (optimization of minmax algorithm).
@@ -25,10 +26,10 @@ public Strategy<ActionType, BoardType, ManagerType> {
 
         ActionType play(GameState<BoardType>) override;
 
-        std::tuple<ActionType*, int> alphaBetaAlgorithm(
+        std::tuple<ActionType*, float> alphaBetaAlgorithm(
             GameState<BoardType>, PlayerId scoreId,
-            int alpha = std::numeric_limits<int>::min(), 
-            int beta = std::numeric_limits<int>::max(), 
+            float alpha = std::numeric_limits<float>::min(), 
+            float beta = std::numeric_limits<float>::max(), 
             uint depth = 0) const;
 };
 
@@ -61,31 +62,34 @@ ActionType AlphaBetaStrategy<ActionType, BoardType, ManagerType>::play(
     Instead we use a pointer of ActionType.
 */
 template <class ActionType, class BoardType, class ManagerType>
-std::tuple<ActionType*, int> AlphaBetaStrategy<ActionType, BoardType, ManagerType>
+std::tuple<ActionType*, float> AlphaBetaStrategy<ActionType, BoardType, ManagerType>
 ::alphaBetaAlgorithm(
     GameState<BoardType> state, PlayerId scoreId,
-    int alpha, int beta, uint depth
+    float alpha, float beta, uint depth
 ) const {
-    if ((this->manager->isFinished(state)) || (depth == maxDepth))
-        return std::make_tuple(nullptr, state.scores[scoreId]);
 
-    bool maximize = depth & 0;
+    float currentScore = Score::zeroSumScore(state.scores, scoreId);
 
     std::vector<ActionType> actions = 
         ActionType::getActions(this->manager, state);
-    if (actions.size() == 0) // safe check
-        throw std::invalid_argument("No action availibles");
     
+    if (actions.size() == 0 || (depth == maxDepth))
+    //if ((this->manager->isFinished(state)) || (depth == maxDepth))
+        return std::make_tuple(nullptr, currentScore);
+
+    bool maximize = depth & 0;
+
     uint actionIndex = 0;
-    int value = 0;
+    float value = 0;
 
     if (maximize) {
-        value = std::numeric_limits<int>::min();
+        value = std::numeric_limits<float>::min();
         for (uint i = 0; i < actions.size(); i++) {
             auto currentAction = actions[i];
             GameState<BoardType> nextState = currentAction.apply(state);
-            int nextScore = std::get<1>(
+            float nextScore = std::get<1>(
                 alphaBetaAlgorithm(nextState, scoreId, alpha, beta, depth+1));
+            
             if (value > beta) break;
             if (value > nextScore) continue;
             
@@ -93,7 +97,7 @@ std::tuple<ActionType*, int> AlphaBetaStrategy<ActionType, BoardType, ManagerTyp
             value = nextScore;
         }
     } else {
-        value = std::numeric_limits<int>::max();
+        value = std::numeric_limits<float>::max();
         for (uint i = 0; i < actions.size(); i++) {
             auto currentAction = actions[i];
             GameState<BoardType> nextState = currentAction.apply(state);

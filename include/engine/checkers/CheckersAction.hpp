@@ -63,18 +63,24 @@ class CheckersAction : public Action<CheckersManager, Board> {
         static const std::vector<CellPosition> directQueenOffsets;
         
         const CellPath jumps;
-        const bool surrend{false};
+        const bool surrend;
 
         // -----------------------------------------------
 
         CheckersAction(
-            const CheckersManager * manager, PlayerId author, uint step, 
+            const CheckersManager *manager, PlayerId author, uint step, 
             CellPath jumps) :
         Action<CheckersManager, Board>{manager, author, step}, 
-        jumps{jumps} {};
-        
+        jumps{jumps}, surrend{false} {};
+
+        /* surrender constructor */
+        CheckersAction(
+            const CheckersManager *manager, PlayerId author, uint step) :
+        Action<CheckersManager, Board>{manager, author, step}, surrend{true} {};
+
         CheckersAction(const CheckersAction & other) :
-        Action<CheckersManager, Board>{other}, jumps{other.jumps} {};
+        Action<CheckersManager, Board>{other}, jumps{other.jumps}, 
+        surrend{other.surrend} {};
 
         Combination toCaptured(CheckersState) const;
 

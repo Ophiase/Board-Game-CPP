@@ -1,10 +1,11 @@
 #include "engine/bot/Score.hpp"
+#include <stdlib.h>
 
-float Score::relativeScore(Scorelist scores, int userScore) {
+float Score::scoreToRelativeScorePosition(ScoreList scores, int userScore) {
     const int all = scores.size();
-    const int equals = 0;
-    const int more = 0;
-    const int less = 0;
+    uint equals = 0;
+    uint more = 0;
+    uint less = 0;
 
     for (auto score : scores) {
         equals += (userScore == score);
@@ -16,12 +17,20 @@ float Score::relativeScore(Scorelist scores, int userScore) {
         return 0;
 
     if (more > all/2)
-        return more / (all-1);
+        return (float)more / (float)(all-1);
     if (less > all/2)
-        return - less / (all-1);
+        return -less / (float)(all-1);
     
     return 0;
 };
-float Score::relativeScore(Scorelist scores, PlayerId id) {
-    return Score::relativeScore(scores, scores[id]);
+
+float Score::idToRelativeScorePosition(ScoreList scores, PlayerId id) {
+    return Score::scoreToRelativeScorePosition(scores, scores[id]);
+}
+
+float Score::zeroSumScore(ScoreList scores, PlayerId id) {
+    float sum = -(float)scores[id];
+    for (int score : scores)
+        sum += score;
+    return sum;
 }

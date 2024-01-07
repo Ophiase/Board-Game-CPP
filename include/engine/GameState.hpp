@@ -13,6 +13,8 @@ class GameState {
         const uint step;
         const PlayerId player;
 
+        // TODO : add an "isFinished method"
+
         GameState(
             BoardType board, ScoreList scores, 
             uint step = 0, PlayerId player = 0) :

@@ -31,7 +31,7 @@ MODULES := .
 MODULES += test
 MODULES += utils geometry
 MODULES += engine
-MODULES += engine/bullTricker engine/checkers engine/loot 
+MODULES += engine/bullTricker engine/checkers engine/loot engine/bot engine/type
 MODULES += graphics graphics/screen
 MODULES += graphics/bullTricker graphics/checkers graphics/loot
 

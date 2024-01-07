@@ -64,6 +64,11 @@ void ResourcesLoader::initializeTextures() {
         make_tuple(PawnYellow, "entity/pawn_yellow_bis"),
         make_tuple(PawnBlue, "entity/pawn_blue"),
 
+        make_tuple(SideWhite, "entity/side_white"),
+        make_tuple(SideBlack, "entity/side_black"),
+        make_tuple(SideQueenWhite, "entity/side_queen_white"),
+        make_tuple(SideQueenBlack, "entity/side_queen_black"),
+
         make_tuple(Arrow, "entity/arrow_bis"),
         make_tuple(Selection, "entity/circle_selection"),
         make_tuple(Selectable, "entity/selectable")
@@ -268,10 +273,10 @@ Texture::SourceTexture ResourcesLoader::toSourceTexture(CellPiece piece) {
 
 Texture::SourceTexture ResourcesLoader::toSourceTexture(SidePiece piece) {
     switch(piece.pieceType) {
-        case SidePieceType::BlackSidePawn : throw NotImplemented();
-        case SidePieceType::WhiteSidePawn : throw NotImplemented();
-        case SidePieceType::BlackSideQueen : throw NotImplemented();
-        case SidePieceType::WhiteSideQueen : throw NotImplemented();
+        case SidePieceType::BlackSidePawn : return Texture::SideBlack;
+        case SidePieceType::WhiteSidePawn : throw Texture::SideWhite;
+        case SidePieceType::BlackSideQueen : throw Texture::SideQueenBlack;
+        case SidePieceType::WhiteSideQueen : throw Texture::SideQueenWhite;
 
         default:
             throw std::invalid_argument("Invalid piece type.");
