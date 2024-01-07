@@ -208,7 +208,84 @@ bool BullAction::isValid(BullState state) const {
 }
 
 BullState BullAction::apply(BullState state) const {
-	return state;
+	auto cells = state.board.cellPieces;
+	auto sidesH = state.board.horizontalSidePieces;
+	auto sidesV = state.board.verticalSidePieces;
+	
+	PlayerId nextPlayer = state.player == 0 ? 1 : 0;
+
+	if (!isSidePath) {
+		// king move :
+		auto first = cellJumps[0];
+		auto second = cellJumps[1];
+
+		cells[second.y][second.x].pieceType = cells[first.y][first.x].pieceType;
+		cells[first.y][first.x].pieceType = CellPieceType::NoneCell;
+
+		BoardSided nextBoard{
+			cells, sidesH, sidesV, nextPlayer
+		};
+
+		return BullState{nextBoard, state.scores, state.step+1, nextPlayer};
+	}
+
+	const auto first = sideJumps[0];
+	const auto firstV = first.sideVector; // V for vector here (not horizontal)
+	const auto last = sideJumps[sideJumps.size()-1];
+	const auto lastV = last.sideVector;
+
+	int bonus = 0;
+
+	if (first.horizontal == last.horizontal) {
+		auto dir = lastV - firstV;
+		auto position = firstV;
+		
+		if (dir.x > 0) dir.x = 1;
+		else if (dir.x < 0) dir.x = -1;
+		else if (dir.y > 0) dir.y = 1;
+		else if (dir.y < 0) dir.y = -1;
+
+		if (first.horizontal) { // HORIZONTAL
+			sidesH[lastV.y][lastV.x].pieceType = sidesH[firstV.y][firstV.x].pieceType;
+			sidesH[position.y][position.x] = SidePieceType::NoneSide;
+			position += dir;
+
+			while (position != lastV) {
+				if (state.board.getCell(SidePosition{position, true}).pieceType != SidePieceType::NoneSide)
+					bonus++;
+				sidesH[position.y][position.x] = SidePieceType::NoneSide;
+				position += dir;
+			}
+		} else { // VERTICAL
+			sidesV[lastV.y][lastV.x].pieceType = sidesV[firstV.y][firstV.x].pieceType;
+			sidesV[position.y][position.x] = SidePieceType::NoneSide;
+			position += dir;
+
+			while (position != lastV) {
+				if (state.board.getCell(SidePosition{position, false}).pieceType != SidePieceType::NoneSide)
+					bonus++;
+				sidesV[position.y][position.x] = SidePieceType::NoneSide;
+				position += dir;
+			}
+		}
+	} else {
+		if (first.horizontal) {
+			sidesV[lastV.y][lastV.x].pieceType = sidesH[firstV.y][firstV.x].pieceType;
+			sidesH[firstV.y][firstV.x].pieceType = SidePieceType::NoneSide;
+		} else {
+			sidesH[lastV.y][lastV.x].pieceType = sidesV[firstV.y][firstV.x].pieceType;
+			sidesV[firstV.y][firstV.x].pieceType = SidePieceType::NoneSide;
+		}
+	}
+
+		BoardSided nextBoard{
+		cells, sidesH, sidesV, nextPlayer
+	};
+
+	ScoreList scores = state.scores;
+	scores[author] += bonus;
+
+	return BullState{nextBoard, scores, state.step+1, nextPlayer};
 }
 
 std::string BullAction::toString() const {
