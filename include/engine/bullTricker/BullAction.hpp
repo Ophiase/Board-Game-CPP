@@ -18,8 +18,16 @@ class BullAction : public Action<BullManager, BoardSided> {
         bool isValidWhitePawnAction(const BullState &) const;
         bool isValidBlackPawnAction(const BullState &) const;
         bool isValidKingAction(const BullState &) const;
-        std::vector<CellPosition> getSurroundingCells(const BullState &, CellPosition pos) const;
+        static std::vector<CellPosition> getSurroundingCells(const BullState &, CellPosition pos);
 
+        static void completeSpecificKingActions(
+            const BullManager * manager, 
+            const BullState &,
+
+            std::vector<CellPath> & visited,
+            std::vector<CellPath> & nextVisited,
+            CellPath currentPath
+        );
         static std::vector<BullAction> getSpecificActions(
             const BullManager * manager, 
             const BullState&,
