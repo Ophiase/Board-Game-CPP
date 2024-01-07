@@ -184,12 +184,25 @@ void Menu::checkersOptionInit() {
 // BullTricker Options
 
 void Menu::bullTrickerOptionInit() {
-    TextButton *playButton = new TextButton{
-    &bullTrickerOption, "Start BullTricker",
+    TextButton *playButtonBot = new TextButton{
+    &bullTrickerOption, "Start BullTricker (vs bot)",
     [this](sf::Event) -> void {
-        this->successor = new BullTrickerGame(this->getLauncher());
+        this->successor = new BullTrickerGame(
+            this->getLauncher(), true);
     }};
 
+    playButtonBot->setSizeY(0.05);
+    playButtonBot->center(sf::Vector2f{0.5, 0.50});
+    bullTrickerOption.addObjectToDelete(playButtonBot);
+
+    TextButton *playButton = new TextButton{
+    &bullTrickerOption, "Start BullTricker (vs player)",
+    [this](sf::Event) -> void {
+        this->successor = new BullTrickerGame(
+            this->getLauncher(), false);
+    }};
+
+    playButton->setSizeY(0.05);
     playButton->center(sf::Vector2f{0.5, 0.60});
     bullTrickerOption.addObjectToDelete(playButton);
 }
