@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 float Score::scoreToRelativeScorePosition(ScoreList scores, int userScore) {
-    const int all = scores.size();
+    const uint all = scores.size();
     uint equals = 0;
     uint more = 0;
     uint less = 0;

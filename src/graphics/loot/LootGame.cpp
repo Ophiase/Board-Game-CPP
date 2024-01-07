@@ -1,5 +1,6 @@
 #include "graphics/loot/LootGame.hpp"
 #include "graphics/Launcher.hpp"
+#include "engine/bot/GreedyStrategy.hpp"
 
 LootGame::LootGame(Launcher *launcher, int nPlayers, int nBots) :
 Game{launcher, "Loot", 0.9f}, manager{nPlayers, nBots} {
@@ -126,11 +127,15 @@ void LootGame::cancelAction() {
 
 void LootGame::AIinit() {
     for (auto player : this->manager.players)
-        if (player.isAI)
+        if (player.isAI) {
+            auto *strategy = 
+            new GreedyStrategy<LootAction, Board, LootManager>{&this->manager};
+            
             this->bots.push_back(
                 new Bot<LootAction, Board, LootManager>{
-                    &this->manager, player.id
+                    &this->manager, player.id, strategy
             });
+        }
 }
 
 void LootGame::AIturn() {
