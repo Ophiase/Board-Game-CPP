@@ -93,7 +93,6 @@ void BullAction::getQueenStraightMove(
 		});
 		
 		to.sideVector += dir;
-		Cli::debug(Cli::toString(to.sideVector));
 	} 
 }
 
