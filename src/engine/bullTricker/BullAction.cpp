@@ -236,6 +236,14 @@ BullState BullAction::apply(BullState state) const {
 
 	int bonus = 0;
 
+	if (first.horizontal && last.horizontal) {
+		// PROMOTION
+		if (author == WhitePlayer && last.sideVector.y == 0)
+			sidesH[firstV.y][firstV.x].pieceType = SidePieceType::WhiteSideQueen;
+		if (author == BlackPlayer && last.sideVector.y == 7)
+			sidesH[firstV.y][firstV.x].pieceType = SidePieceType::BlackSideQueen;
+	}
+
 	if (first.horizontal == last.horizontal) {
 		auto dir = lastV - firstV;
 		auto position = firstV;
