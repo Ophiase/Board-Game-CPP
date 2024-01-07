@@ -166,7 +166,7 @@ void Game::updateBoardContent(Board board) {
     const int BOARD_DIMENSION = board.getDimension();
 
     const float cellSpace = (float)(this->checkBoardTexture.getSize().x / BOARD_DIMENSION); 
-    const float pieceScale = 0.7;
+    const float pieceScale = CELL_TRESHOLD;
     const float pieceSize = cellSpace*pieceScale;
 
     sf::RectangleShape piece{sf::Vector2f{
@@ -189,9 +189,70 @@ void Game::updateBoardContent(Board board) {
     this->checkBoardTexture.display();
 };
 
-void Game::updateBoardSidedContent(BoardSided boardSided) {
-    this->updateBoardContent(boardSided);
-    // throw NotImplemented();  
+void Game::updateBoardSidedContent(BoardSided board) {
+    this->updateBoardContent(board);
+    
+    const int BOARD_DIMENSION = board.getDimension();
+
+    const float checkerBoardSize = (float)(this->checkBoardTexture.getSize().x); 
+    const float sideSpace = (float)(checkerBoardSize / BOARD_DIMENSION); 
+
+    const float pieceScale = 0.7;
+    const float pieceHeight = sideSpace*pieceScale;
+    const float pieceWidth = pieceHeight*0.3f;
+    const float cx = pieceWidth / 2.0;
+    const float cy = pieceHeight / 2.0;
+
+    sf::RectangleShape piece{sf::Vector2f{
+        pieceWidth, pieceHeight
+    }};
+
+    const sf::Vector2f origin{cx, cy};
+    piece.setOrigin(origin);
+
+    const float ratio = ((checkerBoardSize - pieceWidth)/BOARD_DIMENSION);
+    
+    // vertical
+    for (int x = 0; x < BOARD_DIMENSION+1; x++)
+    for (int y = 0; y < BOARD_DIMENSION; y++) {
+        SidePiece cell = board.getCell(SidePosition{SideVector{x, y}, false});
+
+        if (!cell.isNone()) {
+            const sf::Vector2f position{
+                ratio*x + cx,
+                (sideSpace * y) + (sideSpace/2)
+            };
+
+            piece.setPosition(position);
+            piece.setTexture(ResourcesLoader::getTexture(cell));
+            
+            checkBoardTexture.draw(piece);
+        }
+    }
+
+    // horizontal
+    piece.rotate(90);
+
+    for (int x = 0; x < BOARD_DIMENSION; x++)
+    for (int y = 0; y < BOARD_DIMENSION+1; y++) {
+        SidePiece cell = board.getCell(SidePosition{SideVector{x, y}, true});
+
+        if (!cell.isNone()) {
+            const sf::Vector2f position{
+                (sideSpace * x) + (sideSpace/2),
+                ratio*y + cx
+            };
+
+            piece.setPosition(position);
+            piece.setTexture(ResourcesLoader::getTexture(cell));
+            
+            checkBoardTexture.draw(piece);
+        }
+    }
+
+
+    // done
+    this->checkBoardTexture.display();
 };
 
 // ---------------------------------------------
