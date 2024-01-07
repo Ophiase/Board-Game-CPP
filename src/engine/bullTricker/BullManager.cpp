@@ -1,4 +1,4 @@
-#include "engine/bulltricker/BullManager.hpp"
+#include "engine/bullTricker/BullManager.hpp"
 #include "utils/NotImplemented.hpp"
 
 BullManager::BullManager(bool againstBot) : 

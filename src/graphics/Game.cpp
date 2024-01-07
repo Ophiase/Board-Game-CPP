@@ -191,7 +191,7 @@ void Game::updateBoardContent(Board board) {
 
 void Game::updateBoardSidedContent(BoardSided boardSided) {
     this->updateBoardContent(boardSided);
-    throw NotImplemented();  
+    // throw NotImplemented();  
 };
 
 // ---------------------------------------------
