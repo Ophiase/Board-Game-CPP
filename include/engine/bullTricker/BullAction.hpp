@@ -18,7 +18,7 @@ class BullAction : public Action<BullManager, BoardSided> {
 
         static std::vector<BullAction> getQueenMoves(
             const BullManager * manager, const BullState&);
-            
+
         bool isValidQueenCapture(const BullState &) const;
         bool isValidQueenAction(const BullState &) const;
         bool isValidPawnAction(const BullState &) const;
@@ -66,7 +66,7 @@ class BullAction : public Action<BullManager, BoardSided> {
 
     public:
         static const std::vector<CellPosition> authorizedKingOffsets;
-        static const std::vector<CellPosition>surroundingCellsOffsets;
+        static const std::vector<CellPosition> surroundingCellsOffsets;
 
         const CellPath cellJumps;
         const SidePath sideJumps;
@@ -90,6 +90,8 @@ class BullAction : public Action<BullManager, BoardSided> {
         BullAction(const BullAction & other) :
         Action{other}, cellJumps{other.cellJumps}, sideJumps{other.sideJumps},
         isSidePath{other.isSidePath} {};
+
+        static bool isSurrounded(const BullManager * manager, BullState state, CellPosition pos) ;
 
         // ----------------------------------------------- 
         // OVERRIDES
