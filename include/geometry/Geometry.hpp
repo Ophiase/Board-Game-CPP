@@ -81,4 +81,16 @@ class Geometry {
             );
 
         static sf::FloatRect worldSpaceForShader(sf::RenderWindow *window);
+
+        /*
+            Size = number of cases.
+            x = which sidedposition
+
+            0 <= x <= size
+            relMidWidth = object.sizeX * 0.5 / container
+
+            return a value between 0 and 1 of centered position
+        */
+        static float adjustSidedPiece(int x, int size, float relMidWidth);
+
 };
