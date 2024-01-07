@@ -19,10 +19,10 @@ public Strategy<ActionType, BoardType, ManagerType> {
 
         ActionType play(GameState<BoardType>) override;
 
-        // needs a tree representation of exploration
+        // needs a tree representation of exploration (ie. Exploration Node)
         // needs a method to choose which node to explore
         // needs a method to random walk a node, state -> final score
-            // needs a function final score -> value
+            // needs a function final score -> value (ie. Score::idToRelativeScorePosition)
         // needs a method to update tree
 };
 
@@ -34,5 +34,9 @@ ActionType MonteCarloStrategy<ActionType, BoardType, ManagerType>::play(
     std::vector<ActionType> actions = 
         ActionType::getActions(this->manager, state);
 
+    /*
+        AlphaBetaStrategy for 1v1 and Greedy for n players already performs well.
+        It's currently not necessary to implements MonteCarlo.
+    */
     throw NotImplemented();
 };

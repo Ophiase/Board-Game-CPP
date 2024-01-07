@@ -25,6 +25,7 @@ class Cli {
         static std::string toString(SidePosition vect);
 
         static std::string toString(std::vector<int> vect);
+        static std::string toString(std::vector<float> vect);
         static std::string toString(std::vector<sf::Vector2f> vect);
         static std::string toString(std::vector<sf::Vector2i> vect);
         static std::string toString(std::vector<SidePosition> vect);

@@ -87,6 +87,20 @@ std::string Cli::toString(std::vector<int> vect) {
     return result;
 }
 
+std::string Cli::toString(std::vector<float> vect) {
+    if (vect.size() == 0)
+        return "[empty]";
+        
+    std::string result = "[ ";
+
+    for (size_t i = 0; i < vect.size() - 1; ++i)
+        result += std::to_string(vect[i]) + ", ";
+    result += std::to_string(vect[vect.size() -1]);
+        
+    result += " ]";
+    return result;
+}
+
 std::string Cli::toString(std::vector<sf::Vector2f> vect) {
     if (vect.size() == 0)
         return "[empty]";

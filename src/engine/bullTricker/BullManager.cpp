@@ -1,4 +1,4 @@
-#include "engine/bulltricker/BullManager.hpp"
+#include "engine/bullTricker/BullManager.hpp"
 #include "utils/NotImplemented.hpp"
 
 BullManager::BullManager(bool againstBot) : 
@@ -44,24 +44,25 @@ BoardSided BullManager::initialBoard() {
         7, std::vector<CellPiece>(7)
     };
     std::vector<std::vector<SidePiece>> horizontalSidePieces{
-        7, std::vector<SidePiece>(8)
-    };
-    std::vector<std::vector<SidePiece>> verticalSidePieces{
         8, std::vector<SidePiece>(7)
     };
+    std::vector<std::vector<SidePiece>> verticalSidePieces{
+        7, std::vector<SidePiece>(8)
+    };
 
-    cellPieces[3][0] = CellPiece(CellPieceType::BlackKing);
-    cellPieces[3][6] = CellPiece(CellPieceType::WhiteKing);
+    cellPieces[0][3] = CellPiece(CellPieceType::BlackKing);
+    cellPieces[6][3] = CellPiece(CellPieceType::WhiteKing);
 
-    for (int i = 0; i < 7; i++) {
-        horizontalSidePieces[i][1] = SidePiece(SidePieceType::BlackSidePawn);
-        horizontalSidePieces[i][6] = SidePiece(SidePieceType::WhiteSidePawn);
+    for (int x = 0; x < 7; x++) {
+        horizontalSidePieces[1][x] = SidePiece(SidePieceType::BlackSidePawn);
+        horizontalSidePieces[6][x] = SidePiece(SidePieceType::WhiteSidePawn);
     }
-    for (int i = 0; i < 8; i++) {
-        verticalSidePieces[i][0] = SidePiece(SidePieceType::BlackSideQueen);
-        verticalSidePieces[i][6] = SidePiece(SidePieceType::WhiteSideQueen);
-        verticalSidePieces[i][1] = SidePiece(SidePieceType::BlackSidePawn);
-        verticalSidePieces[i][5] = SidePiece(SidePieceType::WhiteSidePawn);
+    
+    for (int x = 0; x < 8; x++) {
+        verticalSidePieces[0][x] = SidePiece(SidePieceType::BlackSideQueen);
+        verticalSidePieces[6][x] = SidePiece(SidePieceType::WhiteSideQueen);
+        verticalSidePieces[1][x] = SidePiece(SidePieceType::BlackSidePawn);
+        verticalSidePieces[5][x] = SidePiece(SidePieceType::WhiteSidePawn);
     }
     return BoardSided(cellPieces, horizontalSidePieces, verticalSidePieces,0);
 };
