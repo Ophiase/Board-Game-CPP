@@ -218,3 +218,15 @@ sf::Vector2f Geometry::screenPositionToWorldSpace(sf::Vector2i vector,
         ((float)vector.y * renderZone.height / sy) + renderZone.top
     };
 }
+
+float Geometry::adjustSidedPiece(int x, int size, float relMidWidth) {
+    if (x == 0)
+        return relMidWidth;
+
+    if (x == size)
+        return 1-relMidWidth;
+
+    const auto ratio = 1.0 / size;
+
+    return x * ratio;
+}

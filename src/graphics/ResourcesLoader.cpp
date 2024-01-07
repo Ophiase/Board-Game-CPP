@@ -65,7 +65,7 @@ void ResourcesLoader::initializeTextures() {
         make_tuple(PawnBlue, "entity/pawn_blue"),
 
         make_tuple(SideWhite, "entity/side_white"),
-        make_tuple(SideBlack, "entity/side_black"),
+        make_tuple(SideBlack, "entity/side_black_ter"),
         make_tuple(SideQueenWhite, "entity/side_queen_white"),
         make_tuple(SideQueenBlack, "entity/side_queen_black"),
 
