@@ -1,5 +1,5 @@
-#include "engine/bulltricker/BullAction.hpp"
-#include "engine/bulltricker/BullManager.hpp"
+#include "engine/bullTricker/BullAction.hpp"
+#include "engine/bullTricker/BullManager.hpp"
 #include "engine/Combination.hpp"
 
 const std::vector<CellPosition> BullAction::authorizedKingOffsets = {
@@ -32,6 +32,9 @@ void BullAction::completeSpecificKingActions(
     std::vector<CellPath> & nextVisited,
     CellPath currentPath
 ) {
+	(void)visited;
+	(void)manager;
+
 	auto *board = &state.board;
     auto initPosition = currentPath[0];
 
@@ -71,7 +74,9 @@ void BullAction::completeSpecificKingActions(
 }
 
 std::vector<BullAction> BullAction::getSpecificActions(
-	const BullManager * manager, const BullState& state, CellPosition axiom) {
+	const BullManager * manager, const BullState& state, CellPosition axiom) 
+{
+	(void)axiom;
 	
 	std::vector<CellPath> visited{};
     std::vector<CellPath> nextVisited{CellPath{axiom}};
@@ -104,11 +109,13 @@ std::vector<BullAction> BullAction::getSpecificActions(
 }
 
 std::vector<BullAction> BullAction::getSpecificActions(
-    const BullManager * manager, const BullState&, SidePosition axiom) {
+    const BullManager *, const BullState&, SidePosition) {
 		throw NotImplemented();
 }
 
 std::vector<BullAction> BullAction::getActions(const BullManager * manager, BullState state) {
+	(void)state;
+
 	const int dimension = (int)state.board.getDimension();
     const BoardSided *board = &state.board;
     std::vector<BullAction> actions{};
@@ -147,11 +154,11 @@ std::vector<BullAction> BullAction::getActions(const BullManager * manager, Bull
     return actions;
 }
 
-bool BullAction::isValidWhitePawnAction(const BullState & state) const {
+bool BullAction::isValidWhitePawnAction(const BullState &) const {
 	return false;
 }
 
-bool BullAction::isValidBlackPawnAction(const BullState & state) const {
+bool BullAction::isValidBlackPawnAction(const BullState &) const {
 	return false;
 }
 
@@ -160,7 +167,7 @@ bool BullAction::isValidPawnAction(const BullState & state) const {
 	return status;
 }
 
-bool BullAction::isValidQueenAction(const BullState & state) const {
+bool BullAction::isValidQueenAction(const BullState &) const {
 	return false;
 }
 
