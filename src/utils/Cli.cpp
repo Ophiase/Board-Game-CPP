@@ -66,6 +66,12 @@ std::string Cli::toString(sf::Vector2i vect) {
         std::to_string(vect.y) + ")";
 }
 
+std::string Cli::toString(SidePosition vect) {
+    return "(" +
+        std::to_string(vect.sideVector.x) + ", " +
+        std::to_string(vect.sideVector.y) + ")";
+}
+
 
 std::string Cli::toString(std::vector<int> vect) {
     if (vect.size() == 0)
@@ -96,6 +102,20 @@ std::string Cli::toString(std::vector<sf::Vector2f> vect) {
 }
 
 std::string Cli::toString(std::vector<sf::Vector2i> vect) {
+    if (vect.size() == 0)
+        return "[empty]";
+
+    std::string result = "[ ";
+
+    for (size_t i = 0; i < vect.size() -1; ++i)
+        result += toString(vect[i]) + ", ";
+    result += toString(vect[vect.size()-1]);
+
+    result += " ]";
+    return result;
+}
+
+std::string Cli::toString(std::vector<SidePosition> vect) {
     if (vect.size() == 0)
         return "[empty]";
 

@@ -5,6 +5,7 @@
 #include "SFML/Graphics.hpp"
 #include <iostream>
 #include <sstream>
+#include "engine/type/SidePath.hpp"
 
 class Cli {
     public:
@@ -21,10 +22,12 @@ class Cli {
         static std::string toString(sf::FloatRect rect);
         static std::string toString(sf::Vector2f vect);
         static std::string toString(sf::Vector2i vect);
+        static std::string toString(SidePosition vect);
 
         static std::string toString(std::vector<int> vect);
         static std::string toString(std::vector<sf::Vector2f> vect);
         static std::string toString(std::vector<sf::Vector2i> vect);
+        static std::string toString(std::vector<SidePosition> vect);
 
         template <typename T>
         static std::string toString(const T *pointer) {

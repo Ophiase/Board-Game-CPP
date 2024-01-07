@@ -7,9 +7,7 @@
 #include "engine/BoardSided.hpp"
 #include "BullState.hpp"
 #include "engine/type/CellPath.hpp"
-
-
-using SidePath = std::vector<SidePosition>;
+#include "engine/type/SidePath.hpp"
 
 class BullManager;
 
@@ -22,11 +20,23 @@ class BullAction : public Action<BullManager, BoardSided> {
         bool isValidKingAction(const BullState &) const;
         std::vector<CellPosition> getSurroundingCells(const BullState &, CellPosition pos) const;
 
+        static std::vector<BullAction> getSpecificActions(
+            const BullManager * manager, 
+            const BullState&,
+            CellPosition axiom);
+
+        static std::vector<BullAction> getSpecificActions(
+            const BullManager * manager, 
+            const BullState&,
+            SidePosition axiom);
+
     public:
         static const std::vector<CellPosition> authorizedKingOffsets;
         static const std::vector<CellPosition>surroundingCellsOffsets;
 
-        const CellPath jumps;
+        const CellPath cellJumps;
+        const SidePath sideJumps;
+        const bool isSidePath;
 
 
         // -----------------------------------------------
@@ -35,10 +45,17 @@ class BullAction : public Action<BullManager, BoardSided> {
             const BullManager * manager, PlayerId author, uint step, 
             CellPath jumps) :
         Action<BullManager, BoardSided>{manager, author, step}, 
-        jumps{jumps} {};
-        
+        cellJumps{jumps}, isSidePath{0} {};
+
+        BullAction(
+            const BullManager * manager, PlayerId author, uint step, 
+            SidePath jumps) :
+        Action<BullManager, BoardSided>{manager, author, step}, 
+        sideJumps{jumps}, isSidePath{1} {};
+
         BullAction(const BullAction & other) :
-        Action{other}, jumps{other.jumps} {};
+        Action{other}, cellJumps{other.cellJumps}, sideJumps{other.sideJumps},
+        isSidePath{other.isSidePath} {};
 
         // ----------------------------------------------- 
         // OVERRIDES
