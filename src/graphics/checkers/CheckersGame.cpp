@@ -63,10 +63,10 @@ void CheckersGame::startTurn() {
 
     if (!manager.isFinished()) {
         Cli::info(
-            "\n" + Cli::separation() +
-            "\n\tTurn : " + std::to_string(manager.getState().step) +
-            "\n\tCurrent player : " + manager.getCurrentPlayer().name +
-            "\n"
+            "\t" + Cli::separation() + "\n" +
+            "\t\x1B[35mTurn \x1B[0m: " + std::to_string(manager.getState().step) +
+            "\n\t\x1B[34mCurrent player \x1B[0m: " + manager.getCurrentPlayer().name +
+            "\n\t" + Cli::separation() + "\n"
             );
 		std::string playerColor = manager.getCurrentPlayer().id == 0 ? "white" : "black";
         this->setMessage("Select a " + playerColor + " pawn.");
@@ -79,15 +79,15 @@ void CheckersGame::startTurn() {
     auto winners = this->manager.getWinners();
     if (winners.size() == 1) {            
         this->setMessage("Winner is : " + winners[0].name);
-        Cli::info("\nWinner is : " + winners[0].name + "\n");
+        Cli::info("\n\t\x1B[35mWinner is\x1B[0m : " + winners[0].name + "\n");
         return;
     }
 
-    std::string winnersString = "Winners are :";
+    std::string winnersString = "";
     for (auto winner : winners)
         winnersString += " " + winner.name;
-    this->setMessage(winnersString);
-    Cli::info("\n"+winnersString+"\n");
+    this->setMessage("Winners are :"+winnersString);
+    Cli::info("\n\t\x1B[35mWinner are\x1B[0m : "+winnersString+"\n");
     this->draw();
 }
 
@@ -96,7 +96,7 @@ void CheckersGame::startTurn() {
 void CheckersGame::applyAction(CheckersAction action) {
     Cli::info(
         "Action : " + manager.getCurrentPlayer().name + " : " + 
-        Cli::toString(action.jumps));
+        Cli::toString(action.jumps) +"\n");
 
     this->manager.applyAction(action);
     interactive = !manager.getCurrentPlayer().isAI;
@@ -132,7 +132,7 @@ void CheckersGame::cancelAction() {
     if (!cacheAction.empty()) {
         Cli::debug("Cleared Action");
         cacheAction.clear();
-        this->startTurn();
+        this->updateBoardContent(manager.getBoard());
         return;
     }
 
