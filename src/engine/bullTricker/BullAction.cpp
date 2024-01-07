@@ -83,9 +83,9 @@ void BullAction::getQueenStraightMove(
 	auto *board = &state.board;
 
 	SidePosition to = position;
-
 	to.sideVector += dir;
-	while (board->isCaseInBoard(to) && !board->getCell(to).isNone()) {
+
+	while (board->isCaseInBoard(to) && board->getCell(to).isNone()) {
 		actions.push_back(BullAction{
 			manager, state.player, state.step+1, SidePath{
 				position, to
@@ -93,6 +93,7 @@ void BullAction::getQueenStraightMove(
 		});
 		
 		to.sideVector += dir;
+		Cli::debug(Cli::toString(to.sideVector));
 	} 
 }
 
@@ -103,6 +104,9 @@ void BullAction::getQueenHorizontalMoves(
 ) {
 	getQueenStraightMove(manager, state, position, actions, SideVector{0, 1});
 	getQueenStraightMove(manager, state, position, actions, SideVector{0, -1});
+
+	getQueenStraightMove(manager, state, position, actions, SideVector{1, 0});
+	getQueenStraightMove(manager, state, position, actions, SideVector{-1, 0});
 
 	std::vector<SidePosition> toTryList{
 		SidePosition{position.sideVector + SideVector{0, 0}, false},
@@ -129,6 +133,9 @@ void BullAction::getQueenVerticalMoves(
 ) {
 	getQueenStraightMove(manager, state, position, actions, SideVector{1, 0});
 	getQueenStraightMove(manager, state, position, actions, SideVector{-1, 0});
+
+	getQueenStraightMove(manager, state, position, actions, SideVector{0, 1});
+	getQueenStraightMove(manager, state, position, actions, SideVector{0, -1});
 
 	std::vector<SidePosition> toTryList{
 		SidePosition{position.sideVector + SideVector{ 0, 0}, true},
