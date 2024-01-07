@@ -9,7 +9,8 @@ class BullTrickerGame : public Game {
     protected:
         BullManager manager;
         std::vector<Bot<BullAction, BoardSided, BullManager>*> bots;
-        std::vector<CellPosition> cacheAction;
+        std::vector<CellPosition> cachedCellAction;
+        std::vector<SidePosition> cachedSideAction;
 
         void applyAction(BullAction action);
 

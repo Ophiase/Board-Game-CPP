@@ -56,7 +56,8 @@ BullTrickerGame::~BullTrickerGame() {
 void BullTrickerGame::startTurn() {
     this->isFinished = manager.isFinished();
     
-    this->cacheAction.clear();
+    this->cachedCellAction.clear();
+    this->cachedSideAction.clear();
     this->updateBoardSidedContent(manager.getBoard());
     this->setCurrentPlayer(manager.getCurrentPlayer().name);
     this->setScores(manager.getScores());
@@ -115,11 +116,17 @@ void BullTrickerGame::applyAction(BullAction action) {
 void BullTrickerGame::playAction() {
     if (!interactive) return;
 
-    BullAction action{
-        &(this->manager),
-        manager.getCurrentPlayer().id,
-        manager.step(),
-        cacheAction
+    BullAction action = cachedCellAction.empty() ? 
+        BullAction{
+            &(this->manager),
+            manager.getCurrentPlayer().id,
+            manager.step(),
+            cachedSideAction
+        } : BullAction{
+            &(this->manager),
+            manager.getCurrentPlayer().id,
+            manager.step(),
+            cachedCellAction
     };
 
     if (!manager.canPlayAction(action)) {
@@ -134,9 +141,10 @@ void BullTrickerGame::playAction() {
 void BullTrickerGame::cancelAction() {
     if (!interactive) return;
 
-    if (!cacheAction.empty()) {
+    if (!cachedCellAction.empty() || !cachedSideAction.empty()) {
         Cli::debug("Cleared Action");
-        cacheAction.clear();
+        cachedCellAction.clear();
+        cachedSideAction.clear();
         this->updateBoardSidedContent(manager.getBoard());
         return;
     }
@@ -195,14 +203,25 @@ void BullTrickerGame::updateBoardSidedContent (BoardSided board) {
 void BullTrickerGame::handleCheckerBoard() {
     if (!interactive || isFinished) return;
 
-    if (mouseInsideCheckerBoard()) 
+    if (mouseInsideCheckerBoard()) {
         if (mouseOnCase(manager.getBoard(), true)) {
+            if (!cachedSideAction.empty())
+                cachedSideAction.clear();
+
             auto pos = getCellPosition(manager.getBoard());
+
+            cachedCellAction.push_back(pos);            
             Cli::debug("Clicked on case : " + Cli::toString(pos));
         } else {
+            if (!cachedCellAction.empty())
+                cachedCellAction.clear();
+
             auto pos = getSidePosition(manager.getBoard());
-            Cli::debug("Click on side : " + Cli::toString(pos));
+            
+            cachedSideAction.push_back(pos);
+            Cli::debug("Clicked on side :     " + Cli::toString(pos));
         }
+    }
 
 
     this->setMessage("Select another cell or confirm.");
