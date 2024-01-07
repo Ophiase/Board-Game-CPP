@@ -14,5 +14,9 @@ class SidePosition {
             sideVector{sidePostion.sideVector}, 
             horizontal{sidePostion.horizontal} {};
 
+        SidePosition& operator=(const SidePosition& other);
+        bool operator==(const SidePosition &) const;
+        bool operator!=(const SidePosition &) const;
+
         std::string toString() const;
 };
