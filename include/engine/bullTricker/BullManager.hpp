@@ -14,6 +14,8 @@ class BullManager : public Manager<BullAction, BoardSided> {
     public:
         using Manager::canPlayAction;
 
+        const int MAX_QUEEN_DEPTH = 3;
+
         const int TOTAL_WHITE_KING = 1;
         const int TOTAL_BLACK_KING = 1;
 		const int TOTAL_WHITE_PAWN = 15;

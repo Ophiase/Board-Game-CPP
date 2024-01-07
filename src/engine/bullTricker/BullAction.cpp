@@ -24,6 +24,24 @@ bool BullAction::hasRemainingActions(const BullManager * manager, BullState stat
 	return !BullAction::getActions(manager, state).empty();
 }
 
+void BullAction::completeSpecificPawnActions(
+	const BullManager * manager, 
+	const BullState & state,
+
+	std::vector<SidePath> & visited,
+	std::vector<SidePath> & nextVisited,
+	SidePath currentPath
+){}
+
+void BullAction::completeSpecificQueenActions(
+	const BullManager * manager, 
+	const BullState & state,
+
+	std::vector<SidePath> & visited,
+	std::vector<SidePath> & nextVisited,
+	SidePath currentPath
+){}
+
 void BullAction::completeSpecificKingActions(
     const BullManager *manager, 
     const BullState & state,
@@ -104,11 +122,65 @@ std::vector<BullAction> BullAction::getSpecificActions(
 }
 
 std::vector<BullAction> BullAction::getSpecificActions(
-    const BullManager * manager, const BullState&, SidePosition axiom) {
-		throw NotImplemented();
+    const BullManager * manager, const BullState& state, SidePosition axiom) {
+	
+	std::vector<SidePath> visited{};
+    std::vector<SidePath> nextVisited{SidePath{axiom}};
+
+    const bool isPawn = state.board.getCell(axiom).isPawn();
+
+    int depth = 0;
+
+    do {
+        depth++;
+        visited = nextVisited;
+        nextVisited.clear();
+
+        for (auto path : visited)
+            if (isPawn)
+                completeSpecificPawnActions(
+                    manager, state, 
+                    
+                    visited,
+                    nextVisited,
+                    path
+                );
+            else
+                completeSpecificQueenActions(
+                    manager, state, 
+                    
+                    visited,
+                    nextVisited,
+                    path
+                );
+    } while(!nextVisited.empty() && (isPawn || (depth <= manager->MAX_QUEEN_DEPTH)));
+
+    if (depth == 1)
+        return std::vector<BullAction>{};
+    
+    std::vector<BullAction> actions{};
+
+    for (auto path : visited)
+        actions.push_back(BullAction{
+            manager, state.player, state.step, path
+        });
+
+    return actions;
 }
 
-std::vector<BullAction> BullAction::getActions(const BullManager * manager, BullState state) {
+std::vector<BullAction> BullAction::getPawnMoves(
+    const BullManager * manager, const BullState&) {
+	throw NotImplemented();
+}
+
+std::vector<BullAction> BullAction::getQueenMoves(
+    const BullManager * manager, const BullState&) {
+	throw NotImplemented();
+}
+
+std::vector<BullAction> BullAction::getCaptures(
+    const BullManager *manager, const BullState & state) 
+{
 	const int dimension = (int)state.board.getDimension();
     const BoardSided *board = &state.board;
     std::vector<BullAction> actions{};
@@ -147,21 +219,68 @@ std::vector<BullAction> BullAction::getActions(const BullManager * manager, Bull
     return actions;
 }
 
-bool BullAction::isValidWhitePawnAction(const BullState & state) const {
+std::vector<BullAction> BullAction::getActions(const BullManager * manager, BullState state) {
+	auto captures = getCaptures(manager, state);
+
+    int maxCapture = 0;
+    for (auto capture : captures)
+        maxCapture = std::max(
+			std::max(maxCapture, (int)capture.cellJumps.size()),
+			std::max(maxCapture, (int)capture.sideJumps.size())
+		);
+
+    if (maxCapture > 0) { 
+        // if player can capture, he's forced to capture
+        std::vector<BullAction> actions{};
+        for (auto capture : captures)
+            if (
+                ((int)capture.cellJumps.size() == maxCapture) ||
+				((int)capture.sideJumps.size() == maxCapture)
+                // state.board.getCell(capture.jumps[0]).isQueen() 
+            )
+                actions.push_back(capture);
+
+        return actions;
+	}
+
+    auto moves = getPawnMoves(manager, state);
+    auto queenMoves = getQueenMoves(manager, state);
+    for (auto queenMove : queenMoves)
+        moves.push_back(queenMove);
+
+    return moves;
+}
+
+bool BullAction::isValidQueenCapture(const BullState & state) const {
 	return false;
 }
 
-bool BullAction::isValidBlackPawnAction(const BullState & state) const {
-	return false;
-}
 
 bool BullAction::isValidPawnAction(const BullState & state) const {
-	bool status = state.player == 0 ? isValidWhitePawnAction(state) : isValidBlackPawnAction(state);
-	return status;
+	auto actions = BullAction::getActions(this->manager, state);
+    for (auto action : actions)
+        if (this->actionEquivalence(state, action))
+            return true;
+    return false;
 }
 
 bool BullAction::isValidQueenAction(const BullState & state) const {
-	return false;
+	/* 
+        The number of queen's capture is very high. So getActions limit the
+        number of queen's capture computed. We need to verify
+        separatly that a queen's capture is valid.
+    */
+
+    if (isValidQueenCapture(state))
+        return true;
+
+    // We then verify if it's a queen's move.
+    auto actions = BullAction::getActions(this->manager, state);
+    for (auto action : actions)
+        if (this->actionEquivalence(state, action))
+            return true;
+
+    return false;
 }
 
 bool BullAction::isValidKingAction(const BullState & state) const {
