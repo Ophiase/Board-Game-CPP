@@ -79,7 +79,6 @@ class BullAction : public Action<BullManager, BoardSided> {
         static std::vector<BullAction> getCaptures(
             const BullManager *, const BullState&);
 
-        static bool isSurrounded(const BullManager * manager, BullState state, CellPosition pos) ;
    
     public:
         static const std::vector<CellPosition> authorizedKingOffsets;
@@ -111,6 +110,9 @@ class BullAction : public Action<BullManager, BoardSided> {
         BullAction(const BullAction & other) :
         Action{other}, cellJumps{other.cellJumps}, sideJumps{other.sideJumps},
         isSidePath{other.isSidePath}, surrend{other.surrend} {};
+
+        static bool isSurrounded(const BullManager * manager, BullState state, CellPosition pos) ;
+
 
 
         // ----------------------------------------------- 

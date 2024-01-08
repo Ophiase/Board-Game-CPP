@@ -90,3 +90,22 @@ bool BullManager::canPlayAction(BullState state) const {
 
     return BullAction::hasRemainingActions(this, state);
 }
+
+std::vector<Player> BullManager::getWinners() const {
+    if (getLastAction().surrend) {
+        Player player = getLastAction().author == players[0].id ? players[1] : players[0];
+        return {player};
+    }
+    BoardSided board = this->getBoard();
+    for (int x = 0; x < 7; x++) {
+        for (int y = 0; y < 7; y++) {
+            if (board.getCell(x,y).pieceType == CellPieceType::BlackKing)
+                if (getLastAction().isSurrounded(this, this->getState(), CellPosition{x,y}))
+                    return {players[0]};
+            if (board.getCell(x,y).pieceType == CellPieceType::WhiteKing)
+                if (getLastAction().isSurrounded(this, this->getState(), CellPosition{x,y}))
+                    return {players[1]};
+        }
+    }
+    return {players[0], players[1]};
+}
