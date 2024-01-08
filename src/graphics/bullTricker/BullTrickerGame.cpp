@@ -43,7 +43,6 @@ Game{launcher, "BullTricker", 0.7f}, manager{againstBot} {
     
     interactive = !manager.getCurrentPlayer().isAI;
     this->startTurn();
-    return;
     
     if (!interactive)
          AIturn();

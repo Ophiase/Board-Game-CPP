@@ -180,25 +180,26 @@ void BullAction::getKingMoves(
 			continue;
 
 		auto dist = position - opponentPosition;
-		if (std::abs(dist.x) < 2 || std::abs(dist.y) < 2)
+
+		if (std::abs(dist.x) < 2 && std::abs(dist.y) < 2)
 			continue;
 
 		auto diff = land - position;
 
-		SidePosition barrier{(SideVector)land, true};
+		SidePosition barrier{(SideVector)position, true};
 		if (diff == CellPosition{-1, 0})
-			barrier = SidePosition{(SideVector)land, false};
+			barrier = SidePosition{(SideVector)position, false};
 		if (diff == CellPosition{0, 1})
-			barrier = SidePosition{(SideVector)land+ SideVector{0, 1}, true};
+			barrier = SidePosition{(SideVector)position+ SideVector{0, 1}, true};
 		if (diff == CellPosition{1, 0})
-			barrier = SidePosition{(SideVector)land+ SideVector{1, 0}, false};
+			barrier = SidePosition{(SideVector)position+ SideVector{1, 0}, false};
 
 		if (!state.board.getCell(barrier).isNone())
 			continue;
 
 		if (!state.board.getCell(land).isNone())
 			continue;
-		
+
 		actions.push_back(BullAction{
 			manager, state.player, state.step+1, CellPath{position, land}
 		});
