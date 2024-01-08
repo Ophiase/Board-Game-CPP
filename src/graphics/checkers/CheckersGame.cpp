@@ -230,7 +230,7 @@ void CheckersGame::updateBoardContent (Board board) {
         checkBoardTexture.draw(circle);
     }
 
-    // ARROWS
+    // ARROWS (deprecated)
 
     /*
         float const arrowSpace = (float)(this->checkBoardTexture.getSize().x / 10); 
@@ -268,23 +268,6 @@ void CheckersGame::handleCheckerBoard() {
         cacheAction
     };
 
-    /*
-    CellPieceType playerColor = manager.getCurrentPlayer().id == 0 ? CellPieceType::WhitePawn : CellPieceType::BlackPawn;
-    bool const validAction = manager.canPlayAction(action);
-    bool const isFirstSelection = (action.jumps.size() == 1);
-    bool const isFirstSelectionCorrect = isFirstSelection &&
-        manager.getBoard().getCell(action.jumps[0])
-        .pieceType == playerColor;
-        
-    if (!(validAction || isFirstSelectionCorrect)) {
-        Cli::warning("Invalid move");
-        this->setMessage("Invalid move");
-        cacheAction.pop_back();
-        return;
-    }
-    */
-    //Cli::debug("Cached Action : " + Cli::toString(cacheAction));   
-    
     this->setMessage("Select another cell or confirm.");
     this->updateBoardContent(manager.getBoard());
 }

@@ -1,6 +1,7 @@
 #include "graphics/bullTricker/BullTrickerGame.hpp"
 #include "graphics/Launcher.hpp"
 #include "engine/bot/AlphaBetaStrategy.hpp"
+#include "geometry/Geometry.hpp"
 
 BullTrickerGame::BullTrickerGame(Launcher *launcher, bool againstBot) :
 Game{launcher, "BullTricker", 0.7f}, manager{againstBot} {
@@ -196,6 +197,55 @@ void BullTrickerGame::updateBoardSidedContent (BoardSided board) {
 
     //if (cacheAction.empty()) return;
     if (!this->interactive || this->isFinished) return;
+
+    // SELECTION
+
+    const int BOARD_DIMENSION = board.getDimension();
+
+    const float checkerBoardSize = (float)(this->checkBoardTexture.getSize().x); 
+    const float sideSpace = (float)(checkerBoardSize / BOARD_DIMENSION); 
+
+    const float pieceScale = 0.3;
+    const float pieceSpace = sideSpace*pieceScale;
+    const float center = pieceSpace/2.0;
+    
+    sf::RectangleShape circle{sf::Vector2f{
+        pieceSpace, pieceSpace
+    }};
+    
+    circle.setTexture(ResourcesLoader::getTexture(Texture::Selection));
+    const sf::Vector2f origin{center, center};
+    circle.setOrigin(origin);
+
+    for (CellPosition position : cachedCellAction) {
+        float const px = (sideSpace * position.x);
+        float const py = (sideSpace * position.y);
+        circle.setPosition(px + sideSpace/2, py + sideSpace/2);
+        checkBoardTexture.draw(circle);
+    }
+
+    for (SidePosition position : cachedSideAction) {
+        auto v = position.sideVector;
+
+        if (position.horizontal) {
+            circle.setPosition(sf::Vector2f{
+                (sideSpace * v.x) + (sideSpace/2),
+                checkerBoardSize * Geometry::adjustSidedPiece(
+                    v.y, BOARD_DIMENSION, center/checkerBoardSize)
+            });
+        } else {
+            circle.setPosition(sf::Vector2f{
+                checkerBoardSize * Geometry::adjustSidedPiece(
+                    v.x, BOARD_DIMENSION, center/checkerBoardSize),
+                (sideSpace * v.y) + (sideSpace/2)
+            });
+        }  
+
+        checkBoardTexture.draw(circle);
+    }
+
+    // done
+    this->checkBoardTexture.display();
 }
 
 // --------------------------------------------------
