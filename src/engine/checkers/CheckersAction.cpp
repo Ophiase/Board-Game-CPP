@@ -7,8 +7,12 @@ std::vector<CellPosition> const CheckersAction::allPawnOffsets = {
 	{1, 1}, {1, -1}, {-1, 1}, {-1, -1}
 };
 
-std::vector<CellPosition> const CheckersAction::directPawnOffsets = {
-	{1, 1}, {1, -1}, {-1, 1}, {-1, -1}
+std::vector<CellPosition> const CheckersAction::directWhitePawnOffsets = {
+	{1, -1}, {-1, -1}
+};
+
+std::vector<CellPosition> const CheckersAction::directBlackPawnOffsets = {
+    {1, 1}, {-1, 1},
 };
 
 std::vector<CellPosition> const CheckersAction::jumpPawnOffsets = {
@@ -73,6 +77,7 @@ std::vector<CheckersAction> CheckersAction::getPawnMoves(
 {
     const int dimension = (int)state.board.getDimension();
     const Board *board = &state.board;
+    std::vector<CellPosition> directPawnOffsets;
     std::vector<CheckersAction> actions{};
 
     for (int x = 0; x < dimension; x++)
@@ -80,15 +85,20 @@ std::vector<CheckersAction> CheckersAction::getPawnMoves(
     if (
         (board->getCell(x, y).owner() == board->player) &&
         board->getCell(x, y).isPawn()
-    )
-    for (auto offset : directPawnOffsets) {
-        CellPosition axiom{x, y};
-        CellPosition jump{x+offset.x, y+offset.y};
-        if (board->isCaseInBoard(jump) && board->getCell(jump).isNone()) {
-            actions.push_back(CheckersAction{
-                manager, state.player, state.step, CellPath{
-                    CellPosition{x, y}, jump 
-                } });
+    ) {
+        directPawnOffsets = (
+            board->getCell(x, y).owner() == WhitePlayer ?
+            directWhitePawnOffsets : directBlackPawnOffsets
+        );
+        for (auto offset : directPawnOffsets) {
+            CellPosition axiom{x, y};
+            CellPosition jump{x+offset.x, y+offset.y};
+            if (board->isCaseInBoard(jump) && board->getCell(jump).isNone()) {
+                actions.push_back(CheckersAction{
+                    manager, state.player, state.step, CellPath{
+                        CellPosition{x, y}, jump 
+                    } });
+            }
         }
     }
 
