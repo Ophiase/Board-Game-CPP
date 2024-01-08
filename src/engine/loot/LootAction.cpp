@@ -285,21 +285,26 @@ LootState LootAction::apply(
 
     cells[jumps[0].y][jumps[0].x] = 
         CellPiece(CellPieceType::NoneCell); 
+
+    Combination computed;
     for (uint i = 1; i < jumps.size(); i++) {
         CellPosition lastPosition = jumps[i-1];
         CellPosition currentPosition = jumps[i];
 
         CellPosition between = (lastPosition+currentPosition) / 2;
         cells[between.y][between.x] = CellPiece(CellPieceType::NoneCell);
-        switch (board.getCell(between).pieceType) {
-            case CellPieceType::YellowPawn : 
-                moveScore += manager->YELLOW_BONUS; break;
-            case CellPieceType::RedPawn : 
-                moveScore += manager->RED_BONUS; break;
-            case CellPieceType::BlackPawn : 
-                moveScore += manager->BLACK_BONUS; break;
+        if (!computed.has(between)) {
+            computed.push_back(between);
+            switch (board.getCell(between).pieceType) {
+                case CellPieceType::YellowPawn : 
+                    moveScore += manager->YELLOW_BONUS; break;
+                case CellPieceType::RedPawn : 
+                    moveScore += manager->RED_BONUS; break;
+                case CellPieceType::BlackPawn : 
+                    moveScore += manager->BLACK_BONUS; break;
 
-            default : throw NotImplemented();
+                default : throw NotImplemented();
+            }
         }
     }
 
