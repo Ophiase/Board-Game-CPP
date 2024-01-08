@@ -35,6 +35,13 @@ Game supported :
 - On each turn, the pieces that you can use are marked (in yellow)
     - <img height=200 src="resources/demo/checkers_begin.png">
 
+### BullTrickers
+
+- Choose if you want to play against bot or a player
+- On each turn, the pieces that you can use are marked in (yellow)
+    - <img height=200 src="resources/demo/bulltricker_game.png">
+    
+
 ## Setup
 ### Installation
 Compilation require g++ and sfml installed.\

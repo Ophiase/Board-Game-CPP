@@ -198,7 +198,6 @@ void BullTrickerGame::updateBoardSidedContent (BoardSided board) {
     //if (cacheAction.empty()) return;
     if (!this->interactive || this->isFinished) return;
 
-    // SELECTION
 
     const int BOARD_DIMENSION = board.getDimension();
 
@@ -209,12 +208,78 @@ void BullTrickerGame::updateBoardSidedContent (BoardSided board) {
     const float pieceSpace = sideSpace*pieceScale;
     const float center = pieceSpace/2.0;
     
+    const sf::Vector2f origin{center, center};
+    
+    // SELECTABLE
+
+    auto actions = BullAction::getActions(&this->manager, this->manager.getState());
+    
+    std::vector<std::vector<bool>> cellPieces{
+        7, std::vector<bool>(7, false)
+    };
+    std::vector<std::vector<bool>> horizontalSidePieces{
+        8, std::vector<bool>(7, false)
+    };
+    std::vector<std::vector<bool>> verticalSidePieces{
+        7, std::vector<bool>(8, false)
+    };
+
+    for (auto action : actions)
+        if (!action.isSidePath)
+            cellPieces[action.cellJumps[0].y][action.cellJumps[0].x] = true;
+        else {
+            auto v = action.sideJumps[0].sideVector;
+            if (action.sideJumps[0].horizontal)
+                horizontalSidePieces[v.y][v.x] = true;
+            else
+                verticalSidePieces[v.y][v.x] = true;
+        }
+
+    sf::RectangleShape select{sf::Vector2f{
+        pieceSpace, pieceSpace
+    }};
+    
+    select.setTexture(ResourcesLoader::getTexture(Texture::Selectable));
+    select.setOrigin(origin);
+
+    for (int x = 0; x < 7; x++) 
+    for (int y = 0; y < 7; y++)
+        if (cellPieces[y][x]) {
+            float const px = (sideSpace * x);
+            float const py = (sideSpace * y);
+            select.setPosition(px + sideSpace/2, py + sideSpace/2);
+            checkBoardTexture.draw(select);
+        }
+
+    for (int x = 0; x < 7; x++)
+    for (int y = 0; y <= 7; y++)
+        if (horizontalSidePieces[y][x]) {
+            select.setPosition(sf::Vector2f{
+                (sideSpace * x) + (sideSpace/2),
+                checkerBoardSize * Geometry::adjustSidedPiece(
+                    y, BOARD_DIMENSION, center/checkerBoardSize)
+            });
+            checkBoardTexture.draw(select);
+        }
+
+    for (int x = 0; x <= 7; x++)
+    for (int y = 0; y < 7; y++)
+        if (verticalSidePieces[y][x]) {
+            select.setPosition(sf::Vector2f{
+                checkerBoardSize * Geometry::adjustSidedPiece(
+                    x, BOARD_DIMENSION, center/checkerBoardSize),
+                (sideSpace * y) + (sideSpace/2)
+            });
+            checkBoardTexture.draw(select);
+        }
+
+    // SELECTION
+    
     sf::RectangleShape circle{sf::Vector2f{
         pieceSpace, pieceSpace
     }};
     
     circle.setTexture(ResourcesLoader::getTexture(Texture::Selection));
-    const sf::Vector2f origin{center, center};
     circle.setOrigin(origin);
 
     for (CellPosition position : cachedCellAction) {
@@ -243,6 +308,7 @@ void BullTrickerGame::updateBoardSidedContent (BoardSided board) {
 
         checkBoardTexture.draw(circle);
     }
+
 
     // done
     this->checkBoardTexture.display();
