@@ -70,7 +70,7 @@ BoardSided BullManager::initialBoard() {
 bool BullManager::canPlayAction(BullState state) const {
     bool pat = true;
     uint size = actions.size();
-    if (size >= 7) {
+    if (size >= 8) {
         BullAction a = actions[size-1];
         BullAction b = actions[size-2];
         for (uint x = 2; x < 8; x += 2 ){

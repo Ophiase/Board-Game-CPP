@@ -16,6 +16,9 @@ class BullAction : public Action<BullManager, BoardSided> {
 
         static std::vector<CellPosition> getSurroundingCells(const BullState &, CellPosition pos);
 
+        static bool isThereAKingCapture(
+            BullAction action, CellPosition kingPosition);
+
         static std::vector<BullAction> getPawnMoves(
             const BullManager * manager, const BullState&);
 

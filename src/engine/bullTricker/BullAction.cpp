@@ -75,6 +75,66 @@ bool BullAction::hasRemainingActions(const BullManager *manager, BullState state
 
 // -----------------------------------------------------------------------
 
+// return true if there is captureKing
+bool BullAction::isThereAKingCapture(
+	BullAction action, CellPosition kingPosition) {
+	
+	if (!action.isSidePath)
+		return false;
+	
+	if (action.sideJumps[0].horizontal != action.sideJumps[1].horizontal)
+		return false;
+	
+	
+	for (uint i = 1; i < action.sideJumps.size(); i++) {
+		auto from = action.sideJumps[i-1];
+		auto to = action.sideJumps[i];
+		auto fromV = from.sideVector;
+		auto toV = to.sideVector;
+
+		auto diff = toV - fromV;
+		diff.x = diff.x > 0 ? 1 : (diff.x < 0 ? -1 : 0);
+		diff.y = diff.y > 0 ? 1 : (diff.y < 0 ? -1 : 0);
+		
+		if (from.horizontal) {
+			if (diff.y == 0)
+				return false;
+			if (kingPosition.x != fromV.x)
+				return false;
+		} else {
+			if (diff.x == 0)
+				return false;
+			if (kingPosition.y != fromV.y)
+				return false;
+		}
+
+		// todo refactor
+			// float kingProjectedAlongAxis
+			// float minAlongAxis
+			// float maxAlongAxis
+			// then it can be done in 1 if
+		if (from.horizontal) {
+			if (diff.y > 0) {
+				if (fromV.y <= kingPosition.y && kingPosition.y < toV.y)
+					return true;
+			} else {
+				if (toV.y <= kingPosition.y && kingPosition.y < fromV.y)
+					return true;
+			}
+		} else {
+			if (diff.x > 0) {
+				if (fromV.x <= kingPosition.x && kingPosition.x < toV.x)
+					return true; 
+			} else {
+				if (toV.x <= kingPosition.x && kingPosition.x < fromV.x)
+					return true;
+			}
+		}
+	}
+
+	return false;
+}
+
 void BullAction::getQueenStraightMove(
 	const BullManager *manager, const BullState & state,
 	SidePosition position, std::vector<BullAction> & actions,
@@ -324,14 +384,28 @@ std::vector<BullAction> BullAction::getMoves(const BullManager *manager, const B
 		}
 	}
 
+	CellPosition ourKing;
+	CellPosition theirKing;
+
 	for (int x = 0; x < (int)board->getDimension(); x++)
 	for (int y = 0; y < (int)board->getDimension(); y++) {
 		CellPosition position{x, y};
-		if (board->getCell(position).isOwner(state.player))
+		if (board->getCell(position).isOwner(state.player)) {
+			ourKing = position;
 			getKingMoves(manager, state, position, actions);
+		} else if (!board->getCell(position).isNone())
+			theirKing = position;
 	}
 
-	return actions;
+	// no king capture is allowed, need to check that
+	std::vector<BullAction> actionsWithoutKingCapture;
+	for (auto action : actions)
+		if (
+			!isThereAKingCapture(action, ourKing) &&
+			!isThereAKingCapture(action, theirKing)
+		) actionsWithoutKingCapture.push_back(action);
+
+	return actionsWithoutKingCapture;
 }
 
 /*
@@ -463,7 +537,28 @@ std::vector<BullAction> BullAction::getCaptures(
 		}
 	}
 
-	return actions;
+	CellPosition ourKing;
+	CellPosition theirKing;
+
+	for (int x = 0; x < (int)board->getDimension(); x++)
+	for (int y = 0; y < (int)board->getDimension(); y++) {
+		CellPosition position{x, y};
+		if (board->getCell(position).isOwner(state.player))
+			ourKing = position;
+		else if (!board->getCell(position).isNone())
+			theirKing = position;
+	}
+
+	// no king capture is allowed, need to check that
+	std::vector<BullAction> actionsWithoutKingCapture;
+	for (auto action : actions)
+		if (
+			!isThereAKingCapture(action, ourKing) &&
+			!isThereAKingCapture(action, theirKing)
+			)
+			actionsWithoutKingCapture.push_back(action);
+
+	return actionsWithoutKingCapture;
 }
 
 
@@ -471,6 +566,7 @@ std::vector<BullAction> BullAction::getCaptures(
 	If captures are availibles, forced to capture
 */
 std::vector<BullAction> BullAction::getActions(const BullManager *manager, BullState state) {
+	
 	auto captures = getCaptures(manager, state);
     if (captures.size() > 0)
         return captures;
