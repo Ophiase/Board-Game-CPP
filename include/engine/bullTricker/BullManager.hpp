@@ -35,4 +35,5 @@ class BullManager : public Manager<BullAction, BoardSided> {
         BullManager(bool againstBot = false);
 
         bool canPlayAction(BullState) const override;
+        std::vector<Player> getWinners() const;
 };
