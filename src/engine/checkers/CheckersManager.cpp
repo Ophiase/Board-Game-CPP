@@ -66,3 +66,23 @@ bool CheckersManager::canPlayAction(CheckersState state) const {
 
     return CheckersAction::hasRemainingActions(this, state);
 }
+
+std::vector<Player> CheckersManager::getWinners() const {
+    if (getLastAction().surrend) {
+        Player player = getLastAction().author == players[0].id ? players[1] : players[0];
+        return {player};
+    }
+    std::vector<Player> result;
+    
+    auto scores = this->getScores();
+    int maxScore = INT_MIN;
+    for (uint i = 0; i < scores.size(); i++)
+        if (scores[i] > maxScore)
+            maxScore = scores[i];
+
+    for (uint i = 0; i < players.size(); i++)
+        if (scores[i] == maxScore)
+            result.push_back(players[i]);
+
+    return result;
+}

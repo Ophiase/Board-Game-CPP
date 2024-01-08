@@ -31,4 +31,5 @@ class CheckersManager : public Manager<CheckersAction, Board> {
         CheckersManager(bool againstBot = false);
 
         bool canPlayAction(CheckersState) const override;
+        std::vector<Player> getWinners() const;
 };
