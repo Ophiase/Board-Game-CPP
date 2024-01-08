@@ -22,7 +22,6 @@ Game{launcher, "BullTricker", 0.7f}, manager{againstBot} {
             [this](sf::Event) -> void {
                 if (this->isFinished)
                     return;
-                /* TODO, ADD surrend to actions
                 auto surrend = BullAction{
                     &this->manager, 
                     this->manager.getCurrentPlayerIndex(), 
@@ -30,7 +29,6 @@ Game{launcher, "BullTricker", 0.7f}, manager{againstBot} {
                     };
                 
                 this->applyAction(surrend);
-                */
             }
         };
 

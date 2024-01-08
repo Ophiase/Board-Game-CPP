@@ -577,6 +577,10 @@ std::vector<BullAction> BullAction::getActions(const BullManager *manager, BullS
 // -----------------------------------------------------------------------
 
 bool BullAction::isValid(BullState state) const {
+	if (this->surrend)
+		return true;
+
+
 	if (isSidePath) {
 		if (sideJumps.size() == 0 || sideJumps.size() == 1)
 			return false;
@@ -617,6 +621,14 @@ BullState BullAction::apply(BullState state) const {
 	auto sidesV = state.board.verticalSidePieces;
 	
 	PlayerId nextPlayer = state.player == 0 ? 1 : 0;
+
+	if (surrend) {
+		BoardSided nextBoard{
+			cells, sidesH, sidesV, nextPlayer
+		};
+
+		return BullState{nextBoard, state.scores, state.step+1, nextPlayer};
+	}
 
 	if (!isSidePath) {
 		// king move :

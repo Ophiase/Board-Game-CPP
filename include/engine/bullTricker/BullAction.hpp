@@ -79,6 +79,8 @@ class BullAction : public Action<BullManager, BoardSided> {
         static std::vector<BullAction> getCaptures(
             const BullManager *, const BullState&);
 
+        static bool isSurrounded(const BullManager * manager, BullState state, CellPosition pos) ;
+   
     public:
         static const std::vector<CellPosition> authorizedKingOffsets;
         static const std::vector<CellPosition> surroundingCellsOffsets;
@@ -86,7 +88,7 @@ class BullAction : public Action<BullManager, BoardSided> {
         const CellPath cellJumps;
         const SidePath sideJumps;
         const bool isSidePath;
-
+        const bool surrend;
 
         // -----------------------------------------------
 
@@ -94,19 +96,22 @@ class BullAction : public Action<BullManager, BoardSided> {
             const BullManager * manager, PlayerId author, uint step, 
             CellPath jumps) :
         Action<BullManager, BoardSided>{manager, author, step}, 
-        cellJumps{jumps}, isSidePath{0} {};
+        cellJumps{jumps}, isSidePath{0}, surrend{false} {};
 
         BullAction(
             const BullManager * manager, PlayerId author, uint step, 
             SidePath jumps) :
         Action<BullManager, BoardSided>{manager, author, step}, 
-        sideJumps{jumps}, isSidePath{1} {};
+        sideJumps{jumps}, isSidePath{1}, surrend{false} {};
+
+        BullAction(const BullManager * manager, PlayerId author, uint step) :
+        Action<BullManager, BoardSided>{manager, author, step}, 
+        isSidePath{false}, surrend{true} {};
 
         BullAction(const BullAction & other) :
         Action{other}, cellJumps{other.cellJumps}, sideJumps{other.sideJumps},
-        isSidePath{other.isSidePath} {};
+        isSidePath{other.isSidePath}, surrend{other.surrend} {};
 
-        static bool isSurrounded(const BullManager * manager, BullState state, CellPosition pos) ;
 
         // ----------------------------------------------- 
         // OVERRIDES

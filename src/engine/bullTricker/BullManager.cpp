@@ -68,6 +68,11 @@ BoardSided BullManager::initialBoard() {
 };
 
 bool BullManager::canPlayAction(BullState state) const {
+    if (state == this->getState()) {
+        if (this->step() > 0 && this->getLastAction().surrend)
+            return false;
+    }
+
     bool pat = true;
     uint size = actions.size();
     if (size >= 8) {
@@ -79,7 +84,9 @@ bool BullManager::canPlayAction(BullState state) const {
                 break;
         }
     }
+
     if (pat)
         return true;
+
     return BullAction::hasRemainingActions(this, state);
 }
