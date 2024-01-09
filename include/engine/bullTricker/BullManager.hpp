@@ -11,6 +11,11 @@
 class BullManager : public Manager<BullAction, BoardSided> {
     private:
         BoardSided initialBoard() override;
+
+        /*
+            Warning : Not pure function, is manager state 
+        */
+        bool repetePatCheck();
     public:
         using Manager::canPlayAction;
 

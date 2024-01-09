@@ -67,26 +67,43 @@ BoardSided BullManager::initialBoard() {
     return BoardSided(cellPieces, horizontalSidePieces, verticalSidePieces,0);
 };
 
-bool BullManager::canPlayAction(BullState state) const {
-    if (state == this->getState()) {
-        if (this->step() > 0 && this->getLastAction().surrend)
+bool BullManager::repetePatCheck() {
+    const uint N_REPETITION_FOR_PAT = 7;
+    
+    if (actions.size() < N_REPETITION_FOR_PAT*3)
+        return false;
+
+    auto oldScore = this->states[this->step() - N_REPETITION_FOR_PAT*7].scores;
+    if (this->getScores() != oldScore)
+        return false;
+    
+    BullAction current = this->getLastAction();
+    for (uint i = 0; i < N_REPETITION_FOR_PAT; i += 3){
+        auto direct = actions[this->step() - i];
+        auto indirect = actions[this->step() - i -1];
+
+        if ((direct != current) || !(direct.revEqual(indirect)))
             return false;
     }
 
-    bool pat = true;
-    uint size = actions.size();
-    if (size >= 8) {
-        BullAction a = actions[size-1];
-        BullAction b = actions[size-2];
-        for (uint x = 2; x < 8; x += 2 ){
-            if (!actionEquivalence(a, actions[size - 1 - x])|| !actionEquivalence(b, actions[size - 2 - x]))
-                pat = false;
-                break;
-        }
-    }
+    return true;
+}
 
-    if (pat)
-        return true;
+bool BullManager::canPlayAction(BullState state) const {
+    if (state == this->getState() && this->step() > 0) {
+        if (this->getLastAction().surrend)
+            return false;
+    /*
+        if (this->getLastAction().pat)
+            return false;
+
+        // to implement it :
+            // add a "pat flag" on BullAction
+            // add a "pat button"
+                // on click check if pat is authorized (repetePatCheck)
+                // if so, apply the pat action
+    */
+    }
 
     return BullAction::hasRemainingActions(this, state);
 }

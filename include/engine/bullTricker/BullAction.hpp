@@ -113,7 +113,12 @@ class BullAction : public Action<BullManager, BoardSided> {
 
         static bool isSurrounded(const BullManager * manager, BullState state, CellPosition pos) ;
 
-
+        bool operator==(const BullAction &other);
+        /*
+            Equal with reversed jumps
+        */
+        bool revEqual(const BullAction &other);
+        bool operator!=(const BullAction &other);
 
         // ----------------------------------------------- 
         // OVERRIDES

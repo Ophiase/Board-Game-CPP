@@ -10,6 +10,28 @@ const std::vector<CellPosition> BullAction::surroundingCellsOffsets = {
 	{1,0}, {0,1}, {-1,0}, {0,-1}, {1,1}, {-1,1}, {-1,-1}, {1,-1}
 };
 
+bool BullAction::revEqual(const BullAction &other) {
+	if (this->surrend && other.surrend) return true;
+	if (this->isSidePath)
+        return this->sideJumps == std::vector<SidePosition>(
+			other.sideJumps.rbegin(), other.sideJumps.rend());
+
+    return this->cellJumps == std::vector<CellPosition>(
+		other.cellJumps.rbegin(), other.cellJumps.rend());
+
+}
+
+bool BullAction::operator==(const BullAction &other) {
+	if (this->surrend && other.surrend) return true;
+	if (this->isSidePath)
+		return this->sideJumps == other.sideJumps;
+	return this->cellJumps == other.cellJumps;
+}
+
+bool BullAction::operator!=(const BullAction &other) {
+	return !(*this == other);
+}
+
 // -----------------------------------------------------------------------
 
 bool BullAction::isSurrounded(const BullManager*, BullState state, CellPosition pos) {
@@ -505,7 +527,7 @@ void BullAction::getQueenCaptures(
 std::vector<BullAction> BullAction::getCaptures(
 	const BullManager *manager, const BullState & state
 ) {
-	Cli::debug("get captures");
+
 	auto *board = &state.board;
 	std::vector<BullAction> actions;
 
