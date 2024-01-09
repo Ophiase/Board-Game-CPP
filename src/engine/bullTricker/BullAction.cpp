@@ -480,9 +480,8 @@ void BullAction::getQueenCaptures(
 			board->getCell(to).isNone() && 
 			board->getCell(last).isOwner(opponent)) {
 				anyCapture = true;
+				from.sideVector = to.sideVector;
 			}
-
-			from.sideVector = to.sideVector;
 	} 
 
 	if (!anyCapture)
