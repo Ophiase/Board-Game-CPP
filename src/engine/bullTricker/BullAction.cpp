@@ -355,6 +355,7 @@ std::vector<BullAction> BullAction::getMoves(const BullManager *manager, const B
 	auto *board = &state.board;
 	std::vector<BullAction> actions;
 
+
 	// HORIZONTALS
 
 	for (int x = 0; x < (int)board->getDimension(); x++)
@@ -465,7 +466,7 @@ void BullAction::getQueenCaptures(
 	
 	bool anyCapture = false;
 
-	if (board->getCell(to).isOwner(state.player))
+	if (!board->isCaseInBoard(to) || board->getCell(to).isOwner(state.player))
 		return;
 
 	while (board->isCaseInBoard(to_2)) {
@@ -504,6 +505,7 @@ void BullAction::getQueenCaptures(
 std::vector<BullAction> BullAction::getCaptures(
 	const BullManager *manager, const BullState & state
 ) {
+	Cli::debug("get captures");
 	auto *board = &state.board;
 	std::vector<BullAction> actions;
 
@@ -565,11 +567,10 @@ std::vector<BullAction> BullAction::getCaptures(
 	If captures are availibles, forced to capture
 */
 std::vector<BullAction> BullAction::getActions(const BullManager *manager, BullState state) {
-	
 	auto captures = getCaptures(manager, state);
+	
     if (captures.size() > 0)
         return captures;
-
     return getMoves(manager, state);
 }
 
