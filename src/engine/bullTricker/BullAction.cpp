@@ -654,7 +654,7 @@ BullState BullAction::apply(BullState state) const {
 	
 	PlayerId nextPlayer = state.player == 0 ? 1 : 0;
 
-	if (surrend) {
+	if (surrend || askForPat) {
 		BoardSided nextBoard{
 			cells, sidesH, sidesV, nextPlayer
 		};

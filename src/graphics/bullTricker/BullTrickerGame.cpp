@@ -57,7 +57,6 @@ Game{launcher, "BullTricker", 0.7f}, manager{againstBot} {
                 }
 
                 Cli::debug("Pat !");
-                
                 this->applyAction(pat);
             }
         };
@@ -83,7 +82,7 @@ BullTrickerGame::~BullTrickerGame() {
 
 void BullTrickerGame::startTurn() {
     this->isFinished = manager.isFinished();
-    
+
     this->cachedCellAction.clear();
     this->cachedSideAction.clear();
     this->updateBoardSidedContent(manager.getBoard());
@@ -106,6 +105,7 @@ void BullTrickerGame::startTurn() {
     this->interactive = true;
 
     auto winners = this->manager.getWinners();
+
     if (winners.size() == 1) {            
         this->setMessage("Winner is : " + winners[0].name);
         Cli::info("\n\t\x1B[35mWinner is\x1B[0m : " + winners[0].name + "\n");
@@ -123,13 +123,16 @@ void BullTrickerGame::startTurn() {
 // --------------------------------------------------
 
 void BullTrickerGame::applyAction(BullAction action) {
+
     Cli::info(
         "Action : " + manager.getCurrentPlayer().name + " : " + 
         action.toString()  +"\n");
 
     this->manager.applyAction(action);
+
     interactive = !manager.getCurrentPlayer().isAI;
     this->startTurn();
+
     if (isFinished) return;
     
     if (!interactive)
