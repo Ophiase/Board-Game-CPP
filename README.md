@@ -96,12 +96,21 @@ make run
 This project has an MVC architecture.
 
 - #### Model :
-    - Each game have its own implementation of GameState class
+    - Each game have its own implementation of GameState class, Action class
         - a GameState is composed of :
             - a BoardType (inherits Board class)
             - a list of scores
             - its step
             - current player id.
+        - ActionType :
+            - it require to implements the following methods
+                - ``getActions`` : Get all the actions appliable on a given GameState.
+                    - Checkers queen can have a gigantic number of actions possibles, so we restrict the actions given for capture.
+                - ``hasRemainingActions`` : is there any action left ?
+                - ``isValid`` : Can the action be applied on a GameState ?for
+                - ``apply`` : Apply the action onto a GameState.
+                - ``actionEquivalence`` : Doe the two actions have the same effect over a given GameState
+                
 - #### View :
     - The launcher alternate between Menu and Games
         - If Menu.focus is empty, it focus Menu
@@ -109,18 +118,9 @@ This project has an MVC architecture.
     - Each game have it's own implementation of Game class
         - a Game class is a view for a specific game.
 - #### Controller :
-    - Each game have it's own implementation of Manager class, Action class
+    - Each game have it's own implementation of Manager class
     - Manager acts as the controller :
         - it initialize the first game state, check if an action is valid before applying it. 
-    - ActionType :
-        - it require to implements the following methods
-            - ``getActions`` : Get all the actions appliable on a given GameState.
-                - Checkers queen can have a gigantic number of actions possibles, so we restrict the actions given for capture.
-            - ``hasRemainingActions`` : is there any action left ?
-            - ``isValid`` : Can the action be applied on a GameState ?for
-            - ``apply`` : Apply the action onto a GameState.
-            - ``actionEquivalence`` : Doe the two actions have the same effect over a given GameState
-            
 
 ## Future Development
 
