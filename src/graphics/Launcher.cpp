@@ -102,6 +102,9 @@ bool Launcher::run() {
         this->window.display();
     }
 
+    if (focus != &menu)
+        delete focus;
+
     return true;
 }
 
