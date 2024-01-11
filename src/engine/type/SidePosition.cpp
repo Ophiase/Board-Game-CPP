@@ -2,7 +2,7 @@
 #include "utils/Cli.hpp"
 
 std::string SidePosition::toString() const {
-    return (this->horizontal ? "horizontal" : "vertical") + 
+    return (this->horizontal ? "h - " : "v - ") + 
         Cli::toString(this->sideVector);
 };
 

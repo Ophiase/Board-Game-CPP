@@ -67,9 +67,7 @@ std::string Cli::toString(sf::Vector2i vect) {
 }
 
 std::string Cli::toString(SidePosition vect) {
-    return "(" +
-        std::to_string(vect.sideVector.x) + ", " +
-        std::to_string(vect.sideVector.y) + ")";
+    return "(" + vect.toString() + ")";
 }
 
 

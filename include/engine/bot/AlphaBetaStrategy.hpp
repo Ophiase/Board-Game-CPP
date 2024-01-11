@@ -70,12 +70,12 @@ std::tuple<ActionType*, float> AlphaBetaStrategy<ActionType, BoardType, ManagerT
 
     float currentScore = Score::zeroSumScore(state.scores, scoreId);
 
+    //if (actions.size() == 0 || (depth == maxDepth))
+    if ((this->manager->isFinished(state)) || (depth == maxDepth))
+        return std::make_tuple(nullptr, currentScore);
+    
     std::vector<ActionType> actions = 
         ActionType::getActions(this->manager, state);
-    
-    if (actions.size() == 0 || (depth == maxDepth))
-    //if ((this->manager->isFinished(state)) || (depth == maxDepth))
-        return std::make_tuple(nullptr, currentScore);
 
     bool maximize = depth & 0;
 

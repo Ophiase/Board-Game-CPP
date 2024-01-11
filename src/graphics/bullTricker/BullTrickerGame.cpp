@@ -360,7 +360,7 @@ void BullTrickerGame::handleCheckerBoard() {
             auto pos = getSidePosition(manager.getBoard());
             
             cachedSideAction.push_back(pos);
-            Cli::debug("Clicked on side :     " + Cli::toString(pos));
+            Cli::debug("Clicked on side : " + Cli::toString(pos));
         }
     }
 

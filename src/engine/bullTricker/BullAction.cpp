@@ -751,7 +751,7 @@ std::string BullAction::toString() const {
 		return "Ask for pat";
 
 	if (isSidePath)
-    	return Cli::toString(sideJumps);
+    	return "[Sides] - " + Cli::toString(sideJumps);
 	
-	return Cli::toString(cellJumps);
+	return "[Cells] - " + Cli::toString(cellJumps);
 }
