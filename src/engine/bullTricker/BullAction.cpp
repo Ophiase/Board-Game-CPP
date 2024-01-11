@@ -659,7 +659,9 @@ BullState BullAction::apply(BullState state) const {
 			cells, sidesH, sidesV, nextPlayer
 		};
 
-		return BullState{nextBoard, state.scores, state.step+1, nextPlayer};
+		if (surrend)
+			return BullState{nextBoard, state.scores, state.step+1, nextPlayer};
+		return BullState{nextBoard, ScoreList{0, 0}, state.step+1, nextPlayer};
 	}
 
 	if (!isSidePath) {

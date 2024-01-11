@@ -68,8 +68,6 @@ BoardSided BullManager::initialBoard() {
 };
 
 bool BullManager::repetePatCheck() {
-    return true;
-
     const uint N_REPETITION_FOR_PAT = 7;
     const uint N_TURNS = N_REPETITION_FOR_PAT*4;
     
