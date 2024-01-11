@@ -396,7 +396,7 @@ std::vector<BullAction> BullAction::getMoves(const BullManager *manager, const B
 			if (board->getCell(position).isPawn())
 				getPawnHorizontalMoves(manager, state, position, actions);
 			else
-				getQueenVerticalMoves(manager, state, position, actions);
+				getQueenHorizontalMoves(manager, state, position, actions);
 		}
 	}
 
