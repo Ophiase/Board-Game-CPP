@@ -22,19 +22,49 @@ Game{launcher, "BullTricker", 0.7f}, manager{againstBot} {
             [this](sf::Event) -> void {
                 if (this->isFinished)
                     return;
-                auto surrend = BullAction{
+                auto surrend = BullAction::getSurrend(
                     &this->manager, 
                     this->manager.getCurrentPlayerIndex(), 
                     this->manager.step()
-                    };
+                );
+
+                Cli::debug("Surrend !");
                 
                 this->applyAction(surrend);
             }
         };
 
         surrendButton->setSizeY(0.05);
-        surrendButton->center(sf::Vector2f{0.8, 0.55});
+        surrendButton->center(sf::Vector2f{0.8, 0.58});
         this->addObjectToDelete(surrendButton);
+
+        TextButton *patButton = new TextButton{this,
+            "Pat",
+            [this](sf::Event) -> void {
+                if (this->isFinished)
+                    return;
+
+                auto pat = BullAction::getPat(
+                    &this->manager, 
+                    this->manager.getCurrentPlayerIndex(), 
+                    this->manager.step()
+                );
+
+                if (!this->manager.repetePatCheck()) {
+                    Cli::debug("Cannot ask for pat!");
+                    Cli::warning("Invalid ask for pat.");
+                    return;
+                }
+
+                Cli::debug("Pat !");
+                
+                this->applyAction(pat);
+            }
+        };
+
+        patButton->setSizeY(0.05);
+        patButton->center(sf::Vector2f{0.8, 0.52});
+        this->addObjectToDelete(patButton);
     }
 
     this->AIinit();
@@ -93,14 +123,9 @@ void BullTrickerGame::startTurn() {
 // --------------------------------------------------
 
 void BullTrickerGame::applyAction(BullAction action) {
-    if (action.isSidePath)
-        Cli::info(
-            "Action : " + manager.getCurrentPlayer().name + " : " + 
-            Cli::toString(action.sideJumps) +"\n");
-    else
-        Cli::info(
-            "Action : " + manager.getCurrentPlayer().name + " : " + 
-            Cli::toString(action.cellJumps) +"\n");
+    Cli::info(
+        "Action : " + manager.getCurrentPlayer().name + " : " + 
+        action.toString()  +"\n");
 
     this->manager.applyAction(action);
     interactive = !manager.getCurrentPlayer().isAI;

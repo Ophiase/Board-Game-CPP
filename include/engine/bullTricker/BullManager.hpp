@@ -12,12 +12,9 @@ class BullManager : public Manager<BullAction, BoardSided> {
     private:
         BoardSided initialBoard() override;
 
-        /*
-            Warning : Not pure function, is manager state 
-        */
-        bool repetePatCheck();
     public:
         using Manager::canPlayAction;
+
 
         const int MAX_QUEEN_DEPTH = 3;
 
@@ -39,6 +36,10 @@ class BullManager : public Manager<BullAction, BoardSided> {
         static std::vector<Player> makePlayers(bool againstBot = false);
         BullManager(bool againstBot = false);
 
+        /*
+            Warning : Not pure function, is manager state 
+        */
+        bool repetePatCheck();
         bool canPlayAction(BullState) const override;
         std::vector<Player> getWinners() const;
 };

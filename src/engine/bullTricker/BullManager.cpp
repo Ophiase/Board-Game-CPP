@@ -69,22 +69,31 @@ BoardSided BullManager::initialBoard() {
 
 bool BullManager::repetePatCheck() {
     const uint N_REPETITION_FOR_PAT = 7;
+    const uint N_TURNS = N_REPETITION_FOR_PAT*4;
+    Cli::debug("Verify pat");
     
-    if (actions.size() < N_REPETITION_FOR_PAT*3)
+    if (actions.size() < N_REPETITION_FOR_PAT*4)
         return false;
 
-    auto oldScore = this->states[this->step() - N_REPETITION_FOR_PAT*7].scores;
+    Cli::debug("- Enough actions");
+
+    auto oldScore = this->states[this->step() - N_TURNS - 1].scores;
     if (this->getScores() != oldScore)
         return false;
+
+    Cli::debug("- Score remains");
     
     BullAction current = this->getLastAction();
-    for (uint i = 0; i < N_REPETITION_FOR_PAT; i += 3){
-        auto direct = actions[this->step() - i];
-        auto indirect = actions[this->step() - i -1];
+    for (uint i = 0; i < N_TURNS; i += 4){
+        Cli::debug(" - check ? : " + std::to_string(i) + " / " + std::to_string(N_TURNS));
+        auto direct = actions[this->step() - i - 1];
+        auto indirect = actions[this->step() - i - 1 - 2];
 
         if ((direct != current) || !(direct.revEqual(indirect)))
             return false;
     }
+
+    Cli::debug("checked");
 
     return true;
 }
@@ -93,16 +102,9 @@ bool BullManager::canPlayAction(BullState state) const {
     if (state == this->getState() && this->step() > 0) {
         if (this->getLastAction().surrend)
             return false;
-    /*
-        if (this->getLastAction().pat)
-            return false;
 
-        // to implement it :
-            // add a "pat flag" on BullAction
-            // add a "pat button"
-                // on click check if pat is authorized (repetePatCheck)
-                // if so, apply the pat action
-    */
+        if (this->getLastAction().askForPat)
+            return false;
     }
 
     return BullAction::hasRemainingActions(this, state);

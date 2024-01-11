@@ -32,6 +32,14 @@ bool BullAction::operator!=(const BullAction &other) {
 	return !(*this == other);
 }
 
+BullAction BullAction::getPat(const BullManager *manager, PlayerId author, uint step) {
+	return BullAction{manager, author, step, false, true};
+}
+
+BullAction BullAction::getSurrend(const BullManager *manager, PlayerId author, uint step) {
+	return BullAction{manager, author, step, true, false};
+}
+
 // -----------------------------------------------------------------------
 
 bool BullAction::isSurrounded(const BullManager*, BullState state, CellPosition pos) {
@@ -599,9 +607,11 @@ std::vector<BullAction> BullAction::getActions(const BullManager *manager, BullS
 // -----------------------------------------------------------------------
 
 bool BullAction::isValid(BullState state) const {
-	if (this->surrend)
+	if (this->askForPat)
 		return true;
 
+	if (this->surrend)
+		return true;
 
 	if (isSidePath) {
 		if (sideJumps.size() == 0 || sideJumps.size() == 1)
@@ -735,8 +745,13 @@ BullState BullAction::apply(BullState state) const {
 }
 
 std::string BullAction::toString() const {
+	if (surrend)
+		return "Surrend";
+	if (askForPat)
+		return "Ask for pat";
+
 	if (isSidePath)
     	return Cli::toString(sideJumps);
-	else
-		return Cli::toString(cellJumps);
+	
+	return Cli::toString(cellJumps);
 }

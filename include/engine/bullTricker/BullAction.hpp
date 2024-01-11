@@ -88,6 +88,13 @@ class BullAction : public Action<BullManager, BoardSided> {
         const SidePath sideJumps;
         const bool isSidePath;
         const bool surrend;
+        const bool askForPat;
+        
+        // surrend/pat constructor
+        BullAction(const BullManager *manager, PlayerId author, uint step, 
+            bool surrend = true, bool askForPat = false) :
+        Action<BullManager, BoardSided>{manager, author, step}, 
+        isSidePath{false}, surrend{surrend}, askForPat{askForPat} {};
 
         // -----------------------------------------------
 
@@ -95,21 +102,23 @@ class BullAction : public Action<BullManager, BoardSided> {
             const BullManager * manager, PlayerId author, uint step, 
             CellPath jumps) :
         Action<BullManager, BoardSided>{manager, author, step}, 
-        cellJumps{jumps}, isSidePath{0}, surrend{false} {};
+        cellJumps{jumps}, isSidePath{0}, surrend{false}, askForPat{false} {};
 
         BullAction(
             const BullManager * manager, PlayerId author, uint step, 
             SidePath jumps) :
         Action<BullManager, BoardSided>{manager, author, step}, 
-        sideJumps{jumps}, isSidePath{1}, surrend{false} {};
+        sideJumps{jumps}, isSidePath{1}, surrend{false}, askForPat{false} {};
 
-        BullAction(const BullManager * manager, PlayerId author, uint step) :
-        Action<BullManager, BoardSided>{manager, author, step}, 
-        isSidePath{false}, surrend{true} {};
+        
 
         BullAction(const BullAction & other) :
         Action{other}, cellJumps{other.cellJumps}, sideJumps{other.sideJumps},
-        isSidePath{other.isSidePath}, surrend{other.surrend} {};
+        isSidePath{other.isSidePath}, surrend{other.surrend}, askForPat{other.askForPat} {};
+
+
+        static BullAction getPat(const BullManager * manager, PlayerId author, uint step);
+        static BullAction getSurrend(const BullManager * manager, PlayerId author, uint step);
 
         static bool isSurrounded(const BullManager * manager, BullState state, CellPosition pos) ;
 
