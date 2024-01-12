@@ -175,7 +175,7 @@ void BullTrickerGame::cancelAction() {
         return;
     }
 
-    if (manager.step() == 0) {
+    if (manager.step() == 0 || (manager.step() == 1 && bots.size() != 0)) {
         Cli::warning("Nothing to undo!");
         return;
     }
