@@ -1,6 +1,6 @@
 # Board Game
 
-Simple c++ interface to play board game against bots or players.\
+Simple c++ interface to play board games against bots or players.\
 Game supported :
 - Loot [(french tutorial for "Butin")](http://jeuxstrategieter.free.fr/Butin_complet.php)
 - Checkers [(french tutorial for "Dames")](https://infolib.re/storage/files/documents/jeux_de_societe/Les%20dames%20-%20R%C3%A8gle%20du%20jeu.pdf)
