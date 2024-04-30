@@ -21,11 +21,11 @@ Game supported :
 ## Demo
 
 ### Loot
-- Select the number of real players and bot before the party
+- Select the number of real players and bots before the party
     - <img height=200 src="resources/demo/loot_menu.png">
-- Select a yellow pawn and then click on all the case you want to jump
+- Select a yellow pawn and then click on all the cases you want to jump to
     - <img height=200 src="resources/demo/loot_begin.png">
-- Game is finished when there isn't any action left.
+- Game is finished when there is not any action left
     - <img height=200 src="resources/demo/loot_end.png">
 
 ### Checkers
@@ -37,7 +37,7 @@ Game supported :
 
 ### BullTrickers
 
-- Choose if you want to play against bot or a player
+- Choose if you want to play against bots or players
 - On each turn, the pieces that you can use are marked in (yellow)
     - <img height=200 src="resources/demo/bulltricker_game.png">
     
@@ -83,13 +83,13 @@ make run
 - Game BullTricker
 - Bot
     - RandomStrategy
-        - Pick a random action.
+        - Pick a random action
     - GreedyStrategy
-        - Pick an action the maximise the next turn score.
+        - Pick an action the maximise the next turn score
     - AlphaBetaStrategy
-        - Only in zero sum 1vs1 games (checkers and bulltricker).
-        - Maximise score over $n$ parties in the future.
-            - Assume each player will min/max the player score.
+        - Only in zero sum 1 vs 1 games (checkers and bulltricker)
+        - Maximise score over $n$ parties in the future
+            - Assume each player will try to minimize/maximize the player score
 
 ## Architecture
 
@@ -103,29 +103,29 @@ This project has an MVC architecture.
             - its step
             - current player id.
         - ActionType :
-            - it require to implements the following methods
+            - It requires to implement the following methods
                 - ``getActions`` : Get all the actions appliable on a given GameState.
-                    - Checkers queen can have a gigantic number of actions possibles, so we restrict the actions given for capture.
+                    - Checkers queen can have a gigantic number of possible actions, so we restrict the actions given for capture
                 - ``hasRemainingActions`` : is there any action left ?
-                - ``isValid`` : Can the action be applied on a GameState ?for
+                - ``isValid`` : Can the action be applied on a GameState ?
                 - ``apply`` : Apply the action onto a GameState.
-                - ``actionEquivalence`` : Doe the two actions have the same effect over a given GameState
+                - ``actionEquivalence`` : Do the two actions have the same effect over a given GameState?
                 
 - #### View :
-    - The launcher alternate between Menu and Games
-        - If Menu.focus is empty, it focus Menu
-        - If Menu.focus is non empty, it focus the corresponding Game 
-    - Each game have it's own implementation of Game class
+    - The launcher alternates between Menu and Games
+        - If Menu.focus is empty, it focuses the Menu
+        - If Menu.focus is non empty, it focuses the corresponding Game 
+    - Each game have its own implementation of the Game class
         - a Game class is a view for a specific game.
 - #### Controller :
-    - Each game have it's own implementation of Manager class
+    - Each game have its own implementation of Manager class
     - Manager acts as the controller :
-        - it initialize the first game state, check if an action is valid before applying it. 
+        - it initializes the first game state, and it checks if an action is valid before applying it 
 
 ## Future Development
 
 - GUI
-    - helper for checker
-    - arrows for checker
+    - helper for Checkers
+    - arrows for Checkers
 - BOT
     - MonteCarloStrategy
